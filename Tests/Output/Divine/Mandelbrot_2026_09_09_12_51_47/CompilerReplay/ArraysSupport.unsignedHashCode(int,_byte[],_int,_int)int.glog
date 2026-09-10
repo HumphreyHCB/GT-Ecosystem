@@ -1,0 +1,37 @@
+{
+  "identifier": "HotSpotCompilation-94[jdk.internal.util.ArraysSupport.unsignedHashCode(int, byte[], int, int)]",
+  "method": "jdk.internal.util.ArraysSupport.unsignedHashCode(int, byte[], int, int)int",
+  "entryBCI": -1,
+  "codeSignature": "4d5957074f035392f4f1040fa7b9c8e8516cc366cc99a9663ff8e211636027cb",
+  "graphSignature": "ec48f9da76be66a6b56b9242fa5c79b96c5a2b790a5832893550f14895067602",
+  "result": true,
+  "profiles": [
+    {
+      "method": "jdk.internal.util.ArraysSupport.unsignedHashCode(int, byte[], int, int)int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "jdk.internal.util.ArraysSupport.unsignedHashCode(int, byte[], int, int)int",
+      "isMature": true,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 12,
+          "branchTakenProbability": 0.04707250872431175
+        },
+        {
+          "bci": 22,
+          "exceptionSeen": "FALSE"
+        }
+      ]
+    },
+    {
+      "method": "java.lang.Byte.toUnsignedInt(byte)int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}

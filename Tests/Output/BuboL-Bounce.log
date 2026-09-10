@@ -1,0 +1,214 @@
+Could not locate BlockSlowdown.json
+Skipping Loading (this might cause a fatal crash if GTSlowdown is on)
+Could not locate BlockSlowdown.json
+Skipping Loading (this might cause a fatal crash if GTSlowdown is on)
+Starting Bounce benchmark ...
+Bounce: iterations=1 runtime: 170476us
+Bounce: iterations=2 runtime: 145372us
+Bounce: iterations=3 runtime: 146120us
+Bounce: iterations=4 runtime: 143661us
+Bounce: iterations=5 runtime: 140371us
+Bounce: iterations=6 runtime: 134848us
+Bounce: iterations=7 runtime: 133847us
+Bounce: iterations=8 runtime: 136697us
+Bounce: iterations=9 runtime: 141796us
+Bounce: iterations=10 runtime: 134376us
+Bounce: iterations=11 runtime: 134098us
+Bounce: iterations=12 runtime: 134279us
+Bounce: iterations=13 runtime: 135829us
+Bounce: iterations=14 runtime: 134686us
+Bounce: iterations=15 runtime: 133665us
+Bounce: iterations=16 runtime: 133264us
+Bounce: iterations=17 runtime: 135329us
+Bounce: iterations=18 runtime: 135315us
+Bounce: iterations=19 runtime: 134786us
+Bounce: iterations=20 runtime: 134592us
+Bounce: iterations=21 runtime: 134364us
+Bounce: iterations=22 runtime: 135985us
+Bounce: iterations=23 runtime: 134335us
+Bounce: iterations=24 runtime: 134117us
+Bounce: iterations=25 runtime: 133578us
+Bounce: iterations=26 runtime: 136306us
+Bounce: iterations=27 runtime: 135809us
+Bounce: iterations=28 runtime: 132805us
+Bounce: iterations=29 runtime: 133835us
+Bounce: iterations=30 runtime: 135263us
+Bounce: iterations=31 runtime: 134295us
+Bounce: iterations=32 runtime: 133779us
+Bounce: iterations=33 runtime: 134654us
+Bounce: iterations=34 runtime: 136722us
+Bounce: iterations=35 runtime: 134467us
+Bounce: iterations=36 runtime: 144632us
+Bounce: iterations=37 runtime: 134176us
+Bounce: iterations=38 runtime: 135237us
+Bounce: iterations=39 runtime: 140472us
+Bounce: iterations=40 runtime: 134321us
+Bounce: iterations=41 runtime: 131530us
+Bounce: iterations=42 runtime: 134460us
+Bounce: iterations=43 runtime: 135045us
+Bounce: iterations=44 runtime: 133234us
+Bounce: iterations=45 runtime: 132290us
+Bounce: iterations=46 runtime: 132284us
+Bounce: iterations=47 runtime: 137378us
+Bounce: iterations=48 runtime: 134203us
+Bounce: iterations=49 runtime: 133339us
+Bounce: iterations=50 runtime: 136913us
+Bounce: iterations=51 runtime: 135018us
+Bounce: iterations=52 runtime: 132596us
+Bounce: iterations=53 runtime: 132529us
+Bounce: iterations=54 runtime: 132563us
+Bounce: iterations=55 runtime: 136179us
+Bounce: iterations=56 runtime: 134321us
+Bounce: iterations=57 runtime: 134082us
+Bounce: iterations=58 runtime: 133497us
+Bounce: iterations=59 runtime: 135908us
+Bounce: iterations=60 runtime: 133391us
+Bounce: iterations=61 runtime: 133138us
+Bounce: iterations=62 runtime: 132753us
+Bounce: iterations=63 runtime: 135660us
+Bounce: iterations=64 runtime: 148315us
+Bounce: iterations=65 runtime: 131509us
+Bounce: iterations=66 runtime: 131357us
+Bounce: iterations=67 runtime: 132887us
+Bounce: iterations=68 runtime: 134209us
+Bounce: iterations=69 runtime: 133548us
+Bounce: iterations=70 runtime: 133269us
+Bounce: iterations=71 runtime: 133167us
+Bounce: iterations=72 runtime: 136315us
+Bounce: iterations=73 runtime: 134474us
+Bounce: iterations=74 runtime: 133733us
+Bounce: iterations=75 runtime: 133773us
+Bounce: iterations=76 runtime: 135757us
+Bounce: iterations=77 runtime: 134034us
+Bounce: iterations=78 runtime: 133491us
+Bounce: iterations=79 runtime: 132946us
+Bounce: iterations=80 runtime: 135900us
+Bounce: iterations=81 runtime: 135963us
+Bounce: iterations=82 runtime: 135274us
+Bounce: iterations=83 runtime: 134705us
+Bounce: iterations=84 runtime: 135718us
+Bounce: iterations=85 runtime: 133820us
+Bounce: iterations=86 runtime: 134052us
+Bounce: iterations=87 runtime: 133493us
+Bounce: iterations=88 runtime: 134393us
+Bounce: iterations=89 runtime: 134915us
+Bounce: iterations=90 runtime: 133904us
+Could not locate BlockSlowdown.json
+Skipping Loading (this might cause a fatal crash if GTSlowdown is on)
+Bounce: iterations=91 runtime: 133107us
+Bounce: iterations=92 runtime: 134895us
+Bounce: iterations=93 runtime: 136779us
+Bounce: iterations=94 runtime: 134747us
+Bounce: iterations=95 runtime: 133730us
+Bounce: iterations=96 runtime: 133581us
+Bounce: iterations=97 runtime: 135680us
+Bounce: iterations=98 runtime: 134035us
+Bounce: iterations=99 runtime: 133255us
+Bounce: iterations=100 runtime: 133289us
+Could not locate BlockSlowdown.json
+Skipping Loading (this might cause a fatal crash if GTSlowdown is on)
+Bounce: iterations=100 average: 135428us total: 13542889us
+
+
+Total Runtime: 13542889us
+Bubo.RDTSC.Harness.main Total RDTSC cycles: 45014555904
+Comp 52 (java.util.ImmutableCollections$SetN$SetNIterator.next()) loops:
+Found Encoding : 0:-1
+└── Loop 0
+  loop 0 Cycles: 383242 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.ImmutableCollections$SetN$SetNIterator.next(ImmutableCollections.java:1213) [bci: 21] | -at java.util.ImmutableCollections$SetN$SetNIterator.next(ImmutableCollections.java:1223) [bci: 65]
+Comp 57 (java.util.HashMap.putVal(int,) loops:
+Found Encoding : 0:-1
+└── Loop 0
+  loop 0 Cycles: 10462 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.HashMap.putVal(HashMap.java:648) [bci: 134] | -at java.util.HashMap.putVal(HashMap.java:649) [bci: 145]
+Comp 58 (java.lang.String.equals(Object)) loops:
+Found Encoding : 0:-1
+└── Loop 0
+  loop 0 Cycles: 5070 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.lang.StringLatin1.equals(StringLatin1.java:100) [bci: 9]
+-at java.lang.String.equals(String.java:1926) [bci: 44] | -at java.lang.StringLatin1.equals(StringLatin1.java:105) [bci: 32]
+-at java.lang.String.equals(String.java:1926) [bci: 44]
+Comp 71 (java.util.HashMap.resize()) loops:
+Found Encoding : 2:-1,0:-1,1:0
+├── Loop 2
+└── Loop 0
+    └── Loop 1
+  loop 0 Cycles: 31388 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.HashMap.resize(HashMap.java:714) [bci: 151] | -at java.util.HashMap.resize(HashMap.java:755) [bci: 353]
+  loop 1 Cycles: 9610 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.HashMap.resize(HashMap.java:727) [bci: 235] | -at java.util.HashMap.resize(HashMap.java:743) [bci: 309]
+  loop 2 Cycles: 16114 || Activation Count:0 | LoopCallCount: 0 |  Source: -at jdk.graal.compiler.hotspot.replacements.HotSpotAllocationSnippets.allocateArray(KlassPointer, int, int, int, AllocationSnippets$FillContent, int, boolean, boolean, boolean, boolean, HotSpotAllocationSnippets$HotSpotAllocationProfilingData, boolea
+Comp 88 (java.util.Properties$LineReader.readLine()) loops:
+Found Encoding : 5:-1,3:-1,4:3,0:-1,1:0,2:1
+├── Loop 5
+├── Loop 3
+│   └── Loop 4
+└── Loop 0
+    └── Loop 1
+        └── Loop 2
+  loop 1 Cycles: 247100 || Activation Count:0 | LoopCallCount: 1 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:538) [bci: 219] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+  loop 2 Cycles: 16882 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:540) [bci: 224] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+  loop 5 Cycles: 238 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:540) [bci: 224] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+Comp 89 (java.util.Properties$LineReader.readLine()-Re-Comp) loops:
+Found Encoding : 0:-1,1:0,2:1
+└── Loop 0
+    └── Loop 1
+        └── Loop 2
+  loop 1 Cycles: 4218 || Activation Count:0 | LoopCallCount: 1 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:538) [bci: 219] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+  loop 2 Cycles: 2284 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:540) [bci: 224] | -at java.util.Properties$LineReader.readLine(Properties.java:545) [bci: 262]
+Comp 90 (java.util.Properties$LineReader.readLine()-Re-Comp) loops:
+Found Encoding : 5:-1,3:-1,4:3,0:-1,1:0,2:1
+├── Loop 5
+├── Loop 3
+│   └── Loop 4
+└── Loop 0
+    └── Loop 1
+        └── Loop 2
+  loop 0 Cycles: 49150 || Activation Count:0 | LoopCallCount: 2 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:504) [bci: 53] | -at java.util.Properties$LineReader.readLine(Properties.java:615) [bci: 577]
+  loop 1 Cycles: 37076 || Activation Count:0 | LoopCallCount: 1 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:538) [bci: 219] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+  loop 2 Cycles: 21532 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:540) [bci: 224] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+  loop 5 Cycles: 126 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:540) [bci: 224] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+Comp 91 (java.util.Properties$LineReader.readLine()-Re-Comp) loops:
+Found Encoding : 0:-1,1:0,2:1
+└── Loop 0
+    └── Loop 1
+        └── Loop 2
+  loop 0 Cycles: 413260 || Activation Count:0 | LoopCallCount: 2 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:504) [bci: 53] | -at java.util.Properties$LineReader.readLine(Properties.java:615) [bci: 577]
+  loop 1 Cycles: 482688 || Activation Count:0 | LoopCallCount: 1 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:538) [bci: 219] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+  loop 2 Cycles: 66544 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:540) [bci: 224] | -at java.util.Properties$LineReader.readLine(Properties.java:545) [bci: 262]
+Comp 94 (jdk.internal.util.ArraysSupport.unsignedHashCode(int,) loops:
+Found Encoding : 0:-1,1:-1,2:-1
+├── Loop 0
+├── Loop 1
+└── Loop 2
+  loop 0 Cycles: 59578 || Activation Count:0 | LoopCallCount: 0 |  Source: -at jdk.internal.util.ArraysSupport.unsignedHashCode(ArraysSupport.java:378) [bci: 8] | -at jdk.internal.util.ArraysSupport.unsignedHashCode(ArraysSupport.java:381) [bci: 34]
+  loop 1 Cycles: 111746 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at jdk.internal.util.ArraysSupport.unsignedHashCode(ArraysSupport.java:381) [bci: 34]
+  loop 2 Cycles: 94642 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at jdk.internal.util.ArraysSupport.unsignedHashCode(ArraysSupport.java:381) [bci: 34]
+Comp 115 (java.lang.StringLatin1.equals(byte[],) loops:
+Found Encoding : 0:-1
+└── Loop 0
+  loop 0 Cycles: 9614 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.lang.StringLatin1.equals(StringLatin1.java:100) [bci: 9] | -at java.lang.StringLatin1.equals(StringLatin1.java:105) [bci: 32]
+Comp 127 (Bounce.benchmark()) loops:
+Found Encoding : 2:-1,0:-1,1:0
+├── Loop 2
+└── Loop 0
+    └── Loop 1
+  loop 0 Cycles: 87354 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Bounce.benchmark() [bci: 33] | -at Bounce.benchmark() [bci: 89]
+  loop 1 Cycles: 83782 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Bounce.benchmark() [bci: 52] | -at Bounce.benchmark() [bci: 83]
+  loop 2 Cycles: 836 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Bounce.benchmark() [bci: 52] | -at Bounce.benchmark() [bci: 83]
+Comp 128 (Bounce.benchmark()-Re-Comp) loops:
+Found Encoding : 3:-1,2:-1,0:-1,1:0
+├── Loop 3
+├── Loop 2
+└── Loop 0
+    └── Loop 1
+  loop 0 Cycles: 41618046514 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Bounce.benchmark() [bci: 33] | -at Bounce.benchmark() [bci: 89]
+  loop 1 Cycles: 38170521744 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Bounce.benchmark() [bci: 52] | -at Bounce.benchmark() [bci: 83]
+  loop 2 Cycles: 2607091890 || Activation Count:0 | LoopCallCount: 1 |  Source: -at java.util.Arrays.setAll(Arrays.java:5097) [bci: 7]
+-at Bounce.benchmark() [bci: 27] | -at java.util.Arrays.setAll(Arrays.java:5099) [bci: 29]
+-at Bounce.benchmark() [bci: 27]
+  loop 3 Cycles: 162623536 || Activation Count:0 | LoopCallCount: 0 |  Source: -at jdk.graal.compiler.hotspot.replacements.HotSpotAllocationSnippets.allocateArray(KlassPointer, int, int, int, AllocationSnippets$FillContent, int, boolean, boolean, boolean, boolean, HotSpotAllocationSnippets$HotSpotAllocationProfilingData, boole
+Comp 145 (Benchmark.innerBenchmarkLoop(int)) loops:
+Found Encoding : 0:-1
+└── Loop 0
+  loop 0 Cycles: 436146650 || Activation Count:0 | LoopCallCount: 1 |  Source: -at Benchmark.innerBenchmarkLoop(int) [bci: 2] | -at Benchmark.innerBenchmarkLoop(int) [bci: 26]
+Comp 146 (Benchmark.innerBenchmarkLoop(int)-Re-Comp) loops:
+Found Encoding : 0:-1
+└── Loop 0
+  loop 0 Cycles: 43318820256 || Activation Count:0 | LoopCallCount: 1 |  Source: -at Benchmark.innerBenchmarkLoop(int) [bci: 2] | -at Benchmark.innerBenchmarkLoop(int) [bci: 26]

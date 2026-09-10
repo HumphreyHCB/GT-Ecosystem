@@ -1,0 +1,22 @@
+{
+  "identifier": "HotSpotCompilation-58[java.lang.Byte.toUnsignedInt(byte)]",
+  "method": "java.lang.Byte.toUnsignedInt(byte)int",
+  "entryBCI": -1,
+  "codeSignature": "ef53887b8aa24310d9482f8fff2e03d6f5088235fdd6794c9711e90d2fb316a1",
+  "graphSignature": "cdcdabd8d49ef8455427cb633c79aa7c4bd6db93b0bd83856678cad2f019218d",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.lang.Byte.toUnsignedInt(byte)int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.lang.Byte.toUnsignedInt(byte)int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}

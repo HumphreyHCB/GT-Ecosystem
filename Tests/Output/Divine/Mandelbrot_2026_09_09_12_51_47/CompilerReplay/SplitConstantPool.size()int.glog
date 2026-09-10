@@ -1,0 +1,22 @@
+{
+  "identifier": "HotSpotCompilation-87[jdk.internal.classfile.impl.SplitConstantPool.size()]",
+  "method": "jdk.internal.classfile.impl.SplitConstantPool.size()int",
+  "entryBCI": -1,
+  "codeSignature": "1e851f5b2cbf37c0cd46831368dd889b60dff01d7b16161259960e24b264ceb1",
+  "graphSignature": "e7bde89e8dace6a59b4eb25e44651c8d1fee56fcd42d84ff29a6eeb4cd17eb9c",
+  "result": true,
+  "profiles": [
+    {
+      "method": "jdk.internal.classfile.impl.SplitConstantPool.size()int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "jdk.internal.classfile.impl.SplitConstantPool.size()int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}

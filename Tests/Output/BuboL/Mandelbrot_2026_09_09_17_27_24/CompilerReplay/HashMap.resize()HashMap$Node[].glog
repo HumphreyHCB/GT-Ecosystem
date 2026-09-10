@@ -1,0 +1,163 @@
+{
+  "identifier": "HotSpotCompilation-69[java.util.HashMap.resize()]",
+  "method": "java.util.HashMap.resize()java.util.HashMap$Node[]",
+  "entryBCI": -1,
+  "codeSignature": "7f27978879098926e0d0f0e01afaf35f43f779470699ac9204b6a0550d4ad7d8",
+  "graphSignature": "8621339e67ed630b148c0b60d4ece2a8f5e4dc640c7e625f721a8babedbc3813",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.util.HashMap.resize()java.util.HashMap$Node[]",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.util.HashMap.resize()java.util.HashMap$Node[]",
+      "isMature": true,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 6,
+          "branchTakenProbability": 0.3082942097026604
+        },
+        {
+          "bci": 14,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 25,
+          "branchTakenProbability": 0.6917057902973396
+        },
+        {
+          "bci": 31,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 50,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 56,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 68,
+          "branchTakenProbability": 0.9276018099547512
+        },
+        {
+          "bci": 87,
+          "branchTakenProbability": 0.9499217527386542
+        },
+        {
+          "bci": 104,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 112,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 133,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 145,
+          "branchTakenProbability": 0.6917057902973396
+        },
+        {
+          "bci": 154,
+          "branchTakenProbability": 0.017250392054364874
+        },
+        {
+          "bci": 160,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 164,
+          "branchTakenProbability": 0.4770390070921986
+        },
+        {
+          "bci": 171,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 174,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 177,
+          "branchTakenProbability": 0.34361756229869467
+        },
+        {
+          "bci": 184,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 194,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 203,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 237,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 244,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 249,
+          "branchTakenProbability": 0.4826577517760134
+        },
+        {
+          "bci": 254,
+          "branchTakenProbability": 0.32754442649434573
+        },
+        {
+          "bci": 268,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 280,
+          "branchTakenProbability": 0.3047619047619048
+        },
+        {
+          "bci": 294,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 306,
+          "branchTakenProbability": 0.5762641036356039
+        },
+        {
+          "bci": 311,
+          "branchTakenProbability": 0.17850098619329388
+        },
+        {
+          "bci": 317,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 326,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 329,
+          "branchTakenProbability": 0.20808678500986194
+        },
+        {
+          "bci": 335,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 346,
+          "exceptionSeen": "FALSE"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,324 @@
+Could not locate BlockSlowdown.json
+Skipping Loading (this might cause a fatal crash if GTSlowdown is on)
+Could not locate BlockSlowdown.json
+Skipping Loading (this might cause a fatal crash if GTSlowdown is on)
+Starting Sieve benchmark ...
+Sieve: iterations=1 runtime: 336737us
+Sieve: iterations=2 runtime: 324608us
+Sieve: iterations=3 runtime: 352165us
+Sieve: iterations=4 runtime: 329054us
+Sieve: iterations=5 runtime: 324649us
+Sieve: iterations=6 runtime: 330678us
+Sieve: iterations=7 runtime: 329308us
+Sieve: iterations=8 runtime: 324627us
+Sieve: iterations=9 runtime: 324657us
+Sieve: iterations=10 runtime: 326179us
+Sieve: iterations=11 runtime: 324536us
+Sieve: iterations=12 runtime: 324276us
+Sieve: iterations=13 runtime: 326080us
+Sieve: iterations=14 runtime: 324499us
+Sieve: iterations=15 runtime: 331562us
+Sieve: iterations=16 runtime: 325982us
+Sieve: iterations=17 runtime: 324823us
+Sieve: iterations=18 runtime: 324394us
+Sieve: iterations=19 runtime: 325760us
+Could not locate BlockSlowdown.json
+Skipping Loading (this might cause a fatal crash if GTSlowdown is on)
+Sieve: iterations=20 runtime: 324523us
+Sieve: iterations=21 runtime: 324801us
+Sieve: iterations=22 runtime: 326982us
+Sieve: iterations=23 runtime: 324729us
+Sieve: iterations=24 runtime: 324834us
+Sieve: iterations=25 runtime: 325913us
+Sieve: iterations=26 runtime: 324267us
+Sieve: iterations=27 runtime: 324314us
+Sieve: iterations=28 runtime: 325591us
+Sieve: iterations=29 runtime: 324093us
+Sieve: iterations=30 runtime: 332194us
+Sieve: iterations=31 runtime: 325767us
+Sieve: iterations=32 runtime: 324321us
+Sieve: iterations=33 runtime: 324216us
+Sieve: iterations=34 runtime: 325841us
+Sieve: iterations=35 runtime: 323744us
+Sieve: iterations=36 runtime: 323978us
+Sieve: iterations=37 runtime: 325851us
+Sieve: iterations=38 runtime: 324419us
+Sieve: iterations=39 runtime: 324242us
+Sieve: iterations=40 runtime: 325711us
+Sieve: iterations=41 runtime: 324493us
+Sieve: iterations=42 runtime: 324249us
+Sieve: iterations=43 runtime: 326207us
+Sieve: iterations=44 runtime: 324613us
+Sieve: iterations=45 runtime: 324736us
+Sieve: iterations=46 runtime: 326293us
+Sieve: iterations=47 runtime: 324422us
+Sieve: iterations=48 runtime: 324364us
+Sieve: iterations=49 runtime: 324786us
+Sieve: iterations=50 runtime: 324517us
+Sieve: iterations=51 runtime: 324290us
+Sieve: iterations=52 runtime: 324814us
+Sieve: iterations=53 runtime: 324295us
+Sieve: iterations=54 runtime: 324131us
+Sieve: iterations=55 runtime: 325557us
+Sieve: iterations=56 runtime: 324712us
+Sieve: iterations=57 runtime: 324604us
+Sieve: iterations=58 runtime: 325165us
+Sieve: iterations=59 runtime: 324093us
+Sieve: iterations=60 runtime: 323972us
+Sieve: iterations=61 runtime: 325665us
+Sieve: iterations=62 runtime: 324379us
+Sieve: iterations=63 runtime: 324296us
+Sieve: iterations=64 runtime: 325273us
+Sieve: iterations=65 runtime: 324243us
+Sieve: iterations=66 runtime: 324169us
+Sieve: iterations=67 runtime: 324794us
+Sieve: iterations=68 runtime: 324549us
+Sieve: iterations=69 runtime: 324254us
+Sieve: iterations=70 runtime: 325328us
+Sieve: iterations=71 runtime: 324976us
+Sieve: iterations=72 runtime: 324692us
+Sieve: iterations=73 runtime: 324899us
+Sieve: iterations=74 runtime: 324503us
+Sieve: iterations=75 runtime: 324366us
+Sieve: iterations=76 runtime: 326084us
+Sieve: iterations=77 runtime: 332399us
+Sieve: iterations=78 runtime: 324449us
+Sieve: iterations=79 runtime: 324609us
+Sieve: iterations=80 runtime: 324341us
+Sieve: iterations=81 runtime: 324123us
+Sieve: iterations=82 runtime: 324799us
+Sieve: iterations=83 runtime: 323951us
+Sieve: iterations=84 runtime: 323945us
+Sieve: iterations=85 runtime: 324545us
+Sieve: iterations=86 runtime: 324157us
+Sieve: iterations=87 runtime: 324152us
+Sieve: iterations=88 runtime: 324406us
+Sieve: iterations=89 runtime: 324300us
+Sieve: iterations=90 runtime: 324400us
+Could not locate BlockSlowdown.json
+Skipping Loading (this might cause a fatal crash if GTSlowdown is on)
+Sieve: iterations=91 runtime: 325077us
+Sieve: iterations=92 runtime: 325916us
+Sieve: iterations=93 runtime: 324003us
+Sieve: iterations=94 runtime: 324799us
+Sieve: iterations=95 runtime: 324672us
+Sieve: iterations=96 runtime: 324642us
+Sieve: iterations=97 runtime: 328453us
+Sieve: iterations=98 runtime: 324877us
+Sieve: iterations=99 runtime: 324648us
+Sieve: iterations=100 runtime: 325334us
+Could not locate BlockSlowdown.json
+Skipping Loading (this might cause a fatal crash if GTSlowdown is on)
+Sieve: iterations=100 average: 325566us total: 32556685us
+
+
+Total Runtime: 32556685us
+Bubo.RDTSC.Harness.main Total RDTSC cycles: 108002065968
+Comp 52 (java.util.ImmutableCollections$SetN$SetNIterator.next()) loops:
+Found Encoding : 0:-1
+└── Loop 0
+  loop 0 Cycles: 391348 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.ImmutableCollections$SetN$SetNIterator.next(ImmutableCollections.java:1213) [bci: 21] | -at java.util.ImmutableCollections$SetN$SetNIterator.next(ImmutableCollections.java:1223) [bci: 65]
+Comp 57 (java.util.HashMap.putVal(int,) loops:
+Found Encoding : 0:-1
+└── Loop 0
+  loop 0 Cycles: 10758 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.HashMap.putVal(HashMap.java:648) [bci: 134] | -at java.util.HashMap.putVal(HashMap.java:649) [bci: 145]
+Comp 58 (java.lang.String.equals(Object)) loops:
+Found Encoding : 0:-1
+└── Loop 0
+  loop 0 Cycles: 5130 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.lang.StringLatin1.equals(StringLatin1.java:100) [bci: 9]
+-at java.lang.String.equals(String.java:1926) [bci: 44] | -at java.lang.StringLatin1.equals(StringLatin1.java:105) [bci: 32]
+-at java.lang.String.equals(String.java:1926) [bci: 44]
+Comp 75 (java.util.HashMap.resize()) loops:
+Found Encoding : 2:-1,0:-1,1:0
+├── Loop 2
+└── Loop 0
+    └── Loop 1
+  loop 0 Cycles: 34768 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.HashMap.resize(HashMap.java:714) [bci: 151] | -at java.util.HashMap.resize(HashMap.java:755) [bci: 353]
+  loop 1 Cycles: 8776 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.HashMap.resize(HashMap.java:727) [bci: 235] | -at java.util.HashMap.resize(HashMap.java:743) [bci: 309]
+  loop 2 Cycles: 15878 || Activation Count:0 | LoopCallCount: 0 |  Source: -at jdk.graal.compiler.hotspot.replacements.HotSpotAllocationSnippets.allocateArray(KlassPointer, int, int, int, AllocationSnippets$FillContent, int, boolean, boolean, boolean, boolean, HotSpotAllocationSnippets$HotSpotAllocationProfilingData, boolea
+Comp 88 (java.util.Properties$LineReader.readLine()) loops:
+Found Encoding : 5:-1,3:-1,4:3,0:-1,1:0,2:1
+├── Loop 5
+├── Loop 3
+│   └── Loop 4
+└── Loop 0
+    └── Loop 1
+        └── Loop 2
+  loop 1 Cycles: 298290 || Activation Count:0 | LoopCallCount: 1 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:538) [bci: 219] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+  loop 2 Cycles: 17152 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:540) [bci: 224] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+  loop 5 Cycles: 214 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:540) [bci: 224] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+Comp 89 (java.util.Properties$LineReader.readLine()-Re-Comp) loops:
+Found Encoding : 0:-1,1:0,2:1
+└── Loop 0
+    └── Loop 1
+        └── Loop 2
+  loop 1 Cycles: 4228 || Activation Count:0 | LoopCallCount: 1 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:538) [bci: 219] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+  loop 2 Cycles: 2318 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:540) [bci: 224] | -at java.util.Properties$LineReader.readLine(Properties.java:545) [bci: 262]
+Comp 90 (java.util.Properties$LineReader.readLine()-Re-Comp) loops:
+Found Encoding : 5:-1,3:-1,4:3,0:-1,1:0,2:1
+├── Loop 5
+├── Loop 3
+│   └── Loop 4
+└── Loop 0
+    └── Loop 1
+        └── Loop 2
+  loop 0 Cycles: 49324 || Activation Count:0 | LoopCallCount: 2 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:504) [bci: 53] | -at java.util.Properties$LineReader.readLine(Properties.java:615) [bci: 577]
+  loop 1 Cycles: 37196 || Activation Count:0 | LoopCallCount: 1 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:538) [bci: 219] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+  loop 2 Cycles: 21652 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:540) [bci: 224] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+  loop 5 Cycles: 122 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:540) [bci: 224] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+Comp 91 (java.util.Properties$LineReader.readLine()-Re-Comp) loops:
+Found Encoding : 0:-1,1:0,2:1
+└── Loop 0
+    └── Loop 1
+        └── Loop 2
+  loop 0 Cycles: 389024 || Activation Count:0 | LoopCallCount: 2 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:504) [bci: 53] | -at java.util.Properties$LineReader.readLine(Properties.java:615) [bci: 577]
+  loop 1 Cycles: 456812 || Activation Count:0 | LoopCallCount: 1 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:538) [bci: 219] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+  loop 2 Cycles: 67122 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:540) [bci: 224] | -at java.util.Properties$LineReader.readLine(Properties.java:545) [bci: 262]
+Comp 94 (jdk.internal.util.ArraysSupport.unsignedHashCode(int,) loops:
+Found Encoding : 0:-1,1:-1,2:-1
+├── Loop 0
+├── Loop 1
+└── Loop 2
+  loop 0 Cycles: 57190 || Activation Count:0 | LoopCallCount: 0 |  Source: -at jdk.internal.util.ArraysSupport.unsignedHashCode(ArraysSupport.java:378) [bci: 8] | -at jdk.internal.util.ArraysSupport.unsignedHashCode(ArraysSupport.java:381) [bci: 34]
+  loop 1 Cycles: 119382 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at jdk.internal.util.ArraysSupport.unsignedHashCode(ArraysSupport.java:381) [bci: 34]
+  loop 2 Cycles: 90964 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at jdk.internal.util.ArraysSupport.unsignedHashCode(ArraysSupport.java:381) [bci: 34]
+Comp 117 (java.lang.StringLatin1.equals(byte[],) loops:
+Found Encoding : 0:-1
+└── Loop 0
+  loop 0 Cycles: 7878 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.lang.StringLatin1.equals(StringLatin1.java:100) [bci: 9] | -at java.lang.StringLatin1.equals(StringLatin1.java:105) [bci: 32]
+Comp 122 (Sieve.sieve(boolean[],) loops:
+Found Encoding : 1:-1,0:-1,2:0
+├── Loop 1
+└── Loop 0
+    └── Loop 2
+  loop 0 Cycles: 90240 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Sieve.sieve(boolean[], int) [bci: 5] | -at Sieve.sieve(boolean[], int) [bci: 59]
+  loop 1 Cycles: 1866 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at Sieve.sieve(boolean[], int) [bci: 53]
+  loop 2 Cycles: 32406 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at Sieve.sieve(boolean[], int) [bci: 53]
+Comp 123 (Sieve.sieve(boolean[],-Re-Comp) loops:
+Found Encoding : 0:-1,1:0
+└── Loop 0
+    └── Loop 1
+  loop 0 Cycles: 598729108 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Sieve.sieve(boolean[], int) [bci: 5] | -at Sieve.sieve(boolean[], int) [bci: 59]
+  loop 1 Cycles: 286229636 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Sieve.sieve(boolean[], int) [bci: 30] | -at Sieve.sieve(boolean[], int) [bci: 53]
+Comp 124 (java.util.Arrays.fill(boolean[],) loops:
+Found Encoding : 0:-1,1:-1,2:-1
+├── Loop 0
+├── Loop 1
+└── Loop 2
+  loop 0 Cycles: 70 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at java.util.Arrays.fill(Arrays.java:3320) [bci: 20]
+  loop 1 Cycles: 5246 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at java.util.Arrays.fill(Arrays.java:3320) [bci: 20]
+  loop 2 Cycles: 114 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at java.util.Arrays.fill(Arrays.java:3320) [bci: 20]
+Comp 125 (java.util.Arrays.fill(boolean[],-Re-Comp) loops:
+Found Encoding : 0:-1,1:-1,2:-1
+├── Loop 0
+├── Loop 1
+└── Loop 2
+  loop 0 Cycles: 348406 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Arrays.fill(Arrays.java:3318) [bci: 5] | -at java.util.Arrays.fill(Arrays.java:3320) [bci: 20]
+  loop 1 Cycles: 34843084 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at java.util.Arrays.fill(Arrays.java:3320) [bci: 20]
+  loop 2 Cycles: 396108 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at java.util.Arrays.fill(Arrays.java:3320) [bci: 20]
+Comp 128 (Sieve.benchmark()) loops:
+Found Encoding : 0:-1,3:-1,4:-1,1:-1,2:1
+├── Loop 0
+├── Loop 3
+├── Loop 4
+└── Loop 1
+    └── Loop 2
+  loop 0 Cycles: 699904 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Arrays.fill(Arrays.java:3318) [bci: 5]
+-at Sieve.benchmark() [bci: 8] | -at java.util.Arrays.fill(Arrays.java:3320) [bci: 20]
+-at Sieve.benchmark() [bci: 8]
+  loop 1 Cycles: 1375876640 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Sieve.sieve(boolean[], int) [bci: 5]
+-at Sieve.benchmark() [bci: 16] | -at Sieve.sieve(boolean[], int) [bci: 59]
+-at Sieve.benchmark() [bci: 16]
+  loop 2 Cycles: 722221316 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Sieve.sieve(boolean[], int) [bci: 30]
+-at Sieve.benchmark() [bci: 16] | -at Sieve.sieve(boolean[], int) [bci: 53]
+-at Sieve.benchmark() [bci: 16]
+  loop 3 Cycles: 69849010 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at java.util.Arrays.fill(Arrays.java:3320) [bci: 20]
+-at Sieve.benchmark() [bci: 8]
+  loop 4 Cycles: 871436 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at java.util.Arrays.fill(Arrays.java:3320) [bci: 20]
+-at Sieve.benchmark() [bci: 8]
+Comp 142 (Benchmark.innerBenchmarkLoop(int)) loops:
+Found Encoding : 1:-1,7:-1,8:-1,2:-1,3:2,0:-1,4:0,9:0,10:0,5:0,6:5
+├── Loop 1
+├── Loop 7
+├── Loop 8
+├── Loop 2
+│   └── Loop 3
+└── Loop 0
+    ├── Loop 4
+    ├── Loop 9
+    ├── Loop 10
+    └── Loop 5
+        └── Loop 6
+  loop 0 Cycles: 1048485076 || Activation Count:0 | LoopCallCount: 1 |  Source: -at Benchmark.innerBenchmarkLoop(int) [bci: 2] | -at Benchmark.innerBenchmarkLoop(int) [bci: 26]
+  loop 1 Cycles: 72 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Arrays.fill(Arrays.java:3318) [bci: 5]
+-at Sieve.benchmark() [bci: 8]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9] | -at java.util.Arrays.fill(Arrays.java:3320) [bci: 20]
+-at Sieve.benchmark() [bci: 8]
+-at Benchmark.innerBenchmarkLoo
+  loop 2 Cycles: 125898 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Sieve.sieve(boolean[], int) [bci: 5]
+-at Sieve.benchmark() [bci: 16]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9] | -at Sieve.sieve(boolean[], int) [bci: 59]
+-at Sieve.benchmark() [bci: 16]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9]
+  loop 3 Cycles: 53994 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Sieve.sieve(boolean[], int) [bci: 30]
+-at Sieve.benchmark() [bci: 16]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9] | -at Sieve.sieve(boolean[], int) [bci: 53]
+-at Sieve.benchmark() [bci: 16]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9]
+  loop 4 Cycles: 487358 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Arrays.fill(Arrays.java:3318) [bci: 5]
+-at Sieve.benchmark() [bci: 8]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9] | -at java.util.Arrays.fill(Arrays.java:3320) [bci: 20]
+-at Sieve.benchmark() [bci: 8]
+-at Benchmark.innerBenchmarkLoo
+  loop 5 Cycles: 944435742 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Sieve.sieve(boolean[], int) [bci: 5]
+-at Sieve.benchmark() [bci: 16]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9] | -at Sieve.sieve(boolean[], int) [bci: 59]
+-at Sieve.benchmark() [bci: 16]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9]
+  loop 6 Cycles: 500211548 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Sieve.sieve(boolean[], int) [bci: 30]
+-at Sieve.benchmark() [bci: 16]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9] | -at Sieve.sieve(boolean[], int) [bci: 53]
+-at Sieve.benchmark() [bci: 16]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9]
+  loop 7 Cycles: 5112 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at java.util.Arrays.fill(Arrays.java:3320) [bci: 20]
+-at Sieve.benchmark() [bci: 8]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9]
+  loop 8 Cycles: 114 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at java.util.Arrays.fill(Arrays.java:3320) [bci: 20]
+-at Sieve.benchmark() [bci: 8]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9]
+  loop 9 Cycles: 48586128 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at java.util.Arrays.fill(Arrays.java:3320) [bci: 20]
+-at Sieve.benchmark() [bci: 8]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9]
+  loop 10 Cycles: 542464 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at java.util.Arrays.fill(Arrays.java:3320) [bci: 20]
+-at Sieve.benchmark() [bci: 8]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9]
+Comp 143 (Benchmark.innerBenchmarkLoop(int)-Re-Comp) loops:
+Found Encoding : 0:-1,1:0,4:0,5:0,2:0,3:2
+└── Loop 0
+    ├── Loop 1
+    ├── Loop 4
+    ├── Loop 5
+    └── Loop 2
+        └── Loop 3
+  loop 0 Cycles: 104470306282 || Activation Count:0 | LoopCallCount: 1 |  Source: -at Benchmark.innerBenchmarkLoop(int) [bci: 2] | -at Benchmark.innerBenchmarkLoop(int) [bci: 26]
+  loop 1 Cycles: 49394184 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Arrays.fill(Arrays.java:3318) [bci: 5]
+-at Sieve.benchmark() [bci: 8]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9] | -at java.util.Arrays.fill(Arrays.java:3320) [bci: 20]
+-at Sieve.benchmark() [bci: 8]
+-at Benchmark.innerBenchmarkLoo
+  loop 2 Cycles: 98125438480 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Sieve.sieve(boolean[], int) [bci: 5]
+-at Sieve.benchmark() [bci: 16]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9] | -at Sieve.sieve(boolean[], int) [bci: 59]
+-at Sieve.benchmark() [bci: 16]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9]
+  loop 3 Cycles: 51549062310 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Sieve.sieve(boolean[], int) [bci: 30]
+-at Sieve.benchmark() [bci: 16]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9] | -at Sieve.sieve(boolean[], int) [bci: 53]
+-at Sieve.benchmark() [bci: 16]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9]
+  loop 4 Cycles: 4953937832 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at java.util.Arrays.fill(Arrays.java:3320) [bci: 20]
+-at Sieve.benchmark() [bci: 8]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9]
+  loop 5 Cycles: 60672160 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at java.util.Arrays.fill(Arrays.java:3320) [bci: 20]
+-at Sieve.benchmark() [bci: 8]
+-at Benchmark.innerBenchmarkLoop(int) [bci: 9]

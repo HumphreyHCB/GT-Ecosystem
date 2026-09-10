@@ -1,0 +1,31 @@
+{
+  "identifier": "HotSpotCompilation-83[jdk.internal.util.Preconditions.checkIndex(int, int, BiFunction)]",
+  "method": "jdk.internal.util.Preconditions.checkIndex(int, int, java.util.function.BiFunction)int",
+  "entryBCI": -1,
+  "codeSignature": "0537b0c8dc5fe868ee44de1817c0b047b24d886158549ad641b2b99126c678bb",
+  "graphSignature": "4b2bdf6c86fdd1a0c82804466525de760555d5259a32aa67b338bca13ff6294c",
+  "result": true,
+  "profiles": [
+    {
+      "method": "jdk.internal.util.Preconditions.checkIndex(int, int, java.util.function.BiFunction)int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "jdk.internal.util.Preconditions.checkIndex(int, int, java.util.function.BiFunction)int",
+      "isMature": true,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 1,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 6,
+          "branchTakenProbability": 1.0
+        }
+      ]
+    }
+  ]
+}

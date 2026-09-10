@@ -1,0 +1,22 @@
+{
+  "identifier": "HotSpotCompilation-148[jdk.internal.constant.PrimitiveClassDescImpl.descriptorString()]",
+  "method": "jdk.internal.constant.PrimitiveClassDescImpl.descriptorString()java.lang.String",
+  "entryBCI": -1,
+  "codeSignature": "7722674ec43cccc19227bd0fe31433696da3716816c65b03f1730e1c0254917a",
+  "graphSignature": "560fbceb5a3b763c5375266b0b25d6acc286fd9983237703f8164fa672f6f318",
+  "result": true,
+  "profiles": [
+    {
+      "method": "jdk.internal.constant.PrimitiveClassDescImpl.descriptorString()java.lang.String",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "jdk.internal.constant.PrimitiveClassDescImpl.descriptorString()java.lang.String",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}

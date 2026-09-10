@@ -1,0 +1,338 @@
+{
+  "identifier": "HotSpotCompilation-53[java.util.HashMap.hash(Object)]",
+  "method": "java.util.HashMap.hash(java.lang.Object)int",
+  "entryBCI": -1,
+  "codeSignature": "c84a71edbb37a9c85c3c07732f37043b5c32c94bc29a1163c5d280b814c331a8",
+  "graphSignature": "a84a14d9866f5db84bda5d979ff9a6d49d572c1e799301fb27e23863599a9b6a",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.util.HashMap.hash(java.lang.Object)int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.util.HashMap.hash(java.lang.Object)int",
+      "isMature": true,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 1,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 9,
+          "exceptionSeen": "FALSE",
+          "typeProfile": {
+            "nullSeen": "FALSE",
+            "types": [
+              {
+                "type": "Ljava/lang/String;",
+                "probability": 0.85859375
+              },
+              {
+                "type": "Ljava/lang/module/ResolvedModule;",
+                "probability": 0.14140625
+              }
+            ],
+            "notRecordedProbability": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "method": "java.lang.String.hashCode()int",
+      "isMature": true,
+      "compilerIRSize": 46,
+      "data": [
+        {
+          "bci": 6,
+          "branchTakenProbability": 0.9726615895332943
+        },
+        {
+          "bci": 13,
+          "branchTakenProbability": 0.02857142857142857
+        },
+        {
+          "bci": 17,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 20,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 42,
+          "branchTakenProbability": 1.0
+        }
+      ]
+    },
+    {
+      "method": "java.lang.module.ResolvedModule.hashCode()int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 4,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 11,
+          "exceptionSeen": "FALSE"
+        }
+      ]
+    },
+    {
+      "method": "java.lang.StringLatin1.hashCode(byte[])int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 3,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 5,
+          "exceptionSeen": "FALSE"
+        }
+      ]
+    },
+    {
+      "method": "jdk.internal.module.ModuleReferenceImpl.hashCode()int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 6,
+          "branchTakenProbability": -1.0
+        },
+        {
+          "bci": 13,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 25,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 38,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 44,
+          "branchTakenProbability": -1.0
+        }
+      ]
+    },
+    {
+      "method": "java.lang.module.ModuleDescriptor.hashCode()int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 6,
+          "branchTakenProbability": -1.0
+        },
+        {
+          "bci": 13,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 25,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 38,
+          "exceptionSeen": "FALSE",
+          "typeProfile": {
+            "nullSeen": "UNKNOWN",
+            "types": [],
+            "notRecordedProbability": 1.0
+          }
+        },
+        {
+          "bci": 53,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 66,
+          "exceptionSeen": "FALSE",
+          "typeProfile": {
+            "nullSeen": "UNKNOWN",
+            "types": [],
+            "notRecordedProbability": 1.0
+          }
+        },
+        {
+          "bci": 81,
+          "exceptionSeen": "FALSE",
+          "typeProfile": {
+            "nullSeen": "UNKNOWN",
+            "types": [],
+            "notRecordedProbability": 1.0
+          }
+        },
+        {
+          "bci": 96,
+          "exceptionSeen": "FALSE",
+          "typeProfile": {
+            "nullSeen": "UNKNOWN",
+            "types": [],
+            "notRecordedProbability": 1.0
+          }
+        },
+        {
+          "bci": 111,
+          "exceptionSeen": "FALSE",
+          "typeProfile": {
+            "nullSeen": "UNKNOWN",
+            "types": [],
+            "notRecordedProbability": 1.0
+          }
+        },
+        {
+          "bci": 126,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 139,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 152,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 158,
+          "branchTakenProbability": -1.0
+        }
+      ]
+    },
+    {
+      "method": "java.util.Objects.hashCode(java.lang.Object)int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 1,
+          "branchTakenProbability": -1.0
+        },
+        {
+          "bci": 5,
+          "exceptionSeen": "FALSE",
+          "typeProfile": {
+            "nullSeen": "UNKNOWN",
+            "types": [],
+            "notRecordedProbability": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "method": "java.net.URI.hashCode()int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 6,
+          "branchTakenProbability": -1.0
+        },
+        {
+          "bci": 14,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 23,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 28,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 31,
+          "branchTakenProbability": -1.0
+        },
+        {
+          "bci": 39,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 51,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 60,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 68,
+          "branchTakenProbability": -1.0
+        },
+        {
+          "bci": 76,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 85,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 108,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 113,
+          "branchTakenProbability": -1.0
+        }
+      ]
+    },
+    {
+      "method": "java.lang.Object.hashCode()int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.lang.String.isLatin1()boolean",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 3,
+          "branchTakenProbability": -1.0
+        },
+        {
+          "bci": 10,
+          "branchTakenProbability": -1.0
+        }
+      ]
+    },
+    {
+      "method": "jdk.internal.util.ArraysSupport.hashCodeOfUnsigned(byte[], int, int, int)int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 1,
+          "switchProbabilities": []
+        },
+        {
+          "bci": 38,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 51,
+          "exceptionSeen": "FALSE"
+        }
+      ]
+    },
+    {
+      "method": "java.lang.Byte.toUnsignedInt(byte)int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "identifier": "HotSpotCompilation-128[jdk.internal.classfile.impl.BufWriterImpl.size()]",
+  "method": "jdk.internal.classfile.impl.BufWriterImpl.size()int",
+  "entryBCI": -1,
+  "codeSignature": "fe46e3fea17c2bcac25676024acf43715946ed13832c36004058f315d01e6ed3",
+  "graphSignature": "e7bde89e8dace6a59b4eb25e44651c8d1fee56fcd42d84ff29a6eeb4cd17eb9c",
+  "result": true,
+  "profiles": [
+    {
+      "method": "jdk.internal.classfile.impl.BufWriterImpl.size()int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "jdk.internal.classfile.impl.BufWriterImpl.size()int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}

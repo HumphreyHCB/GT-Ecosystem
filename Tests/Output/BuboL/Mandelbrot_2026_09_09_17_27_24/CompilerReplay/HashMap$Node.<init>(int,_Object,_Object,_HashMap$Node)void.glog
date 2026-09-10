@@ -1,0 +1,27 @@
+{
+  "identifier": "HotSpotCompilation-58[java.util.HashMap$Node.<init>(int, Object, Object, HashMap$Node)]",
+  "method": "java.util.HashMap$Node.<init>(int, java.lang.Object, java.lang.Object, java.util.HashMap$Node)void",
+  "entryBCI": -1,
+  "codeSignature": "d8ffabb1b077b3e22ab62a3b0a49907389a211bd836d7bfe8f55e15ff67b0253",
+  "graphSignature": "82e736a69dc2ea379b062261c69c11c2a88d4687ca11bcc9ed650de469b8043b",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.util.HashMap$Node.<init>(int, java.lang.Object, java.lang.Object, java.util.HashMap$Node)void",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.util.HashMap$Node.<init>(int, java.lang.Object, java.lang.Object, java.util.HashMap$Node)void",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 1,
+          "exceptionSeen": "FALSE"
+        }
+      ]
+    }
+  ]
+}

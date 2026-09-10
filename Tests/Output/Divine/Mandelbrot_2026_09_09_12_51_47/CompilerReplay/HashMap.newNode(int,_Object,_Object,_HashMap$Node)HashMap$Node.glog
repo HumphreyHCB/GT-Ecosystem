@@ -1,0 +1,38 @@
+{
+  "identifier": "HotSpotCompilation-66[java.util.HashMap.newNode(int, Object, Object, HashMap$Node)]",
+  "method": "java.util.HashMap.newNode(int, java.lang.Object, java.lang.Object, java.util.HashMap$Node)java.util.HashMap$Node",
+  "entryBCI": -1,
+  "codeSignature": "0b57ad3d0ea1b0de0d3ae4d1256f2a3bf2dacceb94022bee4e70d75bf1848358",
+  "graphSignature": "a292631fc9ae0e73bf0cff5f4bc9261fb4aa4c3de3541d93cc5501174a2b639b",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.util.HashMap.newNode(int, java.lang.Object, java.lang.Object, java.util.HashMap$Node)java.util.HashMap$Node",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.util.HashMap.newNode(int, java.lang.Object, java.lang.Object, java.util.HashMap$Node)java.util.HashMap$Node",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 9,
+          "exceptionSeen": "FALSE"
+        }
+      ]
+    },
+    {
+      "method": "java.util.HashMap$Node.<init>(int, java.lang.Object, java.lang.Object, java.util.HashMap$Node)void",
+      "isMature": false,
+      "compilerIRSize": 25,
+      "data": [
+        {
+          "bci": 1,
+          "exceptionSeen": "FALSE"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "identifier": "HotSpotCompilation-52[java.util.ImmutableCollections$SetN$SetNIterator.next()]",
+  "method": "java.util.ImmutableCollections$SetN$SetNIterator.next()java.lang.Object",
+  "entryBCI": -1,
+  "codeSignature": "f6a7d58bb4b33e7926d50e691b8e75ec1724faf98af5ebdf7ab9e188633b194c",
+  "graphSignature": "b05d592371fcce917a90fc28debaf21f7e7532d4836b1c9812ac396e129c7095",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.util.ImmutableCollections$SetN$SetNIterator.next()java.lang.Object",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.util.ImmutableCollections$SetN$SetNIterator.next()java.lang.Object",
+      "isMature": true,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 4,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 16,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 19,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 24,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 32,
+          "branchTakenProbability": 0.9900639449090015
+        },
+        {
+          "bci": 55,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 59,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 62,
+          "branchTakenProbability": 0.4963108706345303
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "identifier": "HotSpotCompilation-44[java.util.ImmutableCollections$Set12.isEmpty()]",
+  "method": "java.util.ImmutableCollections$Set12.isEmpty()boolean",
+  "entryBCI": -1,
+  "codeSignature": "d890ffc04cd03ec866061096d7d13d2670cacc5a2328b692374e3523d40574bd",
+  "graphSignature": "53d4769a31fdffbc178cfbdf0ff454d5e37ea9db7d0a46604ecac26b60bad021",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.util.ImmutableCollections$Set12.isEmpty()boolean",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.util.ImmutableCollections$Set12.isEmpty()boolean",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}

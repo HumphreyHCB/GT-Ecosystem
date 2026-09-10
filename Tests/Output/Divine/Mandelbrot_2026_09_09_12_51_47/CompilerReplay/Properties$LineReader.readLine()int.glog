@@ -1,0 +1,211 @@
+{
+  "identifier": "HotSpotCompilation-91[java.util.Properties$LineReader.readLine()]",
+  "method": "java.util.Properties$LineReader.readLine()int",
+  "entryBCI": -1,
+  "codeSignature": "3fba3e9edd5e4cedb96278d46b6cff483f2d1c092dec2e534b016b1ac2ec9479",
+  "graphSignature": "878ec244077db65df33a3f7d09ba7cba637998f872be81e8c5729e664e547e01",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.util.Properties$LineReader.readLine()int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.util.Properties$LineReader.readLine()int",
+      "isMature": true,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 25,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 55,
+          "branchTakenProbability": 0.9996630727762803
+        },
+        {
+          "bci": 61,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 70,
+          "exceptionSeen": "FALSE",
+          "typeProfile": {
+            "nullSeen": "FALSE",
+            "types": [
+              {
+                "type": "Lsun/nio/ch/ChannelInputStream;",
+                "probability": 1.0
+              }
+            ],
+            "notRecordedProbability": 0.0
+          }
+        },
+        {
+          "bci": 91,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 117,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 126,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 146,
+          "branchTakenProbability": 0.6903638814016172
+        },
+        {
+          "bci": 153,
+          "branchTakenProbability": 0.1305767138193689
+        },
+        {
+          "bci": 160,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 167,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 175,
+          "branchTakenProbability": 0.03254067584480601
+        },
+        {
+          "bci": 182,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 189,
+          "branchTakenProbability": 0.9547218628719275
+        },
+        {
+          "bci": 202,
+          "branchTakenProbability": 0.7376466405972272
+        },
+        {
+          "bci": 209,
+          "branchTakenProbability": 0.9701897018970189
+        },
+        {
+          "bci": 216,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 221,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 226,
+          "branchTakenProbability": 1.053001053001053E-4
+        },
+        {
+          "bci": 235,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 242,
+          "branchTakenProbability": 0.9749008319584371
+        },
+        {
+          "bci": 249,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 256,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 264,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 274,
+          "exceptionSeen": "FALSE",
+          "typeProfile": {
+            "nullSeen": "FALSE",
+            "types": [
+              {
+                "type": "Lsun/nio/ch/ChannelInputStream;",
+                "probability": 1.0
+              }
+            ],
+            "notRecordedProbability": 0.0
+          }
+        },
+        {
+          "bci": 283,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 372,
+          "branchTakenProbability": 0.023843586075345733
+        },
+        {
+          "bci": 379,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 390,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 394,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 395,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 430,
+          "branchTakenProbability": 0.9873108833577355
+        },
+        {
+          "bci": 435,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 453,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 464,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 520,
+          "branchTakenProbability": 0.48
+        },
+        {
+          "bci": 539,
+          "branchTakenProbability": 1.0
+        }
+      ]
+    },
+    {
+      "method": "java.io.InputStream.read(byte[])int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 4,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 5,
+          "exceptionSeen": "FALSE",
+          "typeProfile": {
+            "nullSeen": "UNKNOWN",
+            "types": [],
+            "notRecordedProbability": 1.0
+          }
+        }
+      ]
+    }
+  ]
+}

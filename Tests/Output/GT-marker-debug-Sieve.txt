@@ -1,0 +1,1868 @@
+--- Execution profile ---
+Total samples       : 2416898
+
+--- 9821346936 ns (40.42%), 977920 samples
+  [ 0] my.custom.BuboAgentCompilerMarkers.Marker3
+  [ 1] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 2] my.custom.BuboAgentCompilerMarkers.Marker3
+  [ 3] my.custom.BuboAgentCompilerMarkers.Marker4
+  [ 4] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 5] Run.measure
+  [ 6] Run.doRuns
+  [ 7] Run.runBenchmark
+  [ 8] Harness.main
+
+--- 8657297663 ns (35.63%), 861134 samples
+  [ 0] my.custom.BuboAgentCompilerMarkers.Marker2
+  [ 1] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 2] my.custom.BuboAgentCompilerMarkers.Marker3
+  [ 3] my.custom.BuboAgentCompilerMarkers.Marker4
+  [ 4] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 5] Run.measure
+  [ 6] Run.doRuns
+  [ 7] Run.runBenchmark
+  [ 8] Harness.main
+
+--- 2129450420 ns (8.76%), 212109 samples
+  [ 0] my.custom.BuboAgentCompilerMarkers.Marker4
+  [ 1] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 2] my.custom.BuboAgentCompilerMarkers.Marker3
+  [ 3] my.custom.BuboAgentCompilerMarkers.Marker4
+  [ 4] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 5] Run.measure
+  [ 6] Run.doRuns
+  [ 7] Run.runBenchmark
+  [ 8] Harness.main
+
+--- 1087450316 ns (4.48%), 108287 samples
+  [ 0] Sieve.sieve
+  [ 1] Sieve.benchmark
+  [ 2] Benchmark.innerBenchmarkLoop
+  [ 3] Run.measure
+  [ 4] Run.doRuns
+  [ 5] Run.runBenchmark
+  [ 6] Harness.main
+
+--- 724074382 ns (2.98%), 72027 samples
+  [ 0] Sieve.sieve
+  [ 1] Sieve.benchmark
+  [ 2] Benchmark.innerBenchmarkLoop
+  [ 3] Run.measure
+  [ 4] Run.doRuns
+  [ 5] Run.runBenchmark
+  [ 6] Harness.main
+
+--- 534995306 ns (2.20%), 52909 samples
+  [ 0] my.custom.BuboAgentCompilerMarkers.Marker0
+  [ 1] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 2] my.custom.BuboAgentCompilerMarkers.Marker3
+  [ 3] my.custom.BuboAgentCompilerMarkers.Marker4
+  [ 4] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 5] Run.measure
+  [ 6] Run.doRuns
+  [ 7] Run.runBenchmark
+  [ 8] Harness.main
+
+--- 145581449 ns (0.60%), 14451 samples
+  [ 0] Sieve.sieve
+  [ 1] Sieve.benchmark
+  [ 2] Benchmark.innerBenchmarkLoop
+  [ 3] Run.measure
+  [ 4] Run.doRuns
+  [ 5] Run.runBenchmark
+  [ 6] Harness.main
+
+--- 140059291 ns (0.58%), 13975 samples
+  [ 0] my.custom.BuboAgentCompilerMarkers.Marker2
+  [ 1] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 2] my.custom.BuboAgentCompilerMarkers.Marker8
+  [ 3] my.custom.BuboAgentCompilerMarkers.Marker2
+  [ 4] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 5] Benchmark.innerBenchmarkLoop
+  [ 6] Run.measure
+  [ 7] Run.doRuns
+  [ 8] Run.runBenchmark
+  [ 9] Harness.main
+
+--- 114188645 ns (0.47%), 11366 samples
+  [ 0] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 1] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 2] my.custom.BuboAgentCompilerMarkers.Marker8
+  [ 3] my.custom.BuboAgentCompilerMarkers.Marker2
+  [ 4] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 5] Benchmark.innerBenchmarkLoop
+  [ 6] Run.measure
+  [ 7] Run.doRuns
+  [ 8] Run.runBenchmark
+  [ 9] Harness.main
+
+--- 101599147 ns (0.42%), 10135 samples
+  [ 0] my.custom.BuboAgentCompilerMarkers.Marker5
+  [ 1] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 2] my.custom.BuboAgentCompilerMarkers.Marker2
+  [ 3] my.custom.BuboAgentCompilerMarkers.Marker4
+  [ 4] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 5] Run.measure
+  [ 6] Run.doRuns
+  [ 7] Run.runBenchmark
+  [ 8] Harness.main
+
+--- 97300814 ns (0.40%), 9785 samples
+  [ 0] my.custom.BuboAgentCompilerMarkers.Marker6
+  [ 1] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 2] my.custom.BuboAgentCompilerMarkers.Marker2
+  [ 3] my.custom.BuboAgentCompilerMarkers.Marker4
+  [ 4] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 5] Run.measure
+  [ 6] Run.doRuns
+  [ 7] Run.runBenchmark
+  [ 8] Harness.main
+
+--- 67661338 ns (0.28%), 6769 samples
+  [ 0] my.custom.BuboAgentCompilerMarkers.Marker0
+  [ 1] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 2] my.custom.BuboAgentCompilerMarkers.Marker3
+  [ 3] my.custom.BuboAgentCompilerMarkers.Marker2
+  [ 4] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 5] Sieve.benchmark
+  [ 6] Benchmark.innerBenchmarkLoop
+  [ 7] Run.measure
+  [ 8] Run.doRuns
+  [ 9] Run.runBenchmark
+  [10] Harness.main
+
+--- 49342577 ns (0.20%), 4933 samples
+  [ 0] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 1] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 2] my.custom.BuboAgentCompilerMarkers.Marker3
+  [ 3] my.custom.BuboAgentCompilerMarkers.Marker2
+  [ 4] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 5] Sieve.benchmark
+  [ 6] Benchmark.innerBenchmarkLoop
+  [ 7] Run.measure
+  [ 8] Run.doRuns
+  [ 9] Run.runBenchmark
+  [10] Harness.main
+
+--- 26188988 ns (0.11%), 2584 samples
+  [ 0] my.custom.BuboAgentCompilerMarkers.Marker3
+  [ 1] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 2] my.custom.BuboAgentCompilerMarkers.Marker8
+  [ 3] my.custom.BuboAgentCompilerMarkers.Marker2
+  [ 4] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 5] Benchmark.innerBenchmarkLoop
+  [ 6] Run.measure
+  [ 7] Run.doRuns
+  [ 8] Run.runBenchmark
+  [ 9] Harness.main
+
+--- 20067213 ns (0.08%), 2000 samples
+  [ 0] my.custom.BuboAgentCompilerMarkers.Marker9
+  [ 1] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 2] my.custom.BuboAgentCompilerMarkers.Marker2
+  [ 3] my.custom.BuboAgentCompilerMarkers.Marker4
+  [ 4] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 5] Run.measure
+  [ 6] Run.doRuns
+  [ 7] Run.runBenchmark
+  [ 8] Harness.main
+
+--- 19825359 ns (0.08%), 1970 samples
+  [ 0] Sieve.sieve
+  [ 1] Sieve.benchmark
+  [ 2] Benchmark.innerBenchmarkLoop
+  [ 3] Run.measure
+  [ 4] Run.doRuns
+  [ 5] Run.runBenchmark
+  [ 6] Harness.main
+
+--- 14654650 ns (0.06%), 1461 samples
+  [ 0] Sieve.sieve
+  [ 1] Sieve.benchmark
+  [ 2] Benchmark.innerBenchmarkLoop
+  [ 3] Run.measure
+  [ 4] Run.doRuns
+  [ 5] Run.runBenchmark
+  [ 6] Harness.main
+
+--- 13431102 ns (0.06%), 1324 samples
+  [ 0] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 1] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 2] my.custom.BuboAgentCompilerMarkers.Marker5
+  [ 3] my.custom.BuboAgentCompilerMarkers.Marker2
+  [ 4] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 5] Sieve.benchmark
+  [ 6] Benchmark.innerBenchmarkLoop
+  [ 7] Run.measure
+  [ 8] Run.doRuns
+  [ 9] Run.runBenchmark
+  [10] Harness.main
+
+--- 11253952 ns (0.05%), 1124 samples
+  [ 0] G1ParScanThreadState::trim_queue_to_threshold
+  [ 1] G1ScanHRForRegionClosure::scan_heap_roots
+  [ 2] G1RemSet::scan_heap_roots
+  [ 3] G1EvacuateRegionsTask::scan_roots
+  [ 4] G1EvacuateRegionsBaseTask::work
+  [ 5] WorkerThread::run
+  [ 6] Thread::call_run
+  [ 7] thread_native_entry
+  [ 8] start_thread
+  [ 9] clone3
+
+--- 9888216 ns (0.04%), 985 samples
+  [ 0] my.custom.BuboAgentCompilerMarkers.Marker5
+  [ 1] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 2] my.custom.BuboAgentCompilerMarkers.Marker3
+  [ 3] my.custom.BuboAgentCompilerMarkers.Marker4
+  [ 4] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 5] Run.measure
+  [ 6] Run.doRuns
+  [ 7] Run.runBenchmark
+  [ 8] Harness.main
+
+--- 9480407 ns (0.04%), 947 samples
+  [ 0] Sieve.sieve
+  [ 1] Sieve.benchmark
+  [ 2] Benchmark.innerBenchmarkLoop
+  [ 3] Run.measure
+  [ 4] Run.doRuns
+  [ 5] Run.runBenchmark
+  [ 6] Harness.main
+
+--- 8117717 ns (0.03%), 803 samples
+  [ 0] my.custom.BuboAgentCompilerMarkers.Marker0
+  [ 1] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 2] my.custom.BuboAgentCompilerMarkers.Marker2
+  [ 3] my.custom.BuboAgentCompilerMarkers.Marker4
+  [ 4] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 5] Run.measure
+  [ 6] Run.doRuns
+  [ 7] Run.runBenchmark
+  [ 8] Harness.main
+
+--- 6638929 ns (0.03%), 663 samples
+  [ 0] G1ParScanThreadState::trim_queue_to_threshold
+  [ 1] G1ParScanThreadState::steal_and_trim_queue
+  [ 2] G1ParEvacuateFollowersClosure::do_void
+  [ 3] G1EvacuateRegionsTask::evacuate_live_objects
+  [ 4] G1EvacuateRegionsBaseTask::work
+  [ 5] WorkerThread::run
+  [ 6] Thread::call_run
+  [ 7] thread_native_entry
+  [ 8] start_thread
+  [ 9] clone3
+
+--- 6557802 ns (0.03%), 632 samples
+  [ 0] do_user_addr_fault_[k]
+  [ 1] exc_page_fault_[k]
+  [ 2] asm_exc_page_fault_[k]
+  [ 3] my.custom.BuboAgentCompilerMarkers.Marker0
+  [ 4] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 5] my.custom.BuboAgentCompilerMarkers.Marker3
+  [ 6] my.custom.BuboAgentCompilerMarkers.Marker4
+  [ 7] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 8] Run.measure
+  [ 9] Run.doRuns
+  [10] Run.runBenchmark
+  [11] Harness.main
+
+--- 6443890 ns (0.03%), 611 samples
+  [ 0] do_user_addr_fault_[k]
+  [ 1] exc_page_fault_[k]
+  [ 2] asm_exc_page_fault_[k]
+  [ 3] my.custom.BuboAgentCompilerMarkers.Marker0
+  [ 4] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 5] my.custom.BuboAgentCompilerMarkers.Marker2
+  [ 6] my.custom.BuboAgentCompilerMarkers.Marker4
+  [ 7] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 8] Run.measure
+  [ 9] Run.doRuns
+  [10] Run.runBenchmark
+  [11] Harness.main
+
+--- 4418924 ns (0.02%), 442 samples
+  [ 0] G1ParScanThreadState::trim_queue_to_threshold
+  [ 1] G1ParCopyClosure<(G1Barrier)1, false>::do_oop
+  [ 2] ClassLoaderData::oops_do
+  [ 3] G1CLDScanClosure::do_cld
+  [ 4] ClassLoaderDataGraph::roots_cld_do
+  [ 5] G1RootProcessor::process_java_roots
+  [ 6] G1RootProcessor::evacuate_roots
+  [ 7] G1EvacuateRegionsTask::scan_roots
+  [ 8] G1EvacuateRegionsBaseTask::work
+  [ 9] WorkerThread::run
+  [10] Thread::call_run
+  [11] thread_native_entry
+  [12] start_thread
+  [13] clone3
+
+--- 4241690 ns (0.02%), 414 samples
+  [ 0] Sieve.benchmark
+  [ 1] Benchmark.innerBenchmarkLoop
+  [ 2] Run.measure
+  [ 3] Run.doRuns
+  [ 4] Run.runBenchmark
+  [ 5] Harness.main
+
+--- 3028620 ns (0.01%), 301 samples
+  [ 0] Sieve.sieve
+  [ 1] Sieve.benchmark
+  [ 2] Benchmark.innerBenchmarkLoop
+  [ 3] Run.measure
+  [ 4] Run.doRuns
+  [ 5] Run.runBenchmark
+  [ 6] Harness.main
+
+--- 2562442 ns (0.01%), 251 samples
+  [ 0] __memset_avx2_unaligned_erms
+  [ 1] ObjArrayAllocator::initialize
+  [ 2] MemAllocator::allocate
+  [ 3] TypeArrayKlass::allocate_common
+  [ 4] InterpreterRuntime::newarray
+  [ 5] Sieve.benchmark
+  [ 6] Benchmark.innerBenchmarkLoop
+  [ 7] Run.measure
+  [ 8] Run.doRuns
+  [ 9] Run.runBenchmark
+  [10] Harness.main
+
+--- 2403493 ns (0.01%), 239 samples
+  [ 0] void com.oracle.svm.core.genscavenge.GreyToBlackObjRefVisitor::visitObjectReferences
+  [ 1] void com.oracle.svm.core.genscavenge.GreyToBlackObjectVisitor::visitObject
+  [ 2] void com.oracle.svm.core.genscavenge.GreyObjectsWalker::walkGreyObjects
+  [ 3] boolean com.oracle.svm.core.genscavenge.CopyingOldGeneration::scanGreyObjects
+  [ 4] void com.oracle.svm.core.genscavenge.GCImpl::scanGreyObjects
+  [ 5] void com.oracle.svm.core.genscavenge.GCImpl::scanFromRoots
+  [ 6] void com.oracle.svm.core.genscavenge.GCImpl::scan
+  [ 7] void com.oracle.svm.core.genscavenge.GCImpl::doCollectCore
+  [ 8] boolean com.oracle.svm.core.genscavenge.GCImpl::doCollectOnce
+  [ 9] boolean com.oracle.svm.core.genscavenge.GCImpl::doCollectImpl
+  [10] boolean com.oracle.svm.core.genscavenge.GCImpl::collectImpl
+  [11] void com.oracle.svm.core.genscavenge.GCImpl::collectOperation
+  [12] void com.oracle.svm.core.genscavenge.GCImpl$CollectionVMOperation::operate
+  [13] void com.oracle.svm.core.thread.VMOperation::execute
+  [14] void com.oracle.svm.core.thread.VMOperationControl$WorkQueues::drain
+  [15] void com.oracle.svm.core.thread.VMOperationControl$WorkQueues::executeAllQueuedVMOperations
+  [16] void com.oracle.svm.core.thread.VMOperationControl$WorkQueues::enqueueAndExecute
+  [17] void com.oracle.svm.core.thread.VMOperationControl::enqueue
+  [18] void com.oracle.svm.core.thread.NativeVMOperation::enqueue
+  [19] boolean com.oracle.svm.core.genscavenge.GCImpl::collectWithoutAllocating
+  [20] void com.oracle.svm.core.genscavenge.GCImpl::collect
+  [21] void com.oracle.svm.core.genscavenge.GCImpl::collectionHint
+  [22] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.CompilationTask::runCompilation
+  [23] LibGraalClassLoader_30c8681::jdk.vm.ci.code.CompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compileMethod
+  [24] LibGraalClassLoader_30c8681::jdk.vm.ci.code.CompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compileMethod
+  [25] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime::compileMethod
+  [26] long com.oracle.svm.core.jni.JNIJavaCallWrapperHolder::invoke_AIJI_A
+  [27] long com.oracle.svm.core.jni.JNIJavaCallVariantWrapperHolder::invokeJJIJIJI_J_VA_LIST_Nonvirtual
+  [28] JNIEnv_::CallNonvirtualObjectMethod
+  [29] JVMCIEnv::call_HotSpotJVMCIRuntime_compileMethod
+  [30] JVMCIRuntime::compile_method
+  [31] CompileBroker::invoke_compiler_on_method
+  [32] CompileBroker::compiler_thread_loop
+  [33] JavaThread::thread_main_inner
+  [34] Thread::call_run
+  [35] thread_native_entry
+  [36] start_thread
+  [37] clone3
+
+--- 2367264 ns (0.01%), 225 samples
+  [ 0] do_user_addr_fault_[k]
+  [ 1] exc_page_fault_[k]
+  [ 2] asm_exc_page_fault_[k]
+  [ 3] __memset_avx2_unaligned_erms
+  [ 4] ObjArrayAllocator::initialize
+  [ 5] MemAllocator::allocate
+  [ 6] TypeArrayKlass::allocate_common
+  [ 7] InterpreterRuntime::newarray
+  [ 8] Sieve.benchmark
+  [ 9] Benchmark.innerBenchmarkLoop
+  [10] Run.measure
+  [11] Run.doRuns
+  [12] Run.runBenchmark
+  [13] Harness.main
+
+--- 2241466 ns (0.01%), 224 samples
+  [ 0] Sieve.sieve
+  [ 1] Sieve.benchmark
+  [ 2] Benchmark.innerBenchmarkLoop
+  [ 3] Run.measure
+  [ 4] Run.doRuns
+  [ 5] Run.runBenchmark
+  [ 6] Harness.main
+
+--- 2215923 ns (0.01%), 223 samples
+  [ 0] G1ParScanThreadState::steal_and_trim_queue
+  [ 1] G1ParEvacuateFollowersClosure::do_void
+  [ 2] G1EvacuateRegionsTask::evacuate_live_objects
+  [ 3] G1EvacuateRegionsBaseTask::work
+  [ 4] WorkerThread::run
+  [ 5] Thread::call_run
+  [ 6] thread_native_entry
+  [ 7] start_thread
+  [ 8] clone3
+
+--- 2194943 ns (0.01%), 201 samples
+  [ 0] G1HeapRegionManager::par_iterate
+  [ 1] G1PrepareEvacuationTask::work
+  [ 2] WorkerThread::run
+  [ 3] Thread::call_run
+  [ 4] thread_native_entry
+  [ 5] start_thread
+  [ 6] clone3
+
+--- 2089825 ns (0.01%), 208 samples
+  [ 0] void com.oracle.svm.core.genscavenge.GreyToBlackObjectVisitor::visitObject
+  [ 1] void com.oracle.svm.core.genscavenge.GreyObjectsWalker::walkGreyObjects
+  [ 2] boolean com.oracle.svm.core.genscavenge.CopyingOldGeneration::scanGreyObjects
+  [ 3] void com.oracle.svm.core.genscavenge.GCImpl::scanGreyObjects
+  [ 4] void com.oracle.svm.core.genscavenge.GCImpl::scanFromRoots
+  [ 5] void com.oracle.svm.core.genscavenge.GCImpl::scan
+  [ 6] void com.oracle.svm.core.genscavenge.GCImpl::doCollectCore
+  [ 7] boolean com.oracle.svm.core.genscavenge.GCImpl::doCollectOnce
+  [ 8] boolean com.oracle.svm.core.genscavenge.GCImpl::doCollectImpl
+  [ 9] boolean com.oracle.svm.core.genscavenge.GCImpl::collectImpl
+  [10] void com.oracle.svm.core.genscavenge.GCImpl::collectOperation
+  [11] void com.oracle.svm.core.genscavenge.GCImpl$CollectionVMOperation::operate
+  [12] void com.oracle.svm.core.thread.VMOperation::execute
+  [13] void com.oracle.svm.core.thread.VMOperationControl$WorkQueues::drain
+  [14] void com.oracle.svm.core.thread.VMOperationControl$WorkQueues::executeAllQueuedVMOperations
+  [15] void com.oracle.svm.core.thread.VMOperationControl$WorkQueues::enqueueAndExecute
+  [16] void com.oracle.svm.core.thread.VMOperationControl::enqueue
+  [17] void com.oracle.svm.core.thread.NativeVMOperation::enqueue
+  [18] boolean com.oracle.svm.core.genscavenge.GCImpl::collectWithoutAllocating
+  [19] void com.oracle.svm.core.genscavenge.GCImpl::collect
+  [20] void com.oracle.svm.core.genscavenge.GCImpl::collectionHint
+  [21] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.CompilationTask::runCompilation
+  [22] LibGraalClassLoader_30c8681::jdk.vm.ci.code.CompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compileMethod
+  [23] LibGraalClassLoader_30c8681::jdk.vm.ci.code.CompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compileMethod
+  [24] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime::compileMethod
+  [25] long com.oracle.svm.core.jni.JNIJavaCallWrapperHolder::invoke_AIJI_A
+  [26] long com.oracle.svm.core.jni.JNIJavaCallVariantWrapperHolder::invokeJJIJIJI_J_VA_LIST_Nonvirtual
+  [27] JNIEnv_::CallNonvirtualObjectMethod
+  [28] JVMCIEnv::call_HotSpotJVMCIRuntime_compileMethod
+  [29] JVMCIRuntime::compile_method
+  [30] CompileBroker::invoke_compiler_on_method
+  [31] CompileBroker::compiler_thread_loop
+  [32] JavaThread::thread_main_inner
+  [33] Thread::call_run
+  [34] thread_native_entry
+  [35] start_thread
+  [36] clone3
+
+--- 2080923 ns (0.01%), 187 samples
+  [ 0] clear_page_erms_[k]
+  [ 1] post_alloc_hook_[k]
+  [ 2] get_page_from_freelist_[k]
+  [ 3] __alloc_pages_[k]
+  [ 4] __folio_alloc_[k]
+  [ 5] vma_alloc_folio_[k]
+  [ 6] do_anonymous_page_[k]
+  [ 7] __handle_mm_fault_[k]
+  [ 8] handle_mm_fault_[k]
+  [ 9] do_user_addr_fault_[k]
+  [10] exc_page_fault_[k]
+  [11] asm_exc_page_fault_[k]
+  [12] my.custom.BuboAgentCompilerMarkers.Marker0
+  [13] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [14] my.custom.BuboAgentCompilerMarkers.Marker2
+  [15] my.custom.BuboAgentCompilerMarkers.Marker4
+  [16] my.custom.BuboAgentCompilerMarkers.Marker1
+  [17] Run.measure
+  [18] Run.doRuns
+  [19] Run.runBenchmark
+  [20] Harness.main
+
+--- 2009527 ns (0.01%), 201 samples
+  [ 0] void G1ScanEvacuatedObjClosure::do_oop_work<narrowOop>
+  [ 1] void OopOopIterateBackwardsDispatch<G1ScanEvacuatedObjClosure>::Table::oop_oop_iterate_backwards<InstanceKlass, narrowOop>
+  [ 2] G1ParScanThreadState::trim_queue_to_threshold
+  [ 3] G1ScanHRForRegionClosure::scan_heap_roots
+  [ 4] G1RemSet::scan_heap_roots
+  [ 5] G1EvacuateRegionsTask::scan_roots
+  [ 6] G1EvacuateRegionsBaseTask::work
+  [ 7] WorkerThread::run
+  [ 8] Thread::call_run
+  [ 9] thread_native_entry
+  [10] start_thread
+  [11] clone3
+
+--- 1907391 ns (0.01%), 190 samples
+  [ 0] G1ParScanThreadState::trim_queue_to_threshold
+  [ 1] G1ParEvacuateFollowersClosure::do_void
+  [ 2] G1EvacuateRegionsTask::evacuate_live_objects
+  [ 3] G1EvacuateRegionsBaseTask::work
+  [ 4] WorkerThread::run
+  [ 5] Thread::call_run
+  [ 6] thread_native_entry
+  [ 7] start_thread
+  [ 8] clone3
+
+--- 1854288 ns (0.01%), 171 samples
+  [ 0] clear_page_erms_[k]
+  [ 1] post_alloc_hook_[k]
+  [ 2] get_page_from_freelist_[k]
+  [ 3] __alloc_pages_[k]
+  [ 4] __folio_alloc_[k]
+  [ 5] vma_alloc_folio_[k]
+  [ 6] do_anonymous_page_[k]
+  [ 7] __handle_mm_fault_[k]
+  [ 8] handle_mm_fault_[k]
+  [ 9] do_user_addr_fault_[k]
+  [10] exc_page_fault_[k]
+  [11] asm_exc_page_fault_[k]
+  [12] my.custom.BuboAgentCompilerMarkers.Marker0
+  [13] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [14] my.custom.BuboAgentCompilerMarkers.Marker3
+  [15] my.custom.BuboAgentCompilerMarkers.Marker4
+  [16] my.custom.BuboAgentCompilerMarkers.Marker1
+  [17] Run.measure
+  [18] Run.doRuns
+  [19] Run.runBenchmark
+  [20] Harness.main
+
+--- 1697044 ns (0.01%), 168 samples
+  [ 0] Benchmark.innerBenchmarkLoop
+  [ 1] Run.measure
+  [ 2] Run.doRuns
+  [ 3] Run.runBenchmark
+  [ 4] Harness.main
+
+--- 1627415 ns (0.01%), 154 samples
+  [ 0] do_user_addr_fault_[k]
+  [ 1] exc_page_fault_[k]
+  [ 2] asm_exc_page_fault_[k]
+  [ 3] Sieve.benchmark
+  [ 4] Benchmark.innerBenchmarkLoop
+  [ 5] Run.measure
+  [ 6] Run.doRuns
+  [ 7] Run.runBenchmark
+  [ 8] Harness.main
+
+--- 1434965 ns (0.01%), 138 samples
+  [ 0] __memset_avx2_unaligned_erms
+  [ 1] ObjArrayAllocator::initialize
+  [ 2] MemAllocator::allocate
+  [ 3] TypeArrayKlass::allocate_common
+  [ 4] JVMCIRuntime::new_array_or_null
+  [ 5] Stub<new_array_or_null(KlassPointer,int)Object>
+  [ 6] Benchmark.innerBenchmarkLoop
+  [ 7] Run.measure
+  [ 8] Run.doRuns
+  [ 9] Run.runBenchmark
+  [10] Harness.main
+
+--- 1424854 ns (0.01%), 143 samples
+  [ 0] do_user_addr_fault_[k]
+  [ 1] exc_page_fault_[k]
+  [ 2] asm_exc_page_fault_[k]
+  [ 3] __memcpy_avx_unaligned_erms
+  [ 4] int com.oracle.svm.core.posix.linux.LinuxImageHeapProvider::copyRelocations
+  [ 5] int com.oracle.svm.core.posix.linux.LinuxImageHeapProvider::initializeImageHeap
+  [ 6] int com.oracle.svm.core.posix.linux.LinuxImageHeapProvider::initialize
+  [ 7] int com.oracle.svm.core.genscavenge.AddressRangeCommittedMemoryProvider::initialize
+  [ 8] int com.oracle.svm.core.Isolates::create
+  [ 9] int com.oracle.svm.core.graal.snippets.CEntryPointSnippets::createIsolate
+  [10] int com.oracle.svm.core.jni.functions.JNIInvocationInterface$Exports$JNICreateJavaVMPrologue::enter
+  [11] int com.oracle.svm.core.code.IsolateEnterStub::JNIInvocationInterface$Exports_JNI_CreateJavaVM_d6c5BWIqaM2kIlfcFqa441
+  [12] JVMCIRuntime::init_shared_library_javavm
+  [13] JVMCIEnv::init_env_mode_runtime
+  [14] CompileBroker::invoke_compiler_on_method
+  [15] CompileBroker::compiler_thread_loop
+  [16] JavaThread::thread_main_inner
+  [17] Thread::call_run
+  [18] thread_native_entry
+  [19] start_thread
+  [20] clone3
+
+--- 1423832 ns (0.01%), 143 samples
+  [ 0] void G1ScanCardClosure::do_oop_work<narrowOop>
+  [ 1] void OopOopIterateDispatch<G1ScanCardClosure>::Table::oop_oop_iterate<InstanceMirrorKlass, narrowOop>
+  [ 2] G1ScanHRForRegionClosure::scan_heap_roots
+  [ 3] G1RemSet::scan_heap_roots
+  [ 4] G1EvacuateRegionsTask::scan_roots
+  [ 5] G1EvacuateRegionsBaseTask::work
+  [ 6] WorkerThread::run
+  [ 7] Thread::call_run
+  [ 8] thread_native_entry
+  [ 9] start_thread
+  [10] clone3
+
+--- 1208862 ns (0.00%), 119 samples
+  [ 0] Benchmark.innerBenchmarkLoop
+  [ 1] Run.measure
+  [ 2] Run.doRuns
+  [ 3] Run.runBenchmark
+  [ 4] Harness.main
+
+--- 1169735 ns (0.00%), 102 samples
+  [ 0] _raw_spin_unlock_irqrestore_[k]
+  [ 1] folio_batch_move_lru_[k]
+  [ 2] folio_add_lru_[k]
+  [ 3] do_anonymous_page_[k]
+  [ 4] __handle_mm_fault_[k]
+  [ 5] handle_mm_fault_[k]
+  [ 6] do_user_addr_fault_[k]
+  [ 7] exc_page_fault_[k]
+  [ 8] asm_exc_page_fault_[k]
+  [ 9] my.custom.BuboAgentCompilerMarkers.Marker0
+  [10] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [11] my.custom.BuboAgentCompilerMarkers.Marker2
+  [12] my.custom.BuboAgentCompilerMarkers.Marker4
+  [13] my.custom.BuboAgentCompilerMarkers.Marker1
+  [14] Run.measure
+  [15] Run.doRuns
+  [16] Run.runBenchmark
+  [17] Harness.main
+
+--- 1108072 ns (0.00%), 111 samples
+  [ 0] void OopOopIterateBackwardsDispatch<G1ScanEvacuatedObjClosure>::Table::oop_oop_iterate_backwards<InstanceKlass, narrowOop>
+  [ 1] G1ParScanThreadState::trim_queue_to_threshold
+  [ 2] G1ScanHRForRegionClosure::scan_heap_roots
+  [ 3] G1RemSet::scan_heap_roots
+  [ 4] G1EvacuateRegionsTask::scan_roots
+  [ 5] G1EvacuateRegionsBaseTask::work
+  [ 6] WorkerThread::run
+  [ 7] Thread::call_run
+  [ 8] thread_native_entry
+  [ 9] start_thread
+  [10] clone3
+
+--- 1060390 ns (0.00%), 106 samples
+  [ 0] void G1ScanEvacuatedObjClosure::do_oop_work<narrowOop>
+  [ 1] void OopOopIterateBackwardsDispatch<G1ScanEvacuatedObjClosure>::Table::oop_oop_iterate_backwards<InstanceKlass, narrowOop>
+  [ 2] G1ParScanThreadState::trim_queue_to_threshold
+  [ 3] G1ParScanThreadState::steal_and_trim_queue
+  [ 4] G1ParEvacuateFollowersClosure::do_void
+  [ 5] G1EvacuateRegionsTask::evacuate_live_objects
+  [ 6] G1EvacuateRegionsBaseTask::work
+  [ 7] WorkerThread::run
+  [ 8] Thread::call_run
+  [ 9] thread_native_entry
+  [10] start_thread
+  [11] clone3
+
+--- 967806 ns (0.00%), 89 samples
+  [ 0] get_mem_cgroup_from_mm_[k]
+  [ 1] __mem_cgroup_charge_[k]
+  [ 2] do_anonymous_page_[k]
+  [ 3] __handle_mm_fault_[k]
+  [ 4] handle_mm_fault_[k]
+  [ 5] do_user_addr_fault_[k]
+  [ 6] exc_page_fault_[k]
+  [ 7] asm_exc_page_fault_[k]
+  [ 8] my.custom.BuboAgentCompilerMarkers.Marker0
+  [ 9] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [10] my.custom.BuboAgentCompilerMarkers.Marker2
+  [11] my.custom.BuboAgentCompilerMarkers.Marker4
+  [12] my.custom.BuboAgentCompilerMarkers.Marker1
+  [13] Run.measure
+  [14] Run.doRuns
+  [15] Run.runBenchmark
+  [16] Harness.main
+
+--- 941924 ns (0.00%), 85 samples
+  [ 0] _raw_spin_unlock_irqrestore_[k]
+  [ 1] folio_batch_move_lru_[k]
+  [ 2] folio_add_lru_[k]
+  [ 3] do_anonymous_page_[k]
+  [ 4] __handle_mm_fault_[k]
+  [ 5] handle_mm_fault_[k]
+  [ 6] do_user_addr_fault_[k]
+  [ 7] exc_page_fault_[k]
+  [ 8] asm_exc_page_fault_[k]
+  [ 9] my.custom.BuboAgentCompilerMarkers.Marker0
+  [10] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [11] my.custom.BuboAgentCompilerMarkers.Marker3
+  [12] my.custom.BuboAgentCompilerMarkers.Marker4
+  [13] my.custom.BuboAgentCompilerMarkers.Marker1
+  [14] Run.measure
+  [15] Run.doRuns
+  [16] Run.runBenchmark
+  [17] Harness.main
+
+--- 933437 ns (0.00%), 94 samples
+  [ 0] Sieve.sieve
+  [ 1] Sieve.benchmark
+  [ 2] Benchmark.innerBenchmarkLoop
+  [ 3] Run.measure
+  [ 4] Run.doRuns
+  [ 5] Run.runBenchmark
+  [ 6] Harness.main
+
+--- 915045 ns (0.00%), 83 samples
+  [ 0] clear_page_erms_[k]
+  [ 1] post_alloc_hook_[k]
+  [ 2] get_page_from_freelist_[k]
+  [ 3] __alloc_pages_[k]
+  [ 4] __folio_alloc_[k]
+  [ 5] vma_alloc_folio_[k]
+  [ 6] do_anonymous_page_[k]
+  [ 7] __handle_mm_fault_[k]
+  [ 8] handle_mm_fault_[k]
+  [ 9] do_user_addr_fault_[k]
+  [10] exc_page_fault_[k]
+  [11] asm_exc_page_fault_[k]
+  [12] __memset_avx2_unaligned_erms
+  [13] ObjArrayAllocator::initialize
+  [14] MemAllocator::allocate
+  [15] TypeArrayKlass::allocate_common
+  [16] InterpreterRuntime::newarray
+  [17] Sieve.benchmark
+  [18] Benchmark.innerBenchmarkLoop
+  [19] Run.measure
+  [20] Run.doRuns
+  [21] Run.runBenchmark
+  [22] Harness.main
+
+--- 877852 ns (0.00%), 73 samples
+  [ 0] __memset_avx2_unaligned_erms
+  [ 1] G1RemSetScanState::G1ClearCardTableTask::do_work
+  [ 2] G1BatchedTask::work
+  [ 3] WorkerThread::run
+  [ 4] Thread::call_run
+  [ 5] thread_native_entry
+  [ 6] start_thread
+  [ 7] clone3
+
+--- 872630 ns (0.00%), 68 samples
+  [ 0] void WeakProcessor::Task::work<G1STWIsAliveClosure, G1KeepAliveClosure>
+  [ 1] WorkerThread::run
+  [ 2] Thread::call_run
+  [ 3] thread_native_entry
+  [ 4] start_thread
+  [ 5] clone3
+
+--- 869475 ns (0.00%), 87 samples
+  [ 0] void G1ScanEvacuatedObjClosure::do_oop_work<narrowOop>
+  [ 1] void OopOopIterateBackwardsDispatch<G1ScanEvacuatedObjClosure>::Table::oop_oop_iterate_backwards<InstanceKlass, narrowOop>
+  [ 2] G1ParScanThreadState::trim_queue_to_threshold
+  [ 3] G1ParCopyClosure<(G1Barrier)1, false>::do_oop
+  [ 4] ClassLoaderData::oops_do
+  [ 5] G1CLDScanClosure::do_cld
+  [ 6] ClassLoaderDataGraph::roots_cld_do
+  [ 7] G1RootProcessor::process_java_roots
+  [ 8] G1RootProcessor::evacuate_roots
+  [ 9] G1EvacuateRegionsTask::scan_roots
+  [10] G1EvacuateRegionsBaseTask::work
+  [11] WorkerThread::run
+  [12] Thread::call_run
+  [13] thread_native_entry
+  [14] start_thread
+  [15] clone3
+
+--- 859691 ns (0.00%), 81 samples
+  [ 0] get_mem_cgroup_from_mm_[k]
+  [ 1] __mem_cgroup_charge_[k]
+  [ 2] do_anonymous_page_[k]
+  [ 3] __handle_mm_fault_[k]
+  [ 4] handle_mm_fault_[k]
+  [ 5] do_user_addr_fault_[k]
+  [ 6] exc_page_fault_[k]
+  [ 7] asm_exc_page_fault_[k]
+  [ 8] my.custom.BuboAgentCompilerMarkers.Marker0
+  [ 9] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [10] my.custom.BuboAgentCompilerMarkers.Marker3
+  [11] my.custom.BuboAgentCompilerMarkers.Marker4
+  [12] my.custom.BuboAgentCompilerMarkers.Marker1
+  [13] Run.measure
+  [14] Run.doRuns
+  [15] Run.runBenchmark
+  [16] Harness.main
+
+--- 843584 ns (0.00%), 75 samples
+  [ 0] charge_memcg_[k]
+  [ 1] __mem_cgroup_charge_[k]
+  [ 2] do_anonymous_page_[k]
+  [ 3] __handle_mm_fault_[k]
+  [ 4] handle_mm_fault_[k]
+  [ 5] do_user_addr_fault_[k]
+  [ 6] exc_page_fault_[k]
+  [ 7] asm_exc_page_fault_[k]
+  [ 8] my.custom.BuboAgentCompilerMarkers.Marker0
+  [ 9] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [10] my.custom.BuboAgentCompilerMarkers.Marker2
+  [11] my.custom.BuboAgentCompilerMarkers.Marker4
+  [12] my.custom.BuboAgentCompilerMarkers.Marker1
+  [13] Run.measure
+  [14] Run.doRuns
+  [15] Run.runBenchmark
+  [16] Harness.main
+
+--- 815349 ns (0.00%), 64 samples
+  [ 0] __futex_abstimed_wait_common
+  [ 1] __new_sem_wait_slow64.constprop.0
+  [ 2] PosixSemaphore::wait
+  [ 3] WorkerThread::run
+  [ 4] Thread::call_run
+  [ 5] thread_native_entry
+  [ 6] start_thread
+  [ 7] clone3
+
+--- 734628 ns (0.00%), 72 samples
+  [ 0] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 1] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 2] my.custom.BuboAgentCompilerMarkers.Marker3
+  [ 3] my.custom.BuboAgentCompilerMarkers.Marker4
+  [ 4] my.custom.BuboAgentCompilerMarkers.Marker1
+  [ 5] Run.measure
+  [ 6] Run.doRuns
+  [ 7] Run.runBenchmark
+  [ 8] Harness.main
+
+--- 726668 ns (0.00%), 69 samples
+  [ 0] ObjArrayAllocator::initialize
+  [ 1] MemAllocator::allocate
+  [ 2] TypeArrayKlass::allocate_common
+  [ 3] JVMCIRuntime::new_array_or_null
+  [ 4] Stub<new_array_or_null(KlassPointer,int)Object>
+  [ 5] Benchmark.innerBenchmarkLoop
+  [ 6] Run.measure
+  [ 7] Run.doRuns
+  [ 8] Run.runBenchmark
+  [ 9] Harness.main
+
+--- 683933 ns (0.00%), 69 samples
+  [ 0] void OopOopIterateDispatch<G1ScanCardClosure>::Table::oop_oop_iterate<InstanceMirrorKlass, narrowOop>
+  [ 1] G1ScanHRForRegionClosure::scan_heap_roots
+  [ 2] G1RemSet::scan_heap_roots
+  [ 3] G1EvacuateRegionsTask::scan_roots
+  [ 4] G1EvacuateRegionsBaseTask::work
+  [ 5] WorkerThread::run
+  [ 6] Thread::call_run
+  [ 7] thread_native_entry
+  [ 8] start_thread
+  [ 9] clone3
+
+--- 681194 ns (0.00%), 54 samples
+  [ 0] G1CodeRootSet::reset_table_scanner
+  [ 1] G1HeapRegionRemSet::reset_table_scanner
+  [ 2] G1RemSet::prepare_region_for_scan
+  [ 3] G1PrepareEvacuationTask::G1PrepareRegionsClosure::do_heap_region
+  [ 4] G1HeapRegionManager::par_iterate
+  [ 5] G1PrepareEvacuationTask::work
+  [ 6] WorkerThread::run
+  [ 7] Thread::call_run
+  [ 8] thread_native_entry
+  [ 9] start_thread
+  [10] clone3
+
+--- 676304 ns (0.00%), 58 samples
+  [ 0] __list_del_entry_valid_[k]
+  [ 1] __rmqueue_pcplist_[k]
+  [ 2] rmqueue_[k]
+  [ 3] get_page_from_freelist_[k]
+  [ 4] __alloc_pages_[k]
+  [ 5] __folio_alloc_[k]
+  [ 6] vma_alloc_folio_[k]
+  [ 7] do_anonymous_page_[k]
+  [ 8] __handle_mm_fault_[k]
+  [ 9] handle_mm_fault_[k]
+  [10] do_user_addr_fault_[k]
+  [11] exc_page_fault_[k]
+  [12] asm_exc_page_fault_[k]
+  [13] my.custom.BuboAgentCompilerMarkers.Marker0
+  [14] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [15] my.custom.BuboAgentCompilerMarkers.Marker2
+  [16] my.custom.BuboAgentCompilerMarkers.Marker4
+  [17] my.custom.BuboAgentCompilerMarkers.Marker1
+  [18] Run.measure
+  [19] Run.doRuns
+  [20] Run.runBenchmark
+  [21] Harness.main
+
+--- 669225 ns (0.00%), 67 samples
+  [ 0] java.lang.AbstractStringBuilder* java.lang.AbstractStringBuilder::append
+  [ 1] java.lang.String* com.oracle.svm.core.util.Utf8::utf8ToString
+  [ 2] java.lang.String* com.oracle.svm.core.util.Utf8::utf8ToString
+  [ 3] com.oracle.svm.core.jni.headers.JNIObjectHandle com.oracle.svm.core.jni.functions.JNIFunctions::NewStringUTF
+  [ 4] com.oracle.svm.core.jni.headers.JNIObjectHandle com.oracle.svm.core.code.IsolateEnterStub::JNIFunctions_NewStringUTF_DjdZcV8DUjC9PGRgwwR996
+  [ 5] JVMCIEnv::create_string
+  [ 6] readConfiguration0
+  [ 7] c2v_readConfiguration
+  [ 8] java.lang.Object[]* LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.CompilerToVM::readConfiguration
+  [ 9] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotVMConfigStore::HotSpotVMConfigStore
+  [10] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime::HotSpotJVMCIRuntime
+  [11] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime* LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime::runtime
+  [12] long com.oracle.svm.core.jni.JNIJavaCallWrapperHolder::invoke__A
+  [13] long com.oracle.svm.core.jni.JNIJavaCallVariantWrapperHolder::invokeJJI_J_VA_LIST
+  [14] JNIEnv_::CallStaticObjectMethod
+  [15] JVMCIEnv::call_HotSpotJVMCIRuntime_runtime
+  [16] JVMCIRuntime::initialize_HotSpotJVMCIRuntime
+  [17] JVM_GetJVMCIRuntime
+  [18] LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCIRuntime* LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCI::initializeRuntime
+  [19] LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCIRuntime* LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCI::getRuntime
+  [20] long com.oracle.svm.core.jni.JNIJavaCallWrapperHolder::invoke__A
+  [21] long com.oracle.svm.core.jni.JNIJavaCallVariantWrapperHolder::invokeJJI_J_VA_LIST
+  [22] JNIEnv_::CallStaticObjectMethod
+  [23] JVMCIEnv::call_JVMCI_getRuntime
+  [24] JVMCIRuntime::get_HotSpotJVMCIRuntime
+  [25] JVMCIRuntime::compile_method
+  [26] CompileBroker::invoke_compiler_on_method
+  [27] CompileBroker::compiler_thread_loop
+  [28] JavaThread::thread_main_inner
+  [29] Thread::call_run
+  [30] thread_native_entry
+  [31] start_thread
+  [32] clone3
+
+--- 668042 ns (0.00%), 67 samples
+  [ 0] readConfiguration0
+  [ 1] c2v_readConfiguration
+  [ 2] java.lang.Object[]* LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.CompilerToVM::readConfiguration
+  [ 3] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotVMConfigStore::HotSpotVMConfigStore
+  [ 4] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime::HotSpotJVMCIRuntime
+  [ 5] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime* LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime::runtime
+  [ 6] long com.oracle.svm.core.jni.JNIJavaCallWrapperHolder::invoke__A
+  [ 7] long com.oracle.svm.core.jni.JNIJavaCallVariantWrapperHolder::invokeJJI_J_VA_LIST
+  [ 8] JNIEnv_::CallStaticObjectMethod
+  [ 9] JVMCIEnv::call_HotSpotJVMCIRuntime_runtime
+  [10] JVMCIRuntime::initialize_HotSpotJVMCIRuntime
+  [11] JVM_GetJVMCIRuntime
+  [12] LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCIRuntime* LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCI::initializeRuntime
+  [13] LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCIRuntime* LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCI::getRuntime
+  [14] long com.oracle.svm.core.jni.JNIJavaCallWrapperHolder::invoke__A
+  [15] long com.oracle.svm.core.jni.JNIJavaCallVariantWrapperHolder::invokeJJI_J_VA_LIST
+  [16] JNIEnv_::CallStaticObjectMethod
+  [17] JVMCIEnv::call_JVMCI_getRuntime
+  [18] JVMCIRuntime::get_HotSpotJVMCIRuntime
+  [19] JVMCIRuntime::compile_method
+  [20] CompileBroker::invoke_compiler_on_method
+  [21] CompileBroker::compiler_thread_loop
+  [22] JavaThread::thread_main_inner
+  [23] Thread::call_run
+  [24] thread_native_entry
+  [25] start_thread
+  [26] clone3
+
+--- 645821 ns (0.00%), 59 samples
+  [ 0] mtree_range_walk_[k]
+  [ 1] mt_find_[k]
+  [ 2] find_vma_[k]
+  [ 3] do_user_addr_fault_[k]
+  [ 4] exc_page_fault_[k]
+  [ 5] asm_exc_page_fault_[k]
+  [ 6] my.custom.BuboAgentCompilerMarkers.Marker0
+  [ 7] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 8] my.custom.BuboAgentCompilerMarkers.Marker2
+  [ 9] my.custom.BuboAgentCompilerMarkers.Marker4
+  [10] my.custom.BuboAgentCompilerMarkers.Marker1
+  [11] Run.measure
+  [12] Run.doRuns
+  [13] Run.runBenchmark
+  [14] Harness.main
+
+--- 633967 ns (0.00%), 62 samples
+  [ 0] Sieve.benchmark
+  [ 1] Benchmark.innerBenchmarkLoop
+  [ 2] Run.measure
+  [ 3] Run.doRuns
+  [ 4] Run.runBenchmark
+  [ 5] Harness.main
+
+--- 632937 ns (0.00%), 45 samples
+  [ 0] mem_cgroup_handle_over_high_[k]
+  [ 1] exit_to_user_mode_loop_[k]
+  [ 2] exit_to_user_mode_prepare_[k]
+  [ 3] syscall_exit_to_user_mode_[k]
+  [ 4] do_syscall_64_[k]
+  [ 5] entry_SYSCALL_64_after_hwframe_[k]
+  [ 6] __futex_abstimed_wait_common
+  [ 7] __new_sem_wait_slow64.constprop.0
+  [ 8] PosixSemaphore::wait
+  [ 9] WorkerThread::run
+  [10] Thread::call_run
+  [11] thread_native_entry
+  [12] start_thread
+  [13] clone3
+
+--- 630521 ns (0.00%), 56 samples
+  [ 0] _raw_spin_unlock_irqrestore_[k]
+  [ 1] folio_batch_move_lru_[k]
+  [ 2] folio_add_lru_[k]
+  [ 3] do_anonymous_page_[k]
+  [ 4] __handle_mm_fault_[k]
+  [ 5] handle_mm_fault_[k]
+  [ 6] do_user_addr_fault_[k]
+  [ 7] exc_page_fault_[k]
+  [ 8] asm_exc_page_fault_[k]
+  [ 9] __memset_avx2_unaligned_erms
+  [10] ObjArrayAllocator::initialize
+  [11] MemAllocator::allocate
+  [12] TypeArrayKlass::allocate_common
+  [13] InterpreterRuntime::newarray
+  [14] Sieve.benchmark
+  [15] Benchmark.innerBenchmarkLoop
+  [16] Run.measure
+  [17] Run.doRuns
+  [18] Run.runBenchmark
+  [19] Harness.main
+
+--- 601199 ns (0.00%), 59 samples
+  [ 0] __memset_avx2_unaligned_erms
+  [ 1] G1CollectedHeap::allocate_new_tlab
+  [ 2] MemAllocator::mem_allocate_inside_tlab_slow
+  [ 3] MemAllocator::mem_allocate
+  [ 4] MemAllocator::allocate
+  [ 5] TypeArrayKlass::allocate_common
+  [ 6] JVMCIRuntime::new_array_or_null
+  [ 7] Stub<new_array_or_null(KlassPointer,int)Object>
+  [ 8] Benchmark.innerBenchmarkLoop
+  [ 9] Run.measure
+  [10] Run.doRuns
+  [11] Run.runBenchmark
+  [12] Harness.main
+
+--- 598003 ns (0.00%), 60 samples
+  [ 0] java.lang.String* com.oracle.svm.core.util.Utf8::utf8ToString
+  [ 1] java.lang.String* com.oracle.svm.core.util.Utf8::utf8ToString
+  [ 2] com.oracle.svm.core.jni.headers.JNIObjectHandle com.oracle.svm.core.jni.functions.JNIFunctions::NewStringUTF
+  [ 3] com.oracle.svm.core.jni.headers.JNIObjectHandle com.oracle.svm.core.code.IsolateEnterStub::JNIFunctions_NewStringUTF_DjdZcV8DUjC9PGRgwwR996
+  [ 4] JVMCIEnv::create_string
+  [ 5] readConfiguration0
+  [ 6] c2v_readConfiguration
+  [ 7] java.lang.Object[]* LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.CompilerToVM::readConfiguration
+  [ 8] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotVMConfigStore::HotSpotVMConfigStore
+  [ 9] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime::HotSpotJVMCIRuntime
+  [10] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime* LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime::runtime
+  [11] long com.oracle.svm.core.jni.JNIJavaCallWrapperHolder::invoke__A
+  [12] long com.oracle.svm.core.jni.JNIJavaCallVariantWrapperHolder::invokeJJI_J_VA_LIST
+  [13] JNIEnv_::CallStaticObjectMethod
+  [14] JVMCIEnv::call_HotSpotJVMCIRuntime_runtime
+  [15] JVMCIRuntime::initialize_HotSpotJVMCIRuntime
+  [16] JVM_GetJVMCIRuntime
+  [17] LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCIRuntime* LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCI::initializeRuntime
+  [18] LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCIRuntime* LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCI::getRuntime
+  [19] long com.oracle.svm.core.jni.JNIJavaCallWrapperHolder::invoke__A
+  [20] long com.oracle.svm.core.jni.JNIJavaCallVariantWrapperHolder::invokeJJI_J_VA_LIST
+  [21] JNIEnv_::CallStaticObjectMethod
+  [22] JVMCIEnv::call_JVMCI_getRuntime
+  [23] JVMCIRuntime::get_HotSpotJVMCIRuntime
+  [24] JVMCIRuntime::compile_method
+  [25] CompileBroker::invoke_compiler_on_method
+  [26] CompileBroker::compiler_thread_loop
+  [27] JavaThread::thread_main_inner
+  [28] Thread::call_run
+  [29] thread_native_entry
+  [30] start_thread
+  [31] clone3
+
+--- 597236 ns (0.00%), 59 samples
+  [ 0] Sieve.benchmark
+  [ 1] Benchmark.innerBenchmarkLoop
+  [ 2] Run.measure
+  [ 3] Run.doRuns
+  [ 4] Run.runBenchmark
+  [ 5] Harness.main
+
+--- 577633 ns (0.00%), 57 samples
+  [ 0] void com.oracle.svm.core.UnmanagedMemoryUtil::copyLongsForward
+  [ 1] void com.oracle.svm.core.genscavenge.GreyToBlackObjRefVisitor::visitObjectReferences
+  [ 2] void com.oracle.svm.core.genscavenge.GreyToBlackObjectVisitor::visitObject
+  [ 3] void com.oracle.svm.core.genscavenge.GreyObjectsWalker::walkGreyObjects
+  [ 4] boolean com.oracle.svm.core.genscavenge.CopyingOldGeneration::scanGreyObjects
+  [ 5] void com.oracle.svm.core.genscavenge.GCImpl::scanGreyObjects
+  [ 6] void com.oracle.svm.core.genscavenge.GCImpl::scanFromRoots
+  [ 7] void com.oracle.svm.core.genscavenge.GCImpl::scan
+  [ 8] void com.oracle.svm.core.genscavenge.GCImpl::doCollectCore
+  [ 9] boolean com.oracle.svm.core.genscavenge.GCImpl::doCollectOnce
+  [10] boolean com.oracle.svm.core.genscavenge.GCImpl::doCollectImpl
+  [11] boolean com.oracle.svm.core.genscavenge.GCImpl::collectImpl
+  [12] void com.oracle.svm.core.genscavenge.GCImpl::collectOperation
+  [13] void com.oracle.svm.core.genscavenge.GCImpl$CollectionVMOperation::operate
+  [14] void com.oracle.svm.core.thread.VMOperation::execute
+  [15] void com.oracle.svm.core.thread.VMOperationControl$WorkQueues::drain
+  [16] void com.oracle.svm.core.thread.VMOperationControl$WorkQueues::executeAllQueuedVMOperations
+  [17] void com.oracle.svm.core.thread.VMOperationControl$WorkQueues::enqueueAndExecute
+  [18] void com.oracle.svm.core.thread.VMOperationControl::enqueue
+  [19] void com.oracle.svm.core.thread.NativeVMOperation::enqueue
+  [20] boolean com.oracle.svm.core.genscavenge.GCImpl::collectWithoutAllocating
+  [21] void com.oracle.svm.core.genscavenge.GCImpl::collect
+  [22] void com.oracle.svm.core.genscavenge.GCImpl::collectionHint
+  [23] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.CompilationTask::runCompilation
+  [24] LibGraalClassLoader_30c8681::jdk.vm.ci.code.CompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compileMethod
+  [25] LibGraalClassLoader_30c8681::jdk.vm.ci.code.CompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compileMethod
+  [26] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime::compileMethod
+  [27] long com.oracle.svm.core.jni.JNIJavaCallWrapperHolder::invoke_AIJI_A
+  [28] long com.oracle.svm.core.jni.JNIJavaCallVariantWrapperHolder::invokeJJIJIJI_J_VA_LIST_Nonvirtual
+  [29] JNIEnv_::CallNonvirtualObjectMethod
+  [30] JVMCIEnv::call_HotSpotJVMCIRuntime_compileMethod
+  [31] JVMCIRuntime::compile_method
+  [32] CompileBroker::invoke_compiler_on_method
+  [33] CompileBroker::compiler_thread_loop
+  [34] JavaThread::thread_main_inner
+  [35] Thread::call_run
+  [36] thread_native_entry
+  [37] start_thread
+  [38] clone3
+
+--- 566679 ns (0.00%), 36 samples
+  [ 0] blkcg_maybe_throttle_current_[k]
+  [ 1] exit_to_user_mode_loop_[k]
+  [ 2] exit_to_user_mode_prepare_[k]
+  [ 3] syscall_exit_to_user_mode_[k]
+  [ 4] do_syscall_64_[k]
+  [ 5] entry_SYSCALL_64_after_hwframe_[k]
+  [ 6] __futex_abstimed_wait_common
+  [ 7] __new_sem_wait_slow64.constprop.0
+  [ 8] PosixSemaphore::wait
+  [ 9] WorkerThread::run
+  [10] Thread::call_run
+  [11] thread_native_entry
+  [12] start_thread
+  [13] clone3
+
+--- 551716 ns (0.00%), 55 samples
+  [ 0] boolean LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.common.CanonicalizerPhase::tryCanonicalize
+  [ 1] boolean LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.common.CanonicalizerPhase::processNode
+  [ 2] int LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.common.CanonicalizerPhase::processWorkSet
+  [ 3] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.common.CanonicalizerPhase::run
+  [ 4] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.common.CanonicalizerPhase::run
+  [ 5] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.BasePhase::apply
+  [ 6] void LibGraalClassLoader_30c8681::jdk.graal.compiler.core.phases.BaseTier::run
+  [ 7] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.BasePhase::apply
+  [ 8] void LibGraalClassLoader_30c8681::jdk.graal.compiler.core.GraalCompiler::emitFrontEnd
+  [ 9] LibGraalClassLoader_30c8681::jdk.graal.compiler.code.CompilationResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.core.GraalCompiler::compile
+  [10] LibGraalClassLoader_30c8681::jdk.graal.compiler.code.CompilationResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compileHelper
+  [11] LibGraalClassLoader_30c8681::jdk.graal.compiler.code.CompilationResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compile
+  [12] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.CompilationTask$HotSpotCompilationWrapper::performCompilation
+  [13] java.lang.Object* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.CompilationTask$HotSpotCompilationWrapper::performCompilation
+  [14] java.lang.Object* LibGraalClassLoader_30c8681::jdk.graal.compiler.core.CompilationWrapper::run
+  [15] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.CompilationTask::runCompilation
+  [16] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.CompilationTask::runCompilation
+  [17] LibGraalClassLoader_30c8681::jdk.vm.ci.code.CompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compileMethod
+  [18] LibGraalClassLoader_30c8681::jdk.vm.ci.code.CompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compileMethod
+  [19] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime::compileMethod
+  [20] long com.oracle.svm.core.jni.JNIJavaCallWrapperHolder::invoke_AIJI_A
+  [21] long com.oracle.svm.core.jni.JNIJavaCallVariantWrapperHolder::invokeJJIJIJI_J_VA_LIST_Nonvirtual
+  [22] JNIEnv_::CallNonvirtualObjectMethod
+  [23] JVMCIEnv::call_HotSpotJVMCIRuntime_compileMethod
+  [24] JVMCIRuntime::compile_method
+  [25] CompileBroker::invoke_compiler_on_method
+  [26] CompileBroker::compiler_thread_loop
+  [27] JavaThread::thread_main_inner
+  [28] Thread::call_run
+  [29] thread_native_entry
+  [30] start_thread
+  [31] clone3
+
+--- 537403 ns (0.00%), 31 samples
+  [ 0] __audit_syscall_exit_[k]
+  [ 1] syscall_exit_work_[k]
+  [ 2] syscall_exit_to_user_mode_[k]
+  [ 3] do_syscall_64_[k]
+  [ 4] entry_SYSCALL_64_after_hwframe_[k]
+  [ 5] __futex_abstimed_wait_common
+  [ 6] __GI___pthread_cond_timedwait
+  [ 7] PlatformMonitor::wait
+  [ 8] Monitor::wait_without_safepoint_check
+  [ 9] MonitorDeflationThread::monitor_deflation_thread_entry
+  [10] JavaThread::thread_main_inner
+  [11] Thread::call_run
+  [12] thread_native_entry
+  [13] start_thread
+  [14] clone3
+
+--- 516086 ns (0.00%), 50 samples
+  [ 0] G1HeapRegionManager::allocate_free_region
+  [ 1] G1CollectedHeap::new_region
+  [ 2] G1CollectedHeap::new_mutator_alloc_region
+  [ 3] G1AllocRegion::new_alloc_region_and_allocate
+  [ 4] G1CollectedHeap::attempt_allocation_slow
+  [ 5] G1CollectedHeap::allocate_new_tlab
+  [ 6] MemAllocator::mem_allocate_inside_tlab_slow
+  [ 7] MemAllocator::mem_allocate
+  [ 8] MemAllocator::allocate
+  [ 9] TypeArrayKlass::allocate_common
+  [10] JVMCIRuntime::new_array_or_null
+  [11] Stub<new_array_or_null(KlassPointer,int)Object>
+  [12] Benchmark.innerBenchmarkLoop
+  [13] Run.measure
+  [14] Run.doRuns
+  [15] Run.runBenchmark
+  [16] Harness.main
+
+--- 509944 ns (0.00%), 51 samples
+  [ 0] void OopOopIterateBackwardsDispatch<G1ScanEvacuatedObjClosure>::Table::oop_oop_iterate_backwards<InstanceKlass, narrowOop>
+  [ 1] G1ParScanThreadState::trim_queue_to_threshold
+  [ 2] G1ParCopyClosure<(G1Barrier)1, false>::do_oop
+  [ 3] ClassLoaderData::oops_do
+  [ 4] G1CLDScanClosure::do_cld
+  [ 5] ClassLoaderDataGraph::roots_cld_do
+  [ 6] G1RootProcessor::process_java_roots
+  [ 7] G1RootProcessor::evacuate_roots
+  [ 8] G1EvacuateRegionsTask::scan_roots
+  [ 9] G1EvacuateRegionsBaseTask::work
+  [10] WorkerThread::run
+  [11] Thread::call_run
+  [12] thread_native_entry
+  [13] start_thread
+  [14] clone3
+
+--- 507954 ns (0.00%), 51 samples
+  [ 0] void OopOopIterateBackwardsDispatch<G1ScanEvacuatedObjClosure>::Table::oop_oop_iterate_backwards<InstanceKlass, narrowOop>
+  [ 1] G1ParScanThreadState::trim_queue_to_threshold
+  [ 2] G1ParScanThreadState::steal_and_trim_queue
+  [ 3] G1ParEvacuateFollowersClosure::do_void
+  [ 4] G1EvacuateRegionsTask::evacuate_live_objects
+  [ 5] G1EvacuateRegionsBaseTask::work
+  [ 6] WorkerThread::run
+  [ 7] Thread::call_run
+  [ 8] thread_native_entry
+  [ 9] start_thread
+  [10] clone3
+
+--- 503427 ns (0.00%), 48 samples
+  [ 0] __handle_mm_fault_[k]
+  [ 1] handle_mm_fault_[k]
+  [ 2] do_user_addr_fault_[k]
+  [ 3] exc_page_fault_[k]
+  [ 4] asm_exc_page_fault_[k]
+  [ 5] my.custom.BuboAgentCompilerMarkers.Marker0
+  [ 6] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 7] my.custom.BuboAgentCompilerMarkers.Marker2
+  [ 8] my.custom.BuboAgentCompilerMarkers.Marker4
+  [ 9] my.custom.BuboAgentCompilerMarkers.Marker1
+  [10] Run.measure
+  [11] Run.doRuns
+  [12] Run.runBenchmark
+  [13] Harness.main
+
+--- 488969 ns (0.00%), 48 samples
+  [ 0] java.lang.Integer.valueOf
+  [ 1] Sieve.benchmark
+  [ 2] Benchmark.innerBenchmarkLoop
+  [ 3] Run.measure
+  [ 4] Run.doRuns
+  [ 5] Run.runBenchmark
+  [ 6] Harness.main
+
+--- 482238 ns (0.00%), 48 samples
+  [ 0] java.util.Properties$LineReader.readLine
+  [ 1] java.util.Properties.load0
+  [ 2] java.util.Properties.load
+  [ 3] java.security.Security$SecPropLoader.loadFromPath
+  [ 4] java.security.Security$SecPropLoader.loadMaster
+  [ 5] java.security.Security$SecPropLoader.loadAll
+  [ 6] java.security.Security.initialize
+  [ 7] java.security.Security.<clinit>
+  [ 8] sun.security.jca.ProviderList.<init>
+  [ 9] sun.security.jca.ProviderList.fromSecurityProperties
+  [10] sun.security.jca.Providers.<clinit>
+  [11] java.security.SecureRandom.getDefaultPRNG
+  [12] java.security.SecureRandom.<init>
+  [13] java.io.File$TempDirectory.<clinit>
+  [14] java.io.File.createTempFile
+  [15] java.io.File.createTempFile
+  [16] Tsc.loadNativeFromJar
+  [17] Tsc.<clinit>
+  [18] Harness.main
+
+--- 476327 ns (0.00%), 47 samples
+  [ 0] LibGraalClassLoader_30c8681::jdk.graal.compiler.nodes.extended.AnchoringNode* LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.common.LoweringPhase::process
+  [ 1] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.common.LoweringPhase$ProcessFrame::preprocess
+  [ 2] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.common.LoweringPhase::processBlock
+  [ 3] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.common.LoweringPhase::lower
+  [ 4] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.common.LoweringPhase::run
+  [ 5] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.BasePhase::apply
+  [ 6] void LibGraalClassLoader_30c8681::jdk.graal.compiler.core.phases.BaseTier::run
+  [ 7] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.BasePhase::apply
+  [ 8] void LibGraalClassLoader_30c8681::jdk.graal.compiler.core.GraalCompiler::emitFrontEnd
+  [ 9] LibGraalClassLoader_30c8681::jdk.graal.compiler.code.CompilationResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.core.GraalCompiler::compile
+  [10] LibGraalClassLoader_30c8681::jdk.graal.compiler.code.CompilationResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compileHelper
+  [11] LibGraalClassLoader_30c8681::jdk.graal.compiler.code.CompilationResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compile
+  [12] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.CompilationTask$HotSpotCompilationWrapper::performCompilation
+  [13] java.lang.Object* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.CompilationTask$HotSpotCompilationWrapper::performCompilation
+  [14] java.lang.Object* LibGraalClassLoader_30c8681::jdk.graal.compiler.core.CompilationWrapper::run
+  [15] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.CompilationTask::runCompilation
+  [16] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.CompilationTask::runCompilation
+  [17] LibGraalClassLoader_30c8681::jdk.vm.ci.code.CompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compileMethod
+  [18] LibGraalClassLoader_30c8681::jdk.vm.ci.code.CompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compileMethod
+  [19] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime::compileMethod
+  [20] long com.oracle.svm.core.jni.JNIJavaCallWrapperHolder::invoke_AIJI_A
+  [21] long com.oracle.svm.core.jni.JNIJavaCallVariantWrapperHolder::invokeJJIJIJI_J_VA_LIST_Nonvirtual
+  [22] JNIEnv_::CallNonvirtualObjectMethod
+  [23] JVMCIEnv::call_HotSpotJVMCIRuntime_compileMethod
+  [24] JVMCIRuntime::compile_method
+  [25] CompileBroker::invoke_compiler_on_method
+  [26] CompileBroker::compiler_thread_loop
+  [27] JavaThread::thread_main_inner
+  [28] Thread::call_run
+  [29] thread_native_entry
+  [30] start_thread
+  [31] clone3
+
+--- 474473 ns (0.00%), 43 samples
+  [ 0] clear_page_erms_[k]
+  [ 1] post_alloc_hook_[k]
+  [ 2] get_page_from_freelist_[k]
+  [ 3] __alloc_pages_[k]
+  [ 4] __folio_alloc_[k]
+  [ 5] vma_alloc_folio_[k]
+  [ 6] do_anonymous_page_[k]
+  [ 7] __handle_mm_fault_[k]
+  [ 8] handle_mm_fault_[k]
+  [ 9] do_user_addr_fault_[k]
+  [10] exc_page_fault_[k]
+  [11] asm_exc_page_fault_[k]
+  [12] Sieve.benchmark
+  [13] Benchmark.innerBenchmarkLoop
+  [14] Run.measure
+  [15] Run.doRuns
+  [16] Run.runBenchmark
+  [17] Harness.main
+
+--- 463528 ns (0.00%), 46 samples
+  [ 0] java.lang.String* com.oracle.svm.core.util.Utf8::utf8ToString
+  [ 1] java.lang.String* com.oracle.svm.core.util.Utf8::utf8ToString
+  [ 2] com.oracle.svm.core.jni.headers.JNIObjectHandle com.oracle.svm.core.jni.functions.JNIFunctions::NewStringUTF
+  [ 3] com.oracle.svm.core.jni.headers.JNIObjectHandle com.oracle.svm.core.code.IsolateEnterStub::JNIFunctions_NewStringUTF_DjdZcV8DUjC9PGRgwwR996
+  [ 4] JVMCIEnv::create_string
+  [ 5] JVMCIEnv::create_string
+  [ 6] CompilerToVM::initialize_intrinsics
+  [ 7] readConfiguration0
+  [ 8] c2v_readConfiguration
+  [ 9] java.lang.Object[]* LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.CompilerToVM::readConfiguration
+  [10] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotVMConfigStore::HotSpotVMConfigStore
+  [11] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime::HotSpotJVMCIRuntime
+  [12] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime* LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime::runtime
+  [13] long com.oracle.svm.core.jni.JNIJavaCallWrapperHolder::invoke__A
+  [14] long com.oracle.svm.core.jni.JNIJavaCallVariantWrapperHolder::invokeJJI_J_VA_LIST
+  [15] JNIEnv_::CallStaticObjectMethod
+  [16] JVMCIEnv::call_HotSpotJVMCIRuntime_runtime
+  [17] JVMCIRuntime::initialize_HotSpotJVMCIRuntime
+  [18] JVM_GetJVMCIRuntime
+  [19] LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCIRuntime* LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCI::initializeRuntime
+  [20] LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCIRuntime* LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCI::getRuntime
+  [21] long com.oracle.svm.core.jni.JNIJavaCallWrapperHolder::invoke__A
+  [22] long com.oracle.svm.core.jni.JNIJavaCallVariantWrapperHolder::invokeJJI_J_VA_LIST
+  [23] JNIEnv_::CallStaticObjectMethod
+  [24] JVMCIEnv::call_JVMCI_getRuntime
+  [25] JVMCIRuntime::get_HotSpotJVMCIRuntime
+  [26] JVMCIRuntime::compile_method
+  [27] CompileBroker::invoke_compiler_on_method
+  [28] CompileBroker::compiler_thread_loop
+  [29] JavaThread::thread_main_inner
+  [30] Thread::call_run
+  [31] thread_native_entry
+  [32] start_thread
+  [33] clone3
+
+--- 462715 ns (0.00%), 45 samples
+  [ 0] __memcpy_avx_unaligned_erms
+  [ 1] G1ParScanThreadState::trim_queue_to_threshold
+  [ 2] G1ScanHRForRegionClosure::scan_heap_roots
+  [ 3] G1RemSet::scan_heap_roots
+  [ 4] G1EvacuateRegionsTask::scan_roots
+  [ 5] G1EvacuateRegionsBaseTask::work
+  [ 6] WorkerThread::run
+  [ 7] Thread::call_run
+  [ 8] thread_native_entry
+  [ 9] start_thread
+  [10] clone3
+
+--- 461928 ns (0.00%), 32 samples
+  [ 0] __audit_syscall_exit_[k]
+  [ 1] syscall_exit_work_[k]
+  [ 2] syscall_exit_to_user_mode_[k]
+  [ 3] do_syscall_64_[k]
+  [ 4] entry_SYSCALL_64_after_hwframe_[k]
+  [ 5] __futex_abstimed_wait_common
+  [ 6] __new_sem_wait_slow64.constprop.0
+  [ 7] PosixSemaphore::wait
+  [ 8] WorkerThread::run
+  [ 9] Thread::call_run
+  [10] thread_native_entry
+  [11] start_thread
+  [12] clone3
+
+--- 461129 ns (0.00%), 45 samples
+  [ 0] MemAllocator::mem_allocate_inside_tlab_slow
+  [ 1] MemAllocator::mem_allocate
+  [ 2] MemAllocator::allocate
+  [ 3] TypeArrayKlass::allocate_common
+  [ 4] JVMCIRuntime::new_array_or_null
+  [ 5] Stub<new_array_or_null(KlassPointer,int)Object>
+  [ 6] Benchmark.innerBenchmarkLoop
+  [ 7] Run.measure
+  [ 8] Run.doRuns
+  [ 9] Run.runBenchmark
+  [10] Harness.main
+
+--- 457672 ns (0.00%), 46 samples
+  [ 0] void com.oracle.svm.core.genscavenge.GreyToBlackObjRefVisitor::visitObjectReferences
+  [ 1] void com.oracle.svm.core.genscavenge.GreyToBlackObjectVisitor::visitObject
+  [ 2] void com.oracle.svm.core.genscavenge.GreyObjectsWalker::walkGreyObjects
+  [ 3] boolean com.oracle.svm.core.genscavenge.YoungGeneration::scanGreyObjects
+  [ 4] void com.oracle.svm.core.genscavenge.GCImpl::incrementalScanGreyObjectsLoop
+  [ 5] void com.oracle.svm.core.genscavenge.GCImpl::scanGreyObjects
+  [ 6] void com.oracle.svm.core.genscavenge.GCImpl::scanFromRoots
+  [ 7] void com.oracle.svm.core.genscavenge.GCImpl::scan
+  [ 8] void com.oracle.svm.core.genscavenge.GCImpl::doCollectCore
+  [ 9] boolean com.oracle.svm.core.genscavenge.GCImpl::doCollectOnce
+  [10] boolean com.oracle.svm.core.genscavenge.GCImpl::doCollectImpl
+  [11] boolean com.oracle.svm.core.genscavenge.GCImpl::collectImpl
+  [12] void com.oracle.svm.core.genscavenge.GCImpl::collectOperation
+  [13] void com.oracle.svm.core.genscavenge.GCImpl$CollectionVMOperation::operate
+  [14] void com.oracle.svm.core.thread.VMOperation::execute
+  [15] void com.oracle.svm.core.thread.VMOperationControl$WorkQueues::drain
+  [16] void com.oracle.svm.core.thread.VMOperationControl$WorkQueues::executeAllQueuedVMOperations
+  [17] void com.oracle.svm.core.thread.VMOperationControl$WorkQueues::enqueueAndExecute
+  [18] void com.oracle.svm.core.thread.VMOperationControl::enqueue
+  [19] void com.oracle.svm.core.thread.NativeVMOperation::enqueue
+  [20] boolean com.oracle.svm.core.genscavenge.GCImpl::collectWithoutAllocating
+  [21] void com.oracle.svm.core.genscavenge.GCImpl::collect
+  [22] void com.oracle.svm.core.genscavenge.GCImpl::collectionHint
+  [23] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.CompilationTask::runCompilation
+  [24] LibGraalClassLoader_30c8681::jdk.vm.ci.code.CompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compileMethod
+  [25] LibGraalClassLoader_30c8681::jdk.vm.ci.code.CompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compileMethod
+  [26] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime::compileMethod
+  [27] long com.oracle.svm.core.jni.JNIJavaCallWrapperHolder::invoke_AIJI_A
+  [28] long com.oracle.svm.core.jni.JNIJavaCallVariantWrapperHolder::invokeJJIJIJI_J_VA_LIST_Nonvirtual
+  [29] JNIEnv_::CallNonvirtualObjectMethod
+  [30] JVMCIEnv::call_HotSpotJVMCIRuntime_compileMethod
+  [31] JVMCIRuntime::compile_method
+  [32] CompileBroker::invoke_compiler_on_method
+  [33] CompileBroker::compiler_thread_loop
+  [34] JavaThread::thread_main_inner
+  [35] Thread::call_run
+  [36] thread_native_entry
+  [37] start_thread
+  [38] clone3
+
+--- 455249 ns (0.00%), 46 samples
+  [ 0] java.lang.AbstractStringBuilder* java.lang.AbstractStringBuilder::append
+  [ 1] java.lang.String* com.oracle.svm.core.util.Utf8::utf8ToString
+  [ 2] java.lang.String* com.oracle.svm.core.util.Utf8::utf8ToString
+  [ 3] com.oracle.svm.core.jni.headers.JNIObjectHandle com.oracle.svm.core.jni.functions.JNIFunctions::NewStringUTF
+  [ 4] com.oracle.svm.core.jni.headers.JNIObjectHandle com.oracle.svm.core.code.IsolateEnterStub::JNIFunctions_NewStringUTF_DjdZcV8DUjC9PGRgwwR996
+  [ 5] JVMCIEnv::create_string
+  [ 6] JVMCIEnv::create_string
+  [ 7] CompilerToVM::initialize_intrinsics
+  [ 8] readConfiguration0
+  [ 9] c2v_readConfiguration
+  [10] java.lang.Object[]* LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.CompilerToVM::readConfiguration
+  [11] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotVMConfigStore::HotSpotVMConfigStore
+  [12] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime::HotSpotJVMCIRuntime
+  [13] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime* LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime::runtime
+  [14] long com.oracle.svm.core.jni.JNIJavaCallWrapperHolder::invoke__A
+  [15] long com.oracle.svm.core.jni.JNIJavaCallVariantWrapperHolder::invokeJJI_J_VA_LIST
+  [16] JNIEnv_::CallStaticObjectMethod
+  [17] JVMCIEnv::call_HotSpotJVMCIRuntime_runtime
+  [18] JVMCIRuntime::initialize_HotSpotJVMCIRuntime
+  [19] JVM_GetJVMCIRuntime
+  [20] LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCIRuntime* LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCI::initializeRuntime
+  [21] LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCIRuntime* LibGraalClassLoader_30c8681::jdk.vm.ci.runtime.JVMCI::getRuntime
+  [22] long com.oracle.svm.core.jni.JNIJavaCallWrapperHolder::invoke__A
+  [23] long com.oracle.svm.core.jni.JNIJavaCallVariantWrapperHolder::invokeJJI_J_VA_LIST
+  [24] JNIEnv_::CallStaticObjectMethod
+  [25] JVMCIEnv::call_JVMCI_getRuntime
+  [26] JVMCIRuntime::get_HotSpotJVMCIRuntime
+  [27] JVMCIRuntime::compile_method
+  [28] CompileBroker::invoke_compiler_on_method
+  [29] CompileBroker::compiler_thread_loop
+  [30] JavaThread::thread_main_inner
+  [31] Thread::call_run
+  [32] thread_native_entry
+  [33] start_thread
+  [34] clone3
+
+--- 452856 ns (0.00%), 45 samples
+  [ 0] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.schedule.SchedulePhase$Instance::sortNodesLatestWithinBlock
+  [ 1] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.schedule.SchedulePhase$Instance::sortNodesLatestWithinBlock
+  [ 2] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.schedule.SchedulePhase$Instance::run
+  [ 3] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.schedule.SchedulePhase::run
+  [ 4] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.schedule.SchedulePhase::run
+  [ 5] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.BasePhase::apply
+  [ 6] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.common.LoweringPhase::lower
+  [ 7] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.common.LoweringPhase::run
+  [ 8] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.BasePhase::apply
+  [ 9] void LibGraalClassLoader_30c8681::jdk.graal.compiler.core.phases.BaseTier::run
+  [10] void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.BasePhase::apply
+  [11] void LibGraalClassLoader_30c8681::jdk.graal.compiler.core.GraalCompiler::emitFrontEnd
+  [12] LibGraalClassLoader_30c8681::jdk.graal.compiler.code.CompilationResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.core.GraalCompiler::compile
+  [13] LibGraalClassLoader_30c8681::jdk.graal.compiler.code.CompilationResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compileHelper
+  [14] LibGraalClassLoader_30c8681::jdk.graal.compiler.code.CompilationResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compile
+  [15] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.CompilationTask$HotSpotCompilationWrapper::performCompilation
+  [16] java.lang.Object* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.CompilationTask$HotSpotCompilationWrapper::performCompilation
+  [17] java.lang.Object* LibGraalClassLoader_30c8681::jdk.graal.compiler.core.CompilationWrapper::run
+  [18] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.CompilationTask::runCompilation
+  [19] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.CompilationTask::runCompilation
+  [20] LibGraalClassLoader_30c8681::jdk.vm.ci.code.CompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compileMethod
+  [21] LibGraalClassLoader_30c8681::jdk.vm.ci.code.CompilationRequestResult* LibGraalClassLoader_30c8681::jdk.graal.compiler.hotspot.HotSpotGraalCompiler::compileMethod
+  [22] LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotCompilationRequestResult* LibGraalClassLoader_30c8681::jdk.vm.ci.hotspot.HotSpotJVMCIRuntime::compileMethod
+  [23] long com.oracle.svm.core.jni.JNIJavaCallWrapperHolder::invoke_AIJI_A
+  [24] long com.oracle.svm.core.jni.JNIJavaCallVariantWrapperHolder::invokeJJIJIJI_J_VA_LIST_Nonvirtual
+  [25] JNIEnv_::CallNonvirtualObjectMethod
+  [26] JVMCIEnv::call_HotSpotJVMCIRuntime_compileMethod
+  [27] JVMCIRuntime::compile_method
+  [28] CompileBroker::invoke_compiler_on_method
+  [29] CompileBroker::compiler_thread_loop
+  [30] JavaThread::thread_main_inner
+  [31] Thread::call_run
+  [32] thread_native_entry
+  [33] start_thread
+  [34] clone3
+
+--- 446520 ns (0.00%), 41 samples
+  [ 0] __list_del_entry_valid_[k]
+  [ 1] __rmqueue_pcplist_[k]
+  [ 2] rmqueue_[k]
+  [ 3] get_page_from_freelist_[k]
+  [ 4] __alloc_pages_[k]
+  [ 5] __folio_alloc_[k]
+  [ 6] vma_alloc_folio_[k]
+  [ 7] do_anonymous_page_[k]
+  [ 8] __handle_mm_fault_[k]
+  [ 9] handle_mm_fault_[k]
+  [10] do_user_addr_fault_[k]
+  [11] exc_page_fault_[k]
+  [12] asm_exc_page_fault_[k]
+  [13] my.custom.BuboAgentCompilerMarkers.Marker0
+  [14] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [15] my.custom.BuboAgentCompilerMarkers.Marker3
+  [16] my.custom.BuboAgentCompilerMarkers.Marker4
+  [17] my.custom.BuboAgentCompilerMarkers.Marker1
+  [18] Run.measure
+  [19] Run.doRuns
+  [20] Run.runBenchmark
+  [21] Harness.main
+
+--- 444459 ns (0.00%), 43 samples
+  [ 0] __handle_mm_fault_[k]
+  [ 1] handle_mm_fault_[k]
+  [ 2] do_user_addr_fault_[k]
+  [ 3] exc_page_fault_[k]
+  [ 4] asm_exc_page_fault_[k]
+  [ 5] my.custom.BuboAgentCompilerMarkers.Marker0
+  [ 6] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [ 7] my.custom.BuboAgentCompilerMarkers.Marker3
+  [ 8] my.custom.BuboAgentCompilerMarkers.Marker4
+  [ 9] my.custom.BuboAgentCompilerMarkers.Marker1
+  [10] Run.measure
+  [11] Run.doRuns
+  [12] Run.runBenchmark
+  [13] Harness.main
+
+--- 443374 ns (0.00%), 44 samples
+  [ 0] TypeArrayKlass::allocate_common
+  [ 1] JVMCIRuntime::new_array_or_null
+  [ 2] Stub<new_array_or_null(KlassPointer,int)Object>
+  [ 3] Benchmark.innerBenchmarkLoop
+  [ 4] Run.measure
+  [ 5] Run.doRuns
+  [ 6] Run.runBenchmark
+  [ 7] Harness.main
+
+--- 440161 ns (0.00%), 12 samples
+  [ 0] _raw_spin_unlock_irqrestore_[k]
+  [ 1] rmqueue_bulk_[k]
+  [ 2] __rmqueue_pcplist_[k]
+  [ 3] rmqueue_[k]
+  [ 4] get_page_from_freelist_[k]
+  [ 5] __alloc_pages_[k]
+  [ 6] __folio_alloc_[k]
+  [ 7] vma_alloc_folio_[k]
+  [ 8] do_anonymous_page_[k]
+  [ 9] __handle_mm_fault_[k]
+  [10] handle_mm_fault_[k]
+  [11] do_user_addr_fault_[k]
+  [12] exc_page_fault_[k]
+  [13] asm_exc_page_fault_[k]
+  [14] my.custom.BuboAgentCompilerMarkers.Marker0
+  [15] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [16] my.custom.BuboAgentCompilerMarkers.Marker2
+  [17] my.custom.BuboAgentCompilerMarkers.Marker4
+  [18] my.custom.BuboAgentCompilerMarkers.Marker1
+  [19] Run.measure
+  [20] Run.doRuns
+  [21] Run.runBenchmark
+  [22] Harness.main
+
+--- 438073 ns (0.00%), 44 samples
+  [ 0] G1ScanHRForRegionClosure::scan_heap_roots
+  [ 1] G1RemSet::scan_heap_roots
+  [ 2] G1EvacuateRegionsTask::scan_roots
+  [ 3] G1EvacuateRegionsBaseTask::work
+  [ 4] WorkerThread::run
+  [ 5] Thread::call_run
+  [ 6] thread_native_entry
+  [ 7] start_thread
+  [ 8] clone3
+
+--- 433506 ns (0.00%), 45 samples
+  [ 0] __memcpy_avx_unaligned_erms
+  [ 1] int com.oracle.svm.core.posix.linux.LinuxImageHeapProvider::copyRelocations
+  [ 2] int com.oracle.svm.core.posix.linux.LinuxImageHeapProvider::initializeImageHeap
+  [ 3] int com.oracle.svm.core.posix.linux.LinuxImageHeapProvider::initialize
+  [ 4] int com.oracle.svm.core.genscavenge.AddressRangeCommittedMemoryProvider::initialize
+  [ 5] int com.oracle.svm.core.Isolates::create
+  [ 6] int com.oracle.svm.core.graal.snippets.CEntryPointSnippets::createIsolate
+  [ 7] int com.oracle.svm.core.jni.functions.JNIInvocationInterface$Exports$JNICreateJavaVMPrologue::enter
+  [ 8] int com.oracle.svm.core.code.IsolateEnterStub::JNIInvocationInterface$Exports_JNI_CreateJavaVM_d6c5BWIqaM2kIlfcFqa441
+  [ 9] JVMCIRuntime::init_shared_library_javavm
+  [10] JVMCIEnv::init_env_mode_runtime
+  [11] CompileBroker::invoke_compiler_on_method
+  [12] CompileBroker::compiler_thread_loop
+  [13] JavaThread::thread_main_inner
+  [14] Thread::call_run
+  [15] thread_native_entry
+  [16] start_thread
+  [17] clone3
+
+--- 429255 ns (0.00%), 42 samples
+  [ 0] G1FromCardCache::clear
+  [ 1] G1RemSetTrackingPolicy::update_at_allocate
+  [ 2] G1CollectedHeap::new_mutator_alloc_region
+  [ 3] G1AllocRegion::new_alloc_region_and_allocate
+  [ 4] G1CollectedHeap::attempt_allocation_slow
+  [ 5] G1CollectedHeap::allocate_new_tlab
+  [ 6] MemAllocator::mem_allocate_inside_tlab_slow
+  [ 7] MemAllocator::mem_allocate
+  [ 8] MemAllocator::allocate
+  [ 9] TypeArrayKlass::allocate_common
+  [10] JVMCIRuntime::new_array_or_null
+  [11] Stub<new_array_or_null(KlassPointer,int)Object>
+  [12] Benchmark.innerBenchmarkLoop
+  [13] Run.measure
+  [14] Run.doRuns
+  [15] Run.runBenchmark
+  [16] Harness.main
+
+--- 426440 ns (0.00%), 40 samples
+  [ 0] charge_memcg_[k]
+  [ 1] __mem_cgroup_charge_[k]
+  [ 2] do_anonymous_page_[k]
+  [ 3] __handle_mm_fault_[k]
+  [ 4] handle_mm_fault_[k]
+  [ 5] do_user_addr_fault_[k]
+  [ 6] exc_page_fault_[k]
+  [ 7] asm_exc_page_fault_[k]
+  [ 8] my.custom.BuboAgentCompilerMarkers.Marker0
+  [ 9] my.custom.BuboAgentCompilerMarkers.MarkerDelimiter
+  [10] my.custom.BuboAgentCompilerMarkers.Marker3
+  [11] my.custom.BuboAgentCompilerMarkers.Marker4
+  [12] my.custom.BuboAgentCompilerMarkers.Marker1
+  [13] Run.measure
+  [14] Run.doRuns
+  [15] Run.runBenchmark
+  [16] Harness.main
+
+--- 421934 ns (0.00%), 29 samples
+  [ 0] exit_to_user_mode_loop_[k]
+  [ 1] exit_to_user_mode_prepare_[k]
+  [ 2] syscall_exit_to_user_mode_[k]
+  [ 3] do_syscall_64_[k]
+  [ 4] entry_SYSCALL_64_after_hwframe_[k]
+  [ 5] __futex_abstimed_wait_common
+  [ 6] __new_sem_wait_slow64.constprop.0
+  [ 7] PosixSemaphore::wait
+  [ 8] WorkerThread::run
+  [ 9] Thread::call_run
+  [10] thread_native_entry
+  [11] start_thread
+  [12] clone3
+
+          ns  percent  samples  top
+  ----------  -------  -------  ---
+  9847543168   40.53%   980505  my.custom.BuboAgentCompilerMarkers.Marker3
+  8797459026   36.21%   875118  my.custom.BuboAgentCompilerMarkers.Marker2
+  2129662976    8.77%   212130  my.custom.BuboAgentCompilerMarkers.Marker4
+  2007892085    8.26%   199824  Sieve.sieve
+   610822164    2.51%    60486  my.custom.BuboAgentCompilerMarkers.Marker0
+   177766597    0.73%    17702  my.custom.BuboAgentCompilerMarkers.Marker1
+   111487363    0.46%    11120  my.custom.BuboAgentCompilerMarkers.Marker5
+    97300814    0.40%     9785  my.custom.BuboAgentCompilerMarkers.Marker6
+    24277923    0.10%     2422  G1ParScanThreadState::trim_queue_to_threshold
+    22394567    0.09%     2149  do_user_addr_fault_[k]
+    20067213    0.08%     2000  my.custom.BuboAgentCompilerMarkers.Marker9
+     7384329    0.03%      549  _raw_spin_unlock_irqrestore_[k]
+     6765984    0.03%      616  clear_page_erms_[k]
+     6386960    0.03%      601  __memset_avx2_unaligned_erms
+     6052516    0.02%      592  Sieve.benchmark
+     4667234    0.02%      467  void G1ScanEvacuatedObjClosure::do_oop_work<narrowOop>
+     3541597    0.01%      353  void com.oracle.svm.core.genscavenge.GreyToBlackObjRefVisitor::visitObjectReferences
+     3417419    0.01%      340  void LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.iterators.PredicatedProxyNodeIterator::forward
+     3141261    0.01%      292  get_mem_cgroup_from_mm_[k]
+     2969679    0.01%      294  Benchmark.innerBenchmarkLoop
+     2889425    0.01%      289  int org.graalvm.collections.EconomicMapImpl::findLinear
+     2610185    0.01%      260  void com.oracle.svm.core.genscavenge.GreyToBlackObjectVisitor::visitObject
+     2472546    0.01%      248  void OopOopIterateBackwardsDispatch<G1ScanEvacuatedObjClosure>::Table::oop_oop_iterate_backwards<InstanceKlass, narrowOop>
+     2420065    0.01%      240  int LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.NodeIdAccessor::getNodeId
+     2414794    0.01%      244  G1ParScanThreadState::steal_and_trim_queue
+     2405762    0.01%      213  __list_del_entry_valid_[k]
+     2259075    0.01%      205  charge_memcg_[k]
+     2194943    0.01%      201  G1HeapRegionManager::par_iterate
+     2184795    0.01%      218  __memcpy_avx_unaligned_erms
+     2143386    0.01%      215  java.lang.AbstractStringBuilder* java.lang.AbstractStringBuilder::append
+     2053187    0.01%      205  void com.oracle.svm.core.graal.jdk.SubstrateArraycopySnippets::doArraycopy
+     1938135    0.01%      153  __futex_abstimed_wait_common
+     1919396    0.01%      178  mtree_range_walk_[k]
+     1912453    0.01%      181  __handle_mm_fault_[k]
+     1816837    0.01%      181  void LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.NodeUsageIterator::advance
+     1712416    0.01%      171  InstanceKlass::find_method_index
+     1676412    0.01%      161  __tls_get_addr
+     1649247    0.01%      165  java.lang.String* com.oracle.svm.core.util.Utf8::utf8ToString
+     1618692    0.01%      162  boolean org.graalvm.collections.EconomicMapImpl::compareKeys
+     1537837    0.01%      153  void com.oracle.svm.core.UnmanagedMemoryUtil::copyLongsForward
+     1523552    0.01%      153  void G1ScanCardClosure::do_oop_work<narrowOop>
+     1516034    0.01%      151  void java.util.ArrayList::add
+     1495024    0.01%      136  [vdso]
+     1422575    0.01%      142  int org.graalvm.collections.EconomicMapImpl::getHashIndex
+     1406020    0.01%      140  LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.Node* LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.NodeClass$RawEdgesIterator::getAndAdvanceInput
+     1401229    0.01%      141  java.lang.Object* com.oracle.svm.core.graal.jdk.SubstrateObjectCloneSnippets::doClone
+     1400009    0.01%      139  void LibGraalClassLoader_30c8681::jdk.graal.compiler.lir.LIRIntrospection::visitEach
+     1389277    0.01%       86  __audit_syscall_exit_[k]
+     1385490    0.01%      138  java.lang.Object* org.graalvm.collections.EconomicMapImpl::put
+     1384343    0.01%      141  SymbolTable::lookup_shared
+     1351361    0.01%      132  next_uptodate_page_[k]
+     1222170    0.01%      111  blk_cgroup_congested_[k]
+     1220334    0.01%      123  void com.oracle.svm.core.c.function.CEntryPointSetup$LeaveEpilogue::leave
+     1186810    0.00%      118  boolean LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.common.CanonicalizerPhase::tryCanonicalize
+     1168456    0.00%      116  boolean LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.iterators.NodePredicates$PositiveTypePredicate::apply
+     1157356    0.00%      115  java.lang.Object* java.util.ArrayList$Itr::next
+     1157168    0.00%      115  void LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.NodeMap::set
+     1071784    0.00%       98  __next_zones_zonelist_[k]
+     1063558    0.00%      106  LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.iterators.NodeIterable* LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.Node::inputs
+     1058829    0.00%      105  LibGraalClassLoader_30c8681::jdk.graal.compiler.nodes.FixedNode* LibGraalClassLoader_30c8681::jdk.graal.compiler.nodes.AbstractBeginNode$BlockNodeIterator::next
+     1056013    0.00%      105  java.lang.Object* LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.NodeMap::get
+     1055515    0.00%      105  LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.Node* LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.NodeClass$RawEdgesIterator::forward
+     1051146    0.00%       73  mem_cgroup_handle_over_high_[k]
+     1007009    0.00%       97  ObjArrayAllocator::initialize
+      991496    0.00%       99  boolean com.oracle.svm.core.code.IsolateEnterStub::JNIFunctions_ExceptionCheck_wwAepBoMjPEWDN8NR0UL5D
+      981191    0.00%       98  int org.graalvm.collections.EconomicMapImpl::findHash
+      979991    0.00%       61  blkcg_maybe_throttle_current_[k]
+      974660    0.00%       97  boolean LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.NodeBitMap::isMarked
+      974571    0.00%       96  java.lang.Integer.valueOf
+      972529    0.00%       92  mm_account_fault_[k]
+      946942    0.00%       94  void LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.NodeWorkList$QueueConsumingIterator::dropDeleted
+      942734    0.00%       86  __mod_node_page_state_[k]
+      942015    0.00%       94  void LibGraalClassLoader_30c8681::jdk.graal.compiler.core.common.util.CompilationAlarm::checkProgress
+      941304    0.00%       94  void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.schedule.SchedulePhase$Instance::scheduleEarliestIterative
+      931111    0.00%       93  java.util.concurrent.ConcurrentHashMap.putVal
+      919282    0.00%       86  syscall_enter_from_user_mode_[k]
+      914580    0.00%       91  void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.schedule.SchedulePhase$Instance::sortNodesLatestWithinBlock
+      880020    0.00%       88  void com.oracle.svm.core.JavaMemoryUtil::copyPrimitiveArrayForward
+      877750    0.00%       83  vma_alloc_folio_[k]
+      874834    0.00%       87  LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.Node* LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.NodeUsageIterator::next
+      872630    0.00%       68  void WeakProcessor::Task::work<G1STWIsAliveClosure, G1KeepAliveClosure>
+      861269    0.00%       86  LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.schedule.SchedulePhase$Instance$MicroBlock* LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.schedule.SchedulePhase$Instance::processInputs
+      853893    0.00%       85  LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.Node* LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.Graph::findDuplicate
+      837671    0.00%       79  folio_add_lru_[k]
+      836830    0.00%       83  __GI___libc_malloc
+      831399    0.00%       83  java.util.concurrent.ConcurrentHashMap.transfer
+      823016    0.00%       83  readConfiguration0
+      820800    0.00%       82  java.lang.Object* LibGraalClassLoader_30c8681::jdk.graal.compiler.options.OptionValues::get
+      818223    0.00%       81  TypeArrayKlass::allocate_common
+      817423    0.00%       76  G1FromCardCache::clear
+      812943    0.00%       81  void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.common.util.EconomicSetNodeEventListener::changed
+      811230    0.00%       81  java.lang.AbstractStringBuilder.append
+      806378    0.00%       80  boolean LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.common.CanonicalizerPhase::processNode
+      797482    0.00%       80  void com.oracle.svm.core.UnmanagedMemoryUtil::copyForward
+      793000    0.00%       79  java.util.Properties$LineReader.readLine
+      778594    0.00%       71  get_page_from_freelist_[k]
+      777650    0.00%       77  boolean java.util.RegularEnumSet::contains
+      776322    0.00%       78  void org.graalvm.collections.EconomicMapImpl::putHashEntry
+      775727    0.00%       50  exit_to_user_mode_loop_[k]
+      771653    0.00%       77  int org.graalvm.collections.EconomicMapImpl::find
+      763848    0.00%       72  mt_find_[k]
+      755247    0.00%       75  void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.BasePhase::apply
+      737662    0.00%       46  __get_user_8_[k]
+      732510    0.00%       73  java.lang.Object* java.util.concurrent.ConcurrentHashMap::get
+      726156    0.00%       69  do_anonymous_page_[k]
+      720085    0.00%       69  handle_mm_fault_[k]
+      707243    0.00%       70  void LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.TypedGraphNodeIterator::forward
+      703873    0.00%       70  void LibGraalClassLoader_30c8681::jdk.graal.compiler.nodes.loop.LoopFragment::computeNodes
+      693990    0.00%       69  void LibGraalClassLoader_30c8681::jdk.graal.compiler.nodes.loop.LoopFragment::markFloating
+      684651    0.00%       68  java.lang.Object* java.util.ArrayList::get
+      683933    0.00%       69  void OopOopIterateDispatch<G1ScanCardClosure>::Table::oop_oop_iterate<InstanceMirrorKlass, narrowOop>
+      682395    0.00%       69  pthread_mutex_lock@@GLIBC_2.2.5
+      681194    0.00%       54  G1CodeRootSet::reset_table_scanner
+      665355    0.00%       66  void java.util.ArrayDeque::addLast
+      652317    0.00%       64  void LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.Graph$NodeEventListener::event
+      647398    0.00%       58  _raw_spin_lock_[k]
+      644300    0.00%       60  __mod_lruvec_page_state_[k]
+      642136    0.00%       37  syscall_exit_work_[k]
+      634368    0.00%       64  void LibGraalClassLoader_30c8681::jdk.graal.compiler.nodes.cfg.ReversePostOrder::compute
+      628041    0.00%       61  _int_malloc
+      627046    0.00%       63  java.util.HashMap$Node* java.util.HashMap::getNode
+      626313    0.00%       62  java.lang.Object* LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.Node::getNodeInfo
+      600123    0.00%       55  try_charge_memcg_[k]
+      590897    0.00%       60  byte[]* java.lang.AbstractStringBuilder::ensureCapacityNewCoder
+      589666    0.00%       59  java.lang.String.getBytes
+      581923    0.00%       61  Run.measure
+      580372    0.00%       58  Dictionary::find_class
+      578628    0.00%       58  java.lang.Object[]* java.util.Arrays::copyOf
+      572764    0.00%       57  void LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.NodeBitMap::mark
+      572670    0.00%       57  long LibGraalClassLoader_30c8681::jdk.graal.compiler.core.common.type.IntegerStamp::setOptionalBits
+      572101    0.00%       57  java.lang.Object* org.graalvm.collections.EconomicMapImpl::get
+      571094    0.00%       57  int org.graalvm.collections.EconomicMapImpl::getHashArray
+      570808    0.00%       57  void com.oracle.svm.core.genscavenge.remset.AlignedChunkRememberedSet::walkObjects
+      569232    0.00%       53  __alloc_pages_[k]
+      566517    0.00%       50  __clock_gettime_2
+      566371    0.00%       56  void LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.Edges::verifyUpdateValid
+      564103    0.00%       56  java.lang.StringLatin1.toUpperCase
+      560945    0.00%       56  org.graalvm.word.Pointer com.oracle.svm.core.genscavenge.TlabSupport::allocateRawMemoryInTlabSlow
+      558538    0.00%       58  __vfprintf_internal
+      556656    0.00%       55  Sieve.verifyResult
+      555606    0.00%       52  percpu_counter_add_batch_[k]
+      550355    0.00%       55  int org.graalvm.collections.EconomicMapImpl::getHashTableSize
+      549710    0.00%       55  JVMCIEnv::has_pending_exception
+      547740    0.00%       55  org.graalvm.nativeimage.ObjectHandle com.oracle.svm.core.handles.ThreadLocalHandles::tryCreateNonNull
+      542051    0.00%       54  void org.graalvm.collections.EconomicMapImpl::setValue
+      541958    0.00%       55  int java.nio.Buffer::nextGetIndex
+      541430    0.00%       52  ___pthread_mutex_trylock
+      541404    0.00%       54  LibGraalClassLoader_30c8681::jdk.vm.ci.meta.ResolvedJavaMethod* LibGraalClassLoader_30c8681::jdk.graal.compiler.replacements.SnippetTemplate$AbstractTemplates::findMethod
+      539724    0.00%       54  char java.lang.String::charAt
+      537879    0.00%       49  _raw_spin_trylock_[k]
+      536275    0.00%       52  G1HeapRegionManager::allocate_free_region
+      519218    0.00%       48  copy_mc_enhanced_fast_string_[k]
+      518811    0.00%       44  G1HeapRegionClaimer::claim_region
+      517384    0.00%       51  _IO_default_xsputn
+      517168    0.00%       53  ConstantPool::name_and_type_ref_index_at
+      516457    0.00%       51  LibGraalClassLoader_30c8681::jdk.graal.compiler.nodes.extended.AnchoringNode* LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.common.LoweringPhase::process
+      516315    0.00%       50  CodeHeap::find_blob
+      509634    0.00%       51  java.lang.Object* com.oracle.svm.core.genscavenge.ThreadLocalAllocation::slowPathNewInstance
+      508178    0.00%       48  G1ParCopyClosure<(G1Barrier)0, false>::do_oop
+      507541    0.00%       47  prepare_alloc_pages.constprop.0_[k]
+      503912    0.00%       50  LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.iterators.FilteredNodeIterable* LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.iterators.FilteredNodeIterable::and
+      499827    0.00%       50  java.lang.Object* java.util.concurrent.ConcurrentHashMap::computeIfAbsent
+      493361    0.00%       49  c2v_notifyCompilerPhaseEvent
+      493149    0.00%       50  HandleMark::initialize
+      492637    0.00%       49  void LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.Node::addUsage
+      492613    0.00%       47  up_read_[k]
+      488726    0.00%       49  jdk.internal.util.ArraysSupport.unsignedHashCode
+      481698    0.00%       47  MemAllocator::mem_allocate_inside_tlab_slow
+      480709    0.00%       48  void LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.schedule.SchedulePhase$Instance::processStack
+      476348    0.00%       44  rmqueue_[k]
+      472597    0.00%       47  void LibGraalClassLoader_30c8681::jdk.graal.compiler.debug.GraalError::guarantee
+      472582    0.00%       41  futex_wake_[k]
+      470652    0.00%       47  boolean LibGraalClassLoader_30c8681::jdk.graal.compiler.nodes.cfg.ControlFlowGraph::rpoInnerLoopsFirst
+      463531    0.00%       46  jdk.internal.classfile.impl.SplitConstantPool.internalAdd
+      462347    0.00%       46  int LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.common.CanonicalizerPhase::processWorkSet
+      457832    0.00%       46  HandleMark::~HandleMark
+      457025    0.00%       45  oopFactory::new_typeArray
+      448900    0.00%       45  char java.lang.StringLatin1::charAt
+      448671    0.00%       42  __strlen_avx2
+      445741    0.00%       44  LibGraalClassLoader_30c8681::jdk.vm.ci.meta.TriState* LibGraalClassLoader_30c8681::jdk.graal.compiler.nodes.loop.LoopFragment::isLoopNode
+      441701    0.00%       44  java.lang.Object* java.util.ArrayDeque$DeqIterator::next
+      441696    0.00%       44  boolean java.lang.String::startsWith
+      438301    0.00%       44  int LibGraalClassLoader_30c8681::jdk.graal.compiler.nodes.cfg.HIRBlock$ModifiableBlock::getSuccessorCount
+      438197    0.00%       43  LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.Node* LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.Graph::getIterableNodeStart
+      438073    0.00%       44  G1ScanHRForRegionClosure::scan_heap_roots
+      432435    0.00%       44  G1ParScanThreadState::copy_to_survivor_space
+      432099    0.00%       43  void LibGraalClassLoader_30c8681::jdk.graal.compiler.nodes.cfg.HIRBlock::assignPredecessorsAndSuccessors
+      431385    0.00%       43  void com.oracle.svm.core.genscavenge.GreyObjectsWalker::walkGreyObjects
+      431233    0.00%       43  LibGraalClassLoader_30c8681::jdk.graal.compiler.nodes.cfg.HIRBlock* LibGraalClassLoader_30c8681::jdk.graal.compiler.phases.schedule.SchedulePhase$Instance::calcLatestBlockForUsage
+      429578    0.00%       43  java.lang.Object[]* java.util.ArrayList::grow
+      421669    0.00%       40  G1ConcurrentMark::clear_statistics
+      421590    0.00%       40  folio_add_new_anon_rmap_[k]
+      421431    0.00%       42  LibGraalClassLoader_30c8681::jdk.graal.compiler.nodes.ValueNode* LibGraalClassLoader_30c8681::jdk.graal.compiler.nodes.PhiNode::valueAt
+      421396    0.00%       42  LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.Node* LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.NodeClass$RawEdgesIterator::next
+      421310    0.00%       42  void LibGraalClassLoader_30c8681::jdk.graal.compiler.nodes.cfg.ControlFlowGraph::perBasicBlockFrequencyAction
+      421161    0.00%       40  down_read_trylock_[k]
+      419081    0.00%       43  Mutex::lock_without_safepoint_check
+      417409    0.00%       39  __pte_offset_map_[k]
+      412415    0.00%       41  boolean LibGraalClassLoader_30c8681::jdk.graal.compiler.graph.NodeClass::dataEquals
+      412002    0.00%       41  LibGraalClassLoader_30c8681::jdk.graal.compiler.core.common.type.IntegerStamp* LibGraalClassLoader_30c8681::jdk.graal.compiler.core.common.type.IntegerStamp::create

@@ -1,0 +1,312 @@
+{
+  "identifier": "HotSpotCompilation-57[java.util.HashMap.putVal(int, Object, Object, boolean, boolean)]",
+  "method": "java.util.HashMap.putVal(int, java.lang.Object, java.lang.Object, boolean, boolean)java.lang.Object",
+  "entryBCI": -1,
+  "codeSignature": "83164c99a8c226756fd50fb1f726e413e6a5495393dbecc780c1cf2674b237cd",
+  "graphSignature": "71c7befc4bcc50903c01cb500806055811a71080bd754d077284439fcd10103c",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.util.HashMap.putVal(int, java.lang.Object, java.lang.Object, boolean, boolean)java.lang.Object",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.util.HashMap.putVal(int, java.lang.Object, java.lang.Object, boolean, boolean)java.lang.Object",
+      "isMature": true,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 7,
+          "branchTakenProbability": 0.02109375
+        },
+        {
+          "bci": 12,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 16,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 20,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 26,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 40,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 44,
+          "branchTakenProbability": 0.42578125
+        },
+        {
+          "bci": 56,
+          "exceptionSeen": "FALSE",
+          "typeProfile": {
+            "nullSeen": "FALSE",
+            "types": [
+              {
+                "type": "Ljava/util/HashMap;",
+                "probability": 1.0
+              }
+            ],
+            "notRecordedProbability": 0.0
+          }
+        },
+        {
+          "bci": 59,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 65,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 69,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 109,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 136,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 142,
+          "branchTakenProbability": 0.27405927405927405
+        },
+        {
+          "bci": 152,
+          "exceptionSeen": "FALSE",
+          "typeProfile": {
+            "nullSeen": "FALSE",
+            "types": [
+              {
+                "type": "Ljava/util/HashMap;",
+                "probability": 1.0
+              }
+            ],
+            "notRecordedProbability": 0.0
+          }
+        },
+        {
+          "bci": 155,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 162,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 177,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 181,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 224,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 284,
+          "branchTakenProbability": 0.965234375
+        },
+        {
+          "bci": 288,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 295,
+          "exceptionSeen": "FALSE",
+          "typeProfile": {
+            "nullSeen": "FALSE",
+            "types": [
+              {
+                "type": "Ljava/util/HashMap;",
+                "probability": 1.0
+              }
+            ],
+            "notRecordedProbability": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "method": "java.util.HashMap.resize()java.util.HashMap$Node[]",
+      "isMature": true,
+      "compilerIRSize": 0,
+      "data": [
+        {
+          "bci": 6,
+          "branchTakenProbability": 0.6224899598393574
+        },
+        {
+          "bci": 14,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 25,
+          "branchTakenProbability": 0.37751004016064255
+        },
+        {
+          "bci": 31,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 50,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 56,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 68,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 87,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 133,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 145,
+          "branchTakenProbability": 0.37751004016064255
+        },
+        {
+          "bci": 154,
+          "branchTakenProbability": 0.020493956910141883
+        },
+        {
+          "bci": 160,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 164,
+          "branchTakenProbability": 0.482162017167382
+        },
+        {
+          "bci": 171,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 174,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 177,
+          "branchTakenProbability": 0.35742035742035744
+        },
+        {
+          "bci": 184,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 194,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 203,
+          "branchTakenProbability": 1.0
+        },
+        {
+          "bci": 237,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 244,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 249,
+          "branchTakenProbability": 0.4799510254055709
+        },
+        {
+          "bci": 254,
+          "branchTakenProbability": 0.32901706886403764
+        },
+        {
+          "bci": 268,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 280,
+          "branchTakenProbability": 0.2997448979591837
+        },
+        {
+          "bci": 294,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 306,
+          "branchTakenProbability": 0.5772880318334864
+        },
+        {
+          "bci": 311,
+          "branchTakenProbability": 0.17378711078928313
+        },
+        {
+          "bci": 317,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 326,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 329,
+          "branchTakenProbability": 0.2049239681390297
+        },
+        {
+          "bci": 335,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 346,
+          "exceptionSeen": "FALSE"
+        }
+      ]
+    },
+    {
+      "method": "java.util.HashMap.newNode(int, java.lang.Object, java.lang.Object, java.util.HashMap$Node)java.util.HashMap$Node",
+      "isMature": false,
+      "compilerIRSize": 0,
+      "data": [
+        {
+          "bci": 9,
+          "exceptionSeen": "FALSE"
+        }
+      ]
+    },
+    {
+      "method": "java.util.HashMap$Node.<init>(int, java.lang.Object, java.lang.Object, java.util.HashMap$Node)void",
+      "isMature": false,
+      "compilerIRSize": 0,
+      "data": [
+        {
+          "bci": 1,
+          "exceptionSeen": "FALSE"
+        }
+      ]
+    },
+    {
+      "method": "java.util.HashMap.afterNodeInsertion(boolean)void",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}

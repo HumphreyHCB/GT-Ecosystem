@@ -1,0 +1,45 @@
+{
+  "identifier": "HotSpotCompilation-98[java.util.concurrent.ConcurrentHashMap.tabAt(ConcurrentHashMap$Node[], int)]",
+  "method": "java.util.concurrent.ConcurrentHashMap.tabAt(java.util.concurrent.ConcurrentHashMap$Node[], int)java.util.concurrent.ConcurrentHashMap$Node",
+  "entryBCI": -1,
+  "codeSignature": "71d647ba8c6a0b4ea5a8b561fe43e8bed960c9cb04034a7aef626c5d8360de6d",
+  "graphSignature": "e6dc07915a8c610ba2728c6b7ad772742fe84f99a5e8fa59b95312deef71bfdf",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.util.concurrent.ConcurrentHashMap.tabAt(java.util.concurrent.ConcurrentHashMap$Node[], int)java.util.concurrent.ConcurrentHashMap$Node",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.util.concurrent.ConcurrentHashMap.tabAt(java.util.concurrent.ConcurrentHashMap$Node[], int)java.util.concurrent.ConcurrentHashMap$Node",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 14,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 17,
+          "exceptionSeen": "FALSE",
+          "typeProfile": {
+            "nullSeen": "TRUE",
+            "types": [
+              {
+                "type": "Ljava/util/concurrent/ConcurrentHashMap$Node;",
+                "probability": 0.6602675974403723
+              },
+              {
+                "type": "Ljava/util/concurrent/ConcurrentHashMap$ForwardingNode;",
+                "probability": 0.33973240255962767
+              }
+            ],
+            "notRecordedProbability": 0.0
+          }
+        }
+      ]
+    }
+  ]
+}
