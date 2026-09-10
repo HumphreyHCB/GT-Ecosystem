@@ -23,6 +23,7 @@ FULL_REBUILD=false
 TEST_ONLY=false
 SKIP_DIVINING=false
 SKIP_BUBOL_DIVINING=false
+REFRESH_BUBOL_LOOP_INPUTS=false
 
 STAGE_LIST=''
 START_STAGE=''
@@ -52,6 +53,9 @@ Options:
 
     --skip-bubol-divining
         Skip BuboL Divine generation and verify the newest BuboL output
+
+    --refresh-bubol-loop-inputs
+        Repeat the BuboL CFG run and SlowdownTest VTune runs
 
     -s, --stages LIST
         Run only a comma-separated list of stages
@@ -84,6 +88,7 @@ Examples:
 
     $(basename "$0") --stages divine --skip-divining
     $(basename "$0") --stages bubol --skip-bubol-divining
+    $(basename "$0") --stages bubol --skip-bubol-divining --refresh-bubol-loop-inputs
 EOF
 }
 
@@ -104,6 +109,10 @@ parse_arguments() {
 
             --skip-bubol-divining)
                 SKIP_BUBOL_DIVINING=true
+                ;;
+
+            --refresh-bubol-loop-inputs)
+                REFRESH_BUBOL_LOOP_INPUTS=true
                 ;;
 
             -s|--stages)
@@ -262,6 +271,20 @@ validate_arguments() {
             die '--skip-bubol-divining requires the bubol stage to be selected'
         fi
     fi
+
+    if [[ "$REFRESH_BUBOL_LOOP_INPUTS" == true ]]; then
+        bubol_selected=false
+
+        for stage in "${SELECTED_STAGES[@]}"; do
+            if [[ "$stage" == bubol ]]; then
+                bubol_selected=true
+            fi
+        done
+
+        if [[ "$bubol_selected" != true ]]; then
+            die '--refresh-bubol-loop-inputs requires the bubol stage to be selected'
+        fi
+    fi
 }
 
 compile_openjdk() {
@@ -311,6 +334,8 @@ run_divine() {
 }
 
 run_bubol() {
+    local -a loop_verification_arguments=()
+
     if [[ "$SKIP_BUBOL_DIVINING" == true ]]; then
         task \
             'Skip BuboL Divine generation because --skip-bubol-divining was requested'
@@ -324,6 +349,15 @@ run_bubol() {
     run_step \
         'Verify the BuboL-divined slowdown' \
         "$TESTS_DIR/Stages/Verify-BuboL.sh"
+
+    if [[ "$REFRESH_BUBOL_LOOP_INPUTS" == true ]]; then
+        loop_verification_arguments+=(--refresh-inputs)
+    fi
+
+    run_step \
+        'Verify BuboL per-loop measurements against VTune' \
+        "$TESTS_DIR/Stages/Verify-BuboL-Loops.sh" \
+        "${loop_verification_arguments[@]}"
 }
 
 run_selected_stages() {
