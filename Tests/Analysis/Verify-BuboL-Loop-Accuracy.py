@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 
-"""Compare BuboL per-loop cycle measurements with VTune block timings."""
+"""Compare BuboL per-loop cycle measurements with VTune block timings.
+
+The VTune/CFG/probe matching path deliberately follows the older working
+script as closely as possible.  The command-line interface, output filenames,
+and final BuboL-vs-VTune validation are retained from the newer ecosystem
+script.
+"""
 
 from __future__ import annotations
 
@@ -16,9 +22,336 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 
+class AnalysisError(RuntimeError):
+    """A validation failure that should fail the ecosystem stage."""
+
+
+# ============================================================
+# Part 1: HumphreysDebugDataPhase output
+# Working-script parsing behaviour retained.
+# ============================================================
+
+
+@dataclass
+class Block:
+    bid: int
+    successors: List[int] = field(default_factory=list)
+    loop: Optional[str] = None
+    sources: List[str] = field(default_factory=list)
+
+    bubo_lines: List[str] = field(default_factory=list)
+    marker_classes: List[str] = field(default_factory=list)
+    marker_loop_ids: Dict[str, int] = field(default_factory=dict)
+
+    has_rdtsc: bool = False
+    has_gt_marker: bool = False
+
+
+@dataclass
+class Compilation:
+    name: str
+    blocks: Dict[int, Block]
+
+
+def parse_debug_output(text: str) -> List[Compilation]:
+    lines = text.splitlines()
+    comps: List[Compilation] = []
+
+    in_comp = False
+    comp_name: Optional[str] = None
+    blocks: Dict[int, Block] = {}
+    current_block: Optional[Block] = None
+    mode: Optional[str] = None
+    last_marker_class: Optional[str] = None
+
+    for raw in lines:
+        line = raw.strip()
+
+        if line.startswith("=== HumphreysDebugDataPhase ==="):
+            in_comp = True
+            comp_name = None
+            blocks = {}
+            current_block = None
+            mode = None
+            last_marker_class = None
+            continue
+
+        if not in_comp:
+            continue
+
+        if line.startswith("=== End HumphreysDebugDataPhase ==="):
+            if comp_name is None:
+                comp_name = "<unknown-compilation>"
+            comps.append(Compilation(name=comp_name, blocks=blocks))
+            in_comp = False
+            current_block = None
+            mode = None
+            last_marker_class = None
+            continue
+
+        if line.startswith("Compilation: "):
+            comp_name = line[len("Compilation: "):].strip()
+            continue
+
+        if line.startswith("Number of loops:"):
+            continue
+
+        if line.startswith("Block "):
+            m = re.match(r"Block\s+(\d+)", line)
+            if not m:
+                continue
+            bid = int(m.group(1))
+            current_block = Block(bid)
+            blocks[bid] = current_block
+            mode = None
+            last_marker_class = None
+            continue
+
+        if line.startswith("Successors:"):
+            mode = "succ"
+            continue
+
+        if line.startswith("Predecessors:"):
+            mode = "pred"
+            continue
+
+        if line.startswith("In loop:"):
+            if current_block is not None:
+                val = line[len("In loop:"):].strip()
+                current_block.loop = None if val == "<none>" else val
+            continue
+
+        if line.startswith("Source positions in block:"):
+            mode = "src"
+            continue
+
+        if line.startswith("BuboLoopMakers:"):
+            mode = "bubo"
+            last_marker_class = None
+            continue
+
+        if current_block is None:
+            continue
+
+        if mode == "succ":
+            if "->" in line:
+                succ_str = line.split("->", 1)[1].strip()
+                if succ_str:
+                    try:
+                        current_block.successors.append(int(succ_str))
+                    except ValueError:
+                        pass
+            continue
+
+        if mode == "src":
+            if line and line != "<none>":
+                current_block.sources.append(line)
+            continue
+
+        if mode == "bubo":
+            if not line:
+                continue
+
+            current_block.bubo_lines.append(line)
+
+            m = re.search(r"Found in this block\s*:\s*(?:class\s+)?(.+)$", line)
+            if m:
+                cls = m.group(1).strip()
+                current_block.marker_classes.append(cls)
+                last_marker_class = cls
+
+                u = cls.upper()
+                if "RDTSC" in u or "RDTSCP" in u or "RDTCP" in u:
+                    current_block.has_rdtsc = True
+
+                if "GT" in u or "SLOWDOWN" in u or "GTSLOW" in u:
+                    current_block.has_gt_marker = True
+                continue
+
+            m = re.match(r"LoopID:\s*(\d+)", line)
+            if m and last_marker_class is not None:
+                current_block.marker_loop_ids[last_marker_class] = int(m.group(1))
+                continue
+
+            continue
+
+    return comps
+
+
+# ============================================================
+# Part 2: The old DOT -> loops.csv/probe_nodes.csv logic,
+# performed directly in memory so the new program keeps its
+# current input/output layout.
+# ============================================================
+
+
+def normalise_method_name(s: str) -> str:
+    return s.strip().replace("::", ".")
+
+
+def parse_graph_label(label: str) -> Tuple[Optional[int], str]:
+    comp_id = None
+    method = label
+    m = re.match(r"^\s*(\d+)\s*-\s*(.+?)\s*$", label)
+    if m:
+        comp_id = int(m.group(1))
+        rest = m.group(2).strip()
+        method = rest.split("(", 1)[0].strip()
+    return comp_id, method
+
+
+def exact_rdtsc_probe_loop_id(block: Block) -> Optional[int]:
+    """Match the exact probe class used by the working script's RDTSC_RE."""
+    for marker_class, loop_id in block.marker_loop_ids.items():
+        short_name = marker_class.split(".")[-1]
+        if short_name == "AMD64BuboRDTSCToSlot":
+            return loop_id
+    return None
+
+
+def infer_looplabel_to_loopid(
+    node_looplabel: Dict[int, str],
+    node_rdtsc_loopid: Dict[int, int],
+    edges: List[Tuple[int, int]],
+) -> Dict[str, int]:
+    looplabel_to_id: Dict[str, int] = {}
+
+    succs: Dict[int, List[int]] = {}
+    for s, d in edges:
+        succs.setdefault(s, []).append(d)
+
+    # The old DOT writer emitted nodes in numeric order, so retain that order.
+    for src in sorted(node_rdtsc_loopid):
+        k = node_rdtsc_loopid[src]
+        for dst in succs.get(src, []):
+            lx = node_looplabel.get(dst)
+            if lx is None:
+                continue
+            # Working-script behaviour: first mapping wins.
+            if lx not in looplabel_to_id:
+                looplabel_to_id[lx] = k
+
+    return looplabel_to_id
+
+
+def infer_probe_nodes_for_loopid(
+    node_looplabel: Dict[int, str],
+    node_rdtsc_loopid: Dict[int, int],
+    edges: List[Tuple[int, int]],
+    looplabel_to_id: Dict[str, int],
+) -> Dict[int, Set[int]]:
+    succs: Dict[int, List[int]] = {}
+    for s, d in edges:
+        succs.setdefault(s, []).append(d)
+
+    out: Dict[int, Set[int]] = defaultdict(set)
+
+    for src in sorted(node_rdtsc_loopid):
+        marker_loopid = node_rdtsc_loopid[src]
+        assigned: Optional[int] = None
+
+        for dst in succs.get(src, []):
+            lx = node_looplabel.get(dst)
+            if lx is None:
+                continue
+            lid = looplabel_to_id.get(lx)
+            if lid is not None:
+                assigned = lid
+                break
+
+        if assigned is None:
+            assigned = marker_loopid
+
+        out[assigned].add(src)
+
+    return out
+
+
+def build_cfg_maps_from_debug(
+    compilations: Iterable[Compilation],
+) -> Tuple[
+    Dict[str, List[int]],
+    Dict[Tuple[int, str, int], int],
+    Dict[Tuple[int, str, int], Set[int]],
+]:
+    method_to_comps_set: Dict[str, Set[int]] = defaultdict(set)
+    node_map: Dict[Tuple[int, str, int], int] = {}
+    probe_blocks_by_loop: Dict[Tuple[int, str, int], Set[int]] = defaultdict(set)
+
+    for compilation in compilations:
+        comp_id, method = parse_graph_label(compilation.name)
+        if comp_id is None:
+            continue
+
+        method_norm = normalise_method_name(method)
+        method_to_comps_set[method_norm].add(comp_id)
+
+        node_looplabel: Dict[int, str] = {}
+        node_rdtsc_loopid: Dict[int, int] = {}
+        edges: List[Tuple[int, int]] = []
+
+        # This reproduces the information that the working script wrote to DOT
+        # and then parsed back from the DOT files.
+        for bid in sorted(compilation.blocks):
+            block = compilation.blocks[bid]
+
+            if block.loop is not None:
+                node_looplabel[bid] = block.loop
+
+            probe_loop_id = exact_rdtsc_probe_loop_id(block)
+            if probe_loop_id is not None:
+                node_rdtsc_loopid[bid] = probe_loop_id
+
+            for successor in block.successors:
+                if successor in compilation.blocks:
+                    edges.append((bid, successor))
+
+        looplabel_to_id = infer_looplabel_to_loopid(
+            node_looplabel,
+            node_rdtsc_loopid,
+            edges,
+        )
+
+        probe_nodes_by_loopid = infer_probe_nodes_for_loopid(
+            node_looplabel,
+            node_rdtsc_loopid,
+            edges,
+            looplabel_to_id,
+        )
+
+        for node, loop_label in node_looplabel.items():
+            if loop_label not in looplabel_to_id:
+                continue
+            node_map[(comp_id, method_norm, node)] = looplabel_to_id[loop_label]
+
+        for loop_id, nodes in probe_nodes_by_loopid.items():
+            for graal_block_id in nodes:
+                probe_blocks_by_loop[(comp_id, method_norm, loop_id)].add(
+                    graal_block_id
+                )
+
+    method_to_comps = {
+        method: sorted(comp_ids)
+        for method, comp_ids in method_to_comps_set.items()
+    }
+
+    if not node_map:
+        raise AnalysisError("CFG data produced no Graal-block to BuboL-loop mappings")
+    if not probe_blocks_by_loop:
+        raise AnalysisError("CFG data produced no RDTSC probe-block mappings")
+
+    return method_to_comps, node_map, probe_blocks_by_loop
+
+
+# ============================================================
+# Part 3: slowdown blocks + bridge + MarkerPhaseInfo
+# Working-script matching behaviour retained.
+# ============================================================
+
+
 NUMBER = r"-?\d+(?:\.\d+)?"
 
-VTUNE_BLOCK_RE = re.compile(
+LINE_RE = re.compile(
     rf"^Method:\s*(?P<method>.*?),\s*"
     rf"Block ID:\s*(?P<block>\d+),\s*"
     rf"Normal Time:\s*(?P<normal>{NUMBER}),\s*"
@@ -26,7 +359,7 @@ VTUNE_BLOCK_RE = re.compile(
     rf"Percentage Increase:\s*(?P<pct>{NUMBER})(?:%)?\s*$"
 )
 
-VTUNE_RDTSC_RE = re.compile(
+RDTSC_LINE_RE = re.compile(
     rf"^Method:\s*(?P<method>.*?),\s*"
     rf"Block ID:\s*(?P<block>\d+),\s*"
     rf"RDTSC Normal Time:\s*(?P<normal>{NUMBER}),\s*"
@@ -38,60 +371,444 @@ BRIDGE_KEY_RE = re.compile(
     r"^\s*(?P<graal>\d+)\s*\(Vtune Block\s*(?P<vtune>\d+)\)\s*$"
 )
 
-BUBO_COMP_RE = re.compile(r"^Comp\s+(\d+)\s*\((.*?)\)\s*loops:\s*$")
-BUBO_ENCODING_RE = re.compile(r"^Found Encoding\s*:\s*(.*)")
-BUBO_LOOP_RE = re.compile(
-    r"loop\s+(\d+)\s+Cycles:\s*([0-9]+)\s*\|\|\s*"
-    r"Activation Count:\s*([0-9]+)\s*\|\s*LoopCallCount:\s*([0-9]+)\s*\|"
-)
-BUBO_TOTAL_RE = re.compile(
-    r"Bubo\.RDTSC\.Harness\.main Total RDTSC cycles:\s*([0-9]+)"
-)
 
-
-class AnalysisError(RuntimeError):
-    """A validation failure that should fail the ecosystem stage."""
-
-
-@dataclass
-class CfgBlock:
+@dataclass(frozen=True)
+class BlockRow:
+    method_raw: str
+    method_norm: str
     block_id: int
-    successors: List[int] = field(default_factory=list)
-    loop_label: Optional[str] = None
-    rdtsc_loop_ids: List[int] = field(default_factory=list)
-
-
-@dataclass
-class CfgCompilation:
-    comp_id: int
-    method: str
-    blocks: Dict[int, CfgBlock]
-
-
-@dataclass(frozen=True)
-class VtuneBlock:
-    method: str
-    vtune_block_id: int
     normal_time: float
     slowdown_time: float
 
 
 @dataclass(frozen=True)
-class VtuneRdtsc:
-    method: str
+class RdtscRow:
+    method_raw: str
+    method_norm: str
     vtune_block_id: int
-    normal_time: float
-    slowdown_time: float
+    rdtsc_normal: float
+    rdtsc_slow: float
 
 
 @dataclass
-class LoopTimes:
-    normal_time: float = 0.0
-    slowdown_time: float = 0.0
-    block_count: int = 0
-    probe_normal_time: float = 0.0
-    probe_slowdown_time: float = 0.0
+class LoopAgg:
+    num_blocks: int = 0
+    sum_normal: float = 0.0
+    sum_slow: float = 0.0
+    probe_sum_normal: float = 0.0
+    probe_sum_slow: float = 0.0
     probe_count: int = 0
+
+
+def safe_pct_increase(normal: float, slow: float) -> float:
+    if normal <= 0.0:
+        return 0.0
+    return ((slow - normal) / normal) * 100.0
+
+
+def read_slowdown_and_rdtsc_rows(
+    path: Path,
+) -> Tuple[List[BlockRow], Dict[Tuple[str, int], RdtscRow], int, int, int]:
+    block_rows: List[BlockRow] = []
+    rdtsc_map: Dict[Tuple[str, int], RdtscRow] = {}
+
+    matched_blocks = 0
+    matched_rdtsc = 0
+    total = 0
+
+    with path.open("r", encoding="utf-8", errors="replace") as f:
+        for raw in f:
+            total += 1
+            line = raw.strip()
+            if not line:
+                continue
+
+            m = LINE_RE.match(line)
+            if m:
+                method_raw = m.group("method").strip()
+                method_norm = normalise_method_name(method_raw)
+                block_rows.append(
+                    BlockRow(
+                        method_raw=method_raw,
+                        method_norm=method_norm,
+                        block_id=int(m.group("block")),
+                        normal_time=float(m.group("normal")),
+                        slowdown_time=float(m.group("slow")),
+                    )
+                )
+                matched_blocks += 1
+                continue
+
+            r = RDTSC_LINE_RE.match(line)
+            if r:
+                method_raw = r.group("method").strip()
+                method_norm = normalise_method_name(method_raw)
+                vtune_block_id = int(r.group("block"))
+                rr = RdtscRow(
+                    method_raw=method_raw,
+                    method_norm=method_norm,
+                    vtune_block_id=vtune_block_id,
+                    rdtsc_normal=float(r.group("normal")),
+                    rdtsc_slow=float(r.group("slow")),
+                )
+                rdtsc_map[(method_norm, vtune_block_id)] = rr
+                matched_rdtsc += 1
+                continue
+
+    if not block_rows:
+        raise AnalysisError(f"No normal VTune block rows were found in {path}")
+    if not rdtsc_map:
+        raise AnalysisError(f"No RDTSC VTune block rows were found in {path}")
+
+    return block_rows, rdtsc_map, matched_blocks, matched_rdtsc, total
+
+
+def read_bridge_vtune_to_graal(path: Path) -> Dict[str, Dict[int, int]]:
+    data = json.loads(path.read_text(encoding="utf-8"))
+    out: Dict[str, Dict[int, int]] = {}
+
+    for method, mapping in data.items():
+        method_norm = normalise_method_name(method)
+        vtune_to_graal: Dict[int, int] = {}
+
+        if not isinstance(mapping, dict):
+            continue
+
+        for k in mapping.keys():
+            m = BRIDGE_KEY_RE.match(str(k))
+            if not m:
+                continue
+            graal_id = int(m.group("graal"))
+            vtune_id = int(m.group("vtune"))
+            vtune_to_graal[vtune_id] = graal_id
+
+        out[method_norm] = vtune_to_graal
+
+    if not any(out.values()):
+        raise AnalysisError(f"No VTune-to-Graal block mappings were found in {path}")
+
+    return out
+
+
+def read_markerphase_graal_to_vtune(path: Path) -> Dict[str, Dict[int, int]]:
+    data = json.loads(path.read_text(encoding="utf-8"))
+    out: Dict[str, Dict[int, int]] = {}
+
+    if not isinstance(data, dict):
+        return out
+
+    for method, arr in data.items():
+        method_norm = normalise_method_name(method)
+        graal_to_vtune: Dict[int, int] = {}
+
+        if not isinstance(arr, list):
+            continue
+
+        for entry in arr:
+            if not isinstance(entry, dict):
+                continue
+            g = entry.get("GraalID")
+            v = entry.get("VtuneBlock")
+            if g is None or v is None:
+                continue
+            try:
+                graal_id = int(str(g).strip())
+                vtune_id = int(str(v).strip())
+            except ValueError:
+                continue
+            graal_to_vtune[graal_id] = vtune_id
+
+        out[method_norm] = graal_to_vtune
+
+    if not any(out.values()):
+        raise AnalysisError(f"No Graal-to-VTune marker mappings were found in {path}")
+
+    return out
+
+
+def invert_graal_to_vtune_map(
+    graal_to_vtune_by_method: Dict[str, Dict[int, int]],
+) -> Dict[str, Dict[int, int]]:
+    out: Dict[str, Dict[int, int]] = {}
+    for method_norm, g2v in graal_to_vtune_by_method.items():
+        v2g: Dict[int, int] = {}
+        for g, v in g2v.items():
+            if v not in v2g or g < v2g[v]:
+                v2g[v] = g
+        out[method_norm] = v2g
+    return out
+
+
+def choose_best_comp_per_method(
+    blocks: List[BlockRow],
+    method_to_comps: Dict[str, List[int]],
+    node_map: Dict[Tuple[int, str, int], int],
+    slowdown_block_id_is_vtune: bool,
+    vtune_to_graal_by_method: Dict[str, Dict[int, int]],
+    vtune_to_graal_fallback_by_method: Dict[str, Dict[int, int]],
+    enable_method_fallback_match: bool,
+) -> Dict[str, int]:
+    def method_alternatives(m: str) -> List[str]:
+        if not enable_method_fallback_match:
+            return [m]
+        alt = m.replace(".", "::") if "." in m else m.replace("::", ".")
+        alt_norm = normalise_method_name(alt)
+        if alt_norm != m:
+            return [m, alt_norm]
+        return [m]
+
+    method_to_graal_blocks: Dict[str, List[int]] = defaultdict(list)
+
+    for br in blocks:
+        method_norm = br.method_norm
+
+        if slowdown_block_id_is_vtune:
+            vtune_bid = br.block_id
+
+            vtune_to_graal = vtune_to_graal_by_method.get(method_norm, {})
+            graal_bid = vtune_to_graal.get(vtune_bid)
+
+            if graal_bid is None:
+                fallback = vtune_to_graal_fallback_by_method.get(method_norm, {})
+                graal_bid = fallback.get(vtune_bid)
+
+            if graal_bid is None:
+                continue
+        else:
+            graal_bid = br.block_id
+
+        method_to_graal_blocks[method_norm].append(graal_bid)
+
+    best_comp_for_method: Dict[str, int] = {}
+
+    for method_norm, graal_bids in method_to_graal_blocks.items():
+        candidate_comps: Set[int] = set()
+        for m in method_alternatives(method_norm):
+            for cid in method_to_comps.get(m, []):
+                candidate_comps.add(cid)
+
+        if not candidate_comps:
+            continue
+
+        best_score = -1
+        best_cid = None
+
+        for cid in sorted(candidate_comps):
+            score = 0
+            for m in method_alternatives(method_norm):
+                for gb in graal_bids:
+                    if (cid, m, gb) in node_map:
+                        score += 1
+
+            if score > best_score or (
+                score == best_score
+                and best_cid is not None
+                and cid > best_cid
+            ):
+                best_score = score
+                best_cid = cid
+
+        if best_cid is not None and best_score > 0:
+            best_comp_for_method[method_norm] = best_cid
+
+    return best_comp_for_method
+
+
+def find_comp_for_method_block(
+    method_norm: str,
+    block_id: int,
+    method_to_comps: Dict[str, List[int]],
+    node_map: Dict[Tuple[int, str, int], int],
+    enable_fallback: bool,
+) -> Optional[int]:
+    comps = method_to_comps.get(method_norm, [])
+    for cid in reversed(comps):
+        if (cid, method_norm, block_id) in node_map:
+            return cid
+
+    if not enable_fallback:
+        return None
+
+    alt = (
+        method_norm.replace(".", "::")
+        if "." in method_norm
+        else method_norm.replace("::", ".")
+    )
+    alt_norm = normalise_method_name(alt)
+    comps = method_to_comps.get(alt_norm, [])
+    for cid in reversed(comps):
+        if (cid, alt_norm, block_id) in node_map:
+            return cid
+    return None
+
+
+def build_vtune_totals(
+    vtune_report: Path,
+    bridge_json: Path,
+    markerphase_json: Path,
+    method_to_comps: Dict[str, List[int]],
+    node_map: Dict[Tuple[int, str, int], int],
+    probe_blocks_by_loop: Dict[Tuple[int, str, int], Set[int]],
+) -> Tuple[
+    Dict[Tuple[int, str, int], LoopAgg],
+    List[Dict[str, object]],
+    Dict[str, int],
+    Dict[str, int],
+]:
+    blocks, rdtsc_map, matched, matched_rdtsc, total = read_slowdown_and_rdtsc_rows(
+        vtune_report
+    )
+
+    # The new ecosystem input always supplies VTune block IDs and both mapping files.
+    # The matching order below is the same as the working script:
+    # Final_*.json first, MarkerPhaseInfo inversion second.
+    vtune_to_graal_by_method = read_bridge_vtune_to_graal(bridge_json)
+    graal_to_vtune_by_method = read_markerphase_graal_to_vtune(markerphase_json)
+    vtune_to_graal_fallback_by_method = invert_graal_to_vtune_map(
+        graal_to_vtune_by_method
+    )
+
+    grouped: Dict[Tuple[int, str, int], LoopAgg] = defaultdict(LoopAgg)
+    block_rows: List[Dict[str, object]] = []
+
+    missing_methodblock = 0
+    missing_block = 0
+    used = 0
+    missing_bridge = 0
+
+    # Same compilation-selection algorithm as the working script.
+    best_comp_by_method = choose_best_comp_per_method(
+        blocks=blocks,
+        method_to_comps=method_to_comps,
+        node_map=node_map,
+        slowdown_block_id_is_vtune=True,
+        vtune_to_graal_by_method=vtune_to_graal_by_method,
+        vtune_to_graal_fallback_by_method=vtune_to_graal_fallback_by_method,
+        enable_method_fallback_match=True,
+    )
+
+    for br in blocks:
+        method_norm = br.method_norm
+        vtune_block_id = br.block_id
+
+        vtune_to_graal = vtune_to_graal_by_method.get(method_norm, {})
+        graal_block_id = vtune_to_graal.get(vtune_block_id)
+
+        if graal_block_id is None:
+            fallback = vtune_to_graal_fallback_by_method.get(method_norm, {})
+            graal_block_id = fallback.get(vtune_block_id)
+
+        if graal_block_id is None:
+            missing_bridge += 1
+            continue
+
+        comp_id = best_comp_by_method.get(method_norm)
+        if comp_id is None:
+            comp_id = find_comp_for_method_block(
+                method_norm,
+                graal_block_id,
+                method_to_comps,
+                node_map,
+                True,
+            )
+
+        if comp_id is None:
+            missing_methodblock += 1
+            continue
+
+        loop_id = node_map.get((comp_id, method_norm, graal_block_id))
+        if loop_id is None:
+            missing_block += 1
+            continue
+
+        g = grouped[(comp_id, method_norm, loop_id)]
+        g.num_blocks += 1
+        g.sum_normal += br.normal_time
+        g.sum_slow += br.slowdown_time
+        used += 1
+
+        block_rows.append(
+            {
+                "comp_id": comp_id,
+                "method": method_norm,
+                "loop_id": loop_id,
+                "vtune_block_id": vtune_block_id,
+                "graal_block_id": graal_block_id,
+                "normal_time": br.normal_time,
+                "slowdown_time": br.slowdown_time,
+                "pct_increase_block": safe_pct_increase(
+                    br.normal_time, br.slowdown_time
+                ),
+            }
+        )
+
+    probe_added_keys = 0
+    probe_added_blocks = 0
+    probe_missing_marker_map = 0
+    probe_missing_rdtsc_line = 0
+
+    # This is the probe-augmentation block from the working script.
+    for (comp_id, method_norm, loop_id), g in grouped.items():
+        probe_graal_blocks = probe_blocks_by_loop.get(
+            (comp_id, method_norm, loop_id)
+        )
+        if not probe_graal_blocks:
+            continue
+
+        graal_to_vtune = graal_to_vtune_by_method.get(method_norm)
+        if not graal_to_vtune:
+            probe_missing_marker_map += len(probe_graal_blocks)
+            continue
+
+        any_added = False
+
+        for graal_bid in probe_graal_blocks:
+            vtune_bid = graal_to_vtune.get(graal_bid)
+            if vtune_bid is None:
+                probe_missing_marker_map += 1
+                continue
+
+            rr = rdtsc_map.get((method_norm, vtune_bid))
+            if rr is None:
+                probe_missing_rdtsc_line += 1
+                continue
+
+            g.probe_sum_normal += rr.rdtsc_normal
+            g.probe_sum_slow += rr.rdtsc_slow
+            g.probe_count += 1
+            probe_added_blocks += 1
+            any_added = True
+
+        if any_added:
+            probe_added_keys += 1
+
+    if not grouped:
+        raise AnalysisError("No VTune blocks could be assigned to BuboL loops")
+    if probe_added_blocks == 0:
+        raise AnalysisError(
+            "No RDTSC probe timings were added through MarkerPhaseInfo.json"
+        )
+
+    statistics_map = {
+        "report_lines": total,
+        "matched_blocks": matched,
+        "matched_rdtsc": matched_rdtsc,
+        "blocks_used": used,
+        "bridge_misses": missing_bridge,
+        "missing_methodblock": missing_methodblock,
+        "cfg_misses": missing_block,
+        "probe_loops_updated": probe_added_keys,
+        "probe_blocks_added": probe_added_blocks,
+        "probe_marker_misses": probe_missing_marker_map,
+        "probe_timing_misses": probe_missing_rdtsc_line,
+    }
+
+    return grouped, block_rows, statistics_map, best_comp_by_method
+
+
+# ============================================================
+# New ecosystem outputs and final BuboL comparison.
+# ============================================================
 
 
 @dataclass
@@ -112,440 +829,24 @@ class BuboData:
     encoding_count: int
 
 
-def normalise_method(value: str) -> str:
+BUBO_COMP_RE = re.compile(r"^Comp\s+(\d+)\s*\((.*?)\)\s*loops:\s*$")
+BUBO_ENCODING_RE = re.compile(r"^Found Encoding\s*:\s*(.*)")
+BUBO_LOOP_RE = re.compile(
+    r"loop\s+(\d+)\s+Cycles:\s*([0-9]+)\s*\|\|\s*"
+    r"Activation Count:\s*([0-9]+)\s*\|\s*LoopCallCount:\s*([0-9]+)\s*\|"
+)
+BUBO_TOTAL_RE = re.compile(
+    r"Bubo\.RDTSC\.Harness\.main Total RDTSC cycles:\s*([0-9]+)"
+)
+
+
+def normalise_bubo_method(value: str) -> str:
+    # Keep the newer Bubo-log cleanup because these logs are a new input to this stage.
     value = value.strip().strip('"').replace("::", ".")
     value = re.sub(r"-(?:Re-Comp|OSR).*?$", "", value).strip()
     if "(" in value:
         value = value.split("(", 1)[0]
     return value.strip().rstrip(",")
-
-
-def percentage_increase(normal: float, slowdown: float) -> float:
-    if normal <= 0.0:
-        return 0.0
-    return ((slowdown - normal) / normal) * 100.0
-
-
-def parse_compilation_name(value: str) -> Tuple[int, str]:
-    match = re.match(r"^\s*(\d+)\s*-\s*(.+?)\s*$", value)
-    if not match:
-        raise AnalysisError(
-            f"Cannot extract a compilation ID and method from CFG compilation: {value}"
-        )
-    return int(match.group(1)), normalise_method(match.group(2))
-
-
-def parse_cfg_log(path: Path) -> List[CfgCompilation]:
-    compilations: List[CfgCompilation] = []
-    in_compilation = False
-    compilation_name: Optional[str] = None
-    blocks: Dict[int, CfgBlock] = {}
-    current_block: Optional[CfgBlock] = None
-    mode: Optional[str] = None
-    last_marker_is_rdtsc = False
-
-    def finish_compilation() -> None:
-        nonlocal compilation_name, blocks
-        if compilation_name is None:
-            raise AnalysisError("A HumphreysDebugDataPhase section has no Compilation line")
-        comp_id, method = parse_compilation_name(compilation_name)
-        compilations.append(CfgCompilation(comp_id, method, blocks))
-
-    with path.open("r", encoding="utf-8", errors="replace") as source:
-        for raw_line in source:
-            line = raw_line.strip()
-
-            if line.startswith("=== HumphreysDebugDataPhase ==="):
-                in_compilation = True
-                compilation_name = None
-                blocks = {}
-                current_block = None
-                mode = None
-                last_marker_is_rdtsc = False
-                continue
-
-            if not in_compilation:
-                continue
-
-            if line.startswith("=== End HumphreysDebugDataPhase ==="):
-                finish_compilation()
-                in_compilation = False
-                current_block = None
-                mode = None
-                last_marker_is_rdtsc = False
-                continue
-
-            if line.startswith("Compilation: "):
-                compilation_name = line[len("Compilation: ") :].strip()
-                continue
-
-            block_match = re.match(r"Block\s+(\d+)", line)
-            if block_match:
-                current_block = CfgBlock(int(block_match.group(1)))
-                blocks[current_block.block_id] = current_block
-                mode = None
-                last_marker_is_rdtsc = False
-                continue
-
-            if line.startswith("Successors:"):
-                mode = "successors"
-                continue
-
-            if line.startswith("Predecessors:"):
-                mode = "predecessors"
-                continue
-
-            if line.startswith("In loop:"):
-                if current_block is not None:
-                    loop_value = line[len("In loop:") :].strip()
-                    current_block.loop_label = (
-                        None if loop_value == "<none>" else loop_value
-                    )
-                continue
-
-            if line.startswith("Source positions in block:"):
-                mode = "sources"
-                continue
-
-            if line.startswith("BuboLoopMakers:"):
-                mode = "bubo"
-                last_marker_is_rdtsc = False
-                continue
-
-            if current_block is None:
-                continue
-
-            if mode == "successors" and "->" in line:
-                successor_text = line.split("->", 1)[1].strip()
-                try:
-                    current_block.successors.append(int(successor_text))
-                except ValueError:
-                    pass
-                continue
-
-            if mode != "bubo" or not line:
-                continue
-
-            marker_match = re.search(
-                r"Found in this block\s*:\s*(?:class\s+)?(.+)$", line
-            )
-            if marker_match:
-                marker_name = marker_match.group(1).strip().upper()
-                last_marker_is_rdtsc = any(
-                    token in marker_name for token in ("RDTSC", "RDTSCP", "RDTCP")
-                )
-                continue
-
-            loop_match = re.match(r"LoopID:\s*(\d+)", line)
-            if loop_match and last_marker_is_rdtsc:
-                current_block.rdtsc_loop_ids.append(int(loop_match.group(1)))
-
-    if in_compilation:
-        raise AnalysisError("CFG log ended inside a HumphreysDebugDataPhase section")
-    if not compilations:
-        raise AnalysisError(f"No HumphreysDebugDataPhase sections were found in {path}")
-
-    return compilations
-
-
-def build_cfg_maps(
-    compilations: Iterable[CfgCompilation],
-) -> Tuple[
-    Dict[Tuple[int, str, int], int],
-    Dict[Tuple[int, str, int], Set[int]],
-    Dict[str, Set[int]],
-]:
-    node_to_loop: Dict[Tuple[int, str, int], int] = {}
-    probe_blocks: Dict[Tuple[int, str, int], Set[int]] = defaultdict(set)
-    method_compilations: Dict[str, Set[int]] = defaultdict(set)
-
-    for compilation in compilations:
-        method_compilations[compilation.method].add(compilation.comp_id)
-        label_to_loop_id: Dict[str, int] = {}
-
-        for block in compilation.blocks.values():
-            for marker_loop_id in block.rdtsc_loop_ids:
-                matched_label: Optional[str] = None
-                for successor in block.successors:
-                    successor_block = compilation.blocks.get(successor)
-                    if successor_block and successor_block.loop_label:
-                        matched_label = successor_block.loop_label
-                        break
-
-                if matched_label is None and block.loop_label:
-                    matched_label = block.loop_label
-
-                if matched_label is not None:
-                    old_loop_id = label_to_loop_id.get(matched_label)
-                    if old_loop_id is not None and old_loop_id != marker_loop_id:
-                        raise AnalysisError(
-                            f"CFG loop {matched_label} in compilation {compilation.comp_id} "
-                            f"maps to both loop {old_loop_id} and loop {marker_loop_id}"
-                        )
-                    label_to_loop_id[matched_label] = marker_loop_id
-
-                probe_loop_id = (
-                    label_to_loop_id.get(matched_label, marker_loop_id)
-                    if matched_label is not None
-                    else marker_loop_id
-                )
-                probe_blocks[
-                    (compilation.comp_id, compilation.method, probe_loop_id)
-                ].add(block.block_id)
-
-        for block in compilation.blocks.values():
-            if block.loop_label not in label_to_loop_id:
-                continue
-            node_to_loop[
-                (compilation.comp_id, compilation.method, block.block_id)
-            ] = label_to_loop_id[block.loop_label]
-
-    if not node_to_loop:
-        raise AnalysisError("CFG data produced no Graal-block to BuboL-loop mappings")
-    if not probe_blocks:
-        raise AnalysisError("CFG data produced no RDTSC probe-block mappings")
-
-    return node_to_loop, probe_blocks, method_compilations
-
-
-def load_bridge(path: Path) -> Dict[str, Dict[int, int]]:
-    data = json.loads(path.read_text(encoding="utf-8"))
-    result: Dict[str, Dict[int, int]] = {}
-
-    if not isinstance(data, dict):
-        raise AnalysisError(f"Final slowdown JSON must contain an object: {path}")
-
-    for raw_method, raw_mapping in data.items():
-        if not isinstance(raw_mapping, dict):
-            continue
-        method = normalise_method(str(raw_method))
-        mapping: Dict[int, int] = {}
-        for raw_key in raw_mapping:
-            match = BRIDGE_KEY_RE.match(str(raw_key))
-            if match:
-                mapping[int(match.group("vtune"))] = int(match.group("graal"))
-        if mapping:
-            result[method] = mapping
-
-    if not result:
-        raise AnalysisError(f"No VTune-to-Graal block mappings were found in {path}")
-    return result
-
-
-def load_marker_phase(path: Path) -> Dict[str, Dict[int, int]]:
-    data = json.loads(path.read_text(encoding="utf-8"))
-    result: Dict[str, Dict[int, int]] = {}
-
-    if not isinstance(data, dict):
-        raise AnalysisError(f"MarkerPhaseInfo JSON must contain an object: {path}")
-
-    for raw_method, entries in data.items():
-        if not isinstance(entries, list):
-            continue
-        method = normalise_method(str(raw_method))
-        mapping: Dict[int, int] = {}
-        for entry in entries:
-            if not isinstance(entry, dict):
-                continue
-            try:
-                graal_id = int(str(entry["GraalID"]).strip())
-                vtune_id = int(str(entry["VtuneBlock"]).strip())
-            except (KeyError, TypeError, ValueError):
-                continue
-            mapping[graal_id] = vtune_id
-        if mapping:
-            result[method] = mapping
-
-    if not result:
-        raise AnalysisError(f"No Graal-to-VTune marker mappings were found in {path}")
-    return result
-
-
-def parse_vtune_report(
-    path: Path,
-) -> Tuple[List[VtuneBlock], Dict[Tuple[str, int], VtuneRdtsc]]:
-    blocks: List[VtuneBlock] = []
-    rdtsc_rows: Dict[Tuple[str, int], VtuneRdtsc] = {}
-
-    with path.open("r", encoding="utf-8", errors="replace") as source:
-        for raw_line in source:
-            line = raw_line.strip()
-            block_match = VTUNE_BLOCK_RE.match(line)
-            if block_match:
-                blocks.append(
-                    VtuneBlock(
-                        normalise_method(block_match.group("method")),
-                        int(block_match.group("block")),
-                        float(block_match.group("normal")),
-                        float(block_match.group("slow")),
-                    )
-                )
-                continue
-
-            rdtsc_match = VTUNE_RDTSC_RE.match(line)
-            if rdtsc_match:
-                row = VtuneRdtsc(
-                    normalise_method(rdtsc_match.group("method")),
-                    int(rdtsc_match.group("block")),
-                    float(rdtsc_match.group("normal")),
-                    float(rdtsc_match.group("slow")),
-                )
-                rdtsc_rows[(row.method, row.vtune_block_id)] = row
-
-    if not blocks:
-        raise AnalysisError(f"No normal VTune block rows were found in {path}")
-    if not rdtsc_rows:
-        raise AnalysisError(f"No RDTSC VTune block rows were found in {path}")
-
-    return blocks, rdtsc_rows
-
-
-def invert_marker_phase(
-    marker_phase: Dict[str, Dict[int, int]],
-) -> Dict[str, Dict[int, int]]:
-    result: Dict[str, Dict[int, int]] = {}
-    for method, graal_to_vtune in marker_phase.items():
-        vtune_to_graal: Dict[int, int] = {}
-        for graal_id, vtune_id in graal_to_vtune.items():
-            if vtune_id not in vtune_to_graal or graal_id < vtune_to_graal[vtune_id]:
-                vtune_to_graal[vtune_id] = graal_id
-        result[method] = vtune_to_graal
-    return result
-
-
-def map_vtune_block_to_graal(
-    block: VtuneBlock,
-    bridge: Dict[str, Dict[int, int]],
-    marker_fallback: Dict[str, Dict[int, int]],
-) -> Optional[int]:
-    graal_id = bridge.get(block.method, {}).get(block.vtune_block_id)
-    if graal_id is None:
-        graal_id = marker_fallback.get(block.method, {}).get(block.vtune_block_id)
-    return graal_id
-
-
-def select_compilations(
-    vtune_blocks: Iterable[VtuneBlock],
-    bridge: Dict[str, Dict[int, int]],
-    marker_fallback: Dict[str, Dict[int, int]],
-    node_to_loop: Dict[Tuple[int, str, int], int],
-    method_compilations: Dict[str, Set[int]],
-) -> Dict[str, int]:
-    mapped_blocks: Dict[str, List[int]] = defaultdict(list)
-    for block in vtune_blocks:
-        graal_id = map_vtune_block_to_graal(block, bridge, marker_fallback)
-        if graal_id is not None:
-            mapped_blocks[block.method].append(graal_id)
-
-    selected: Dict[str, int] = {}
-    for method, graal_ids in mapped_blocks.items():
-        candidates = method_compilations.get(method, set())
-        scores = {
-            comp_id: sum(
-                (comp_id, method, graal_id) in node_to_loop for graal_id in graal_ids
-            )
-            for comp_id in candidates
-        }
-        scores = {comp_id: score for comp_id, score in scores.items() if score > 0}
-        if scores:
-            selected[method] = max(scores, key=lambda comp_id: (scores[comp_id], comp_id))
-
-    if not selected:
-        raise AnalysisError(
-            "No CFG compilation matched the blocks in the SlowdownTest report"
-        )
-    return selected
-
-
-def aggregate_vtune_loops(
-    vtune_blocks: List[VtuneBlock],
-    rdtsc_rows: Dict[Tuple[str, int], VtuneRdtsc],
-    bridge: Dict[str, Dict[int, int]],
-    marker_phase: Dict[str, Dict[int, int]],
-    node_to_loop: Dict[Tuple[int, str, int], int],
-    probe_blocks: Dict[Tuple[int, str, int], Set[int]],
-    selected_compilations: Dict[str, int],
-) -> Tuple[
-    Dict[Tuple[int, str, int], LoopTimes],
-    List[Dict[str, object]],
-    Dict[str, int],
-]:
-    marker_fallback = invert_marker_phase(marker_phase)
-    grouped: Dict[Tuple[int, str, int], LoopTimes] = defaultdict(LoopTimes)
-    block_output: List[Dict[str, object]] = []
-    statistics_map = {
-        "bridge_misses": 0,
-        "cfg_misses": 0,
-        "blocks_used": 0,
-        "probe_blocks_added": 0,
-        "probe_marker_misses": 0,
-        "probe_timing_misses": 0,
-    }
-
-    for block in vtune_blocks:
-        graal_id = map_vtune_block_to_graal(block, bridge, marker_fallback)
-        if graal_id is None:
-            statistics_map["bridge_misses"] += 1
-            continue
-
-        comp_id = selected_compilations.get(block.method)
-        if comp_id is None:
-            statistics_map["cfg_misses"] += 1
-            continue
-
-        loop_id = node_to_loop.get((comp_id, block.method, graal_id))
-        if loop_id is None:
-            statistics_map["cfg_misses"] += 1
-            continue
-
-        key = (comp_id, block.method, loop_id)
-        totals = grouped[key]
-        totals.normal_time += block.normal_time
-        totals.slowdown_time += block.slowdown_time
-        totals.block_count += 1
-        statistics_map["blocks_used"] += 1
-
-        block_output.append(
-            {
-                "comp_id": comp_id,
-                "method": block.method,
-                "loop_id": loop_id,
-                "vtune_block_id": block.vtune_block_id,
-                "graal_block_id": graal_id,
-                "normal_time": block.normal_time,
-                "slowdown_time": block.slowdown_time,
-                "pct_increase_block": percentage_increase(
-                    block.normal_time, block.slowdown_time
-                ),
-            }
-        )
-
-    for key, totals in grouped.items():
-        comp_id, method, loop_id = key
-        for graal_probe_id in probe_blocks.get((comp_id, method, loop_id), set()):
-            vtune_probe_id = marker_phase.get(method, {}).get(graal_probe_id)
-            if vtune_probe_id is None:
-                statistics_map["probe_marker_misses"] += 1
-                continue
-
-            timing = rdtsc_rows.get((method, vtune_probe_id))
-            if timing is None:
-                statistics_map["probe_timing_misses"] += 1
-                continue
-
-            totals.probe_normal_time += timing.normal_time
-            totals.probe_slowdown_time += timing.slowdown_time
-            totals.probe_count += 1
-            statistics_map["probe_blocks_added"] += 1
-
-    if not grouped:
-        raise AnalysisError("No VTune blocks could be assigned to BuboL loops")
-    if statistics_map["probe_blocks_added"] == 0:
-        raise AnalysisError(
-            "No RDTSC probe timings were added through MarkerPhaseInfo.json"
-        )
-
-    return grouped, block_output, statistics_map
 
 
 def parse_bubo_log(path: Path) -> BuboData:
@@ -568,7 +869,7 @@ def parse_bubo_log(path: Path) -> BuboData:
             comp_match = BUBO_COMP_RE.match(line)
             if comp_match:
                 comp_id = int(comp_match.group(1))
-                comp_methods[comp_id] = normalise_method(comp_match.group(2))
+                comp_methods[comp_id] = normalise_bubo_method(comp_match.group(2))
                 continue
 
             if comp_id is None:
@@ -607,7 +908,11 @@ def parse_bubo_log(path: Path) -> BuboData:
     for current_comp_id, current_loops in loops_by_comp.items():
         children: Dict[int, List[int]] = defaultdict(list)
         for loop_id, parent_id in parent_maps[current_comp_id].items():
-            if parent_id != -1 and loop_id in current_loops and parent_id in current_loops:
+            if (
+                parent_id != -1
+                and loop_id in current_loops
+                and parent_id in current_loops
+            ):
                 children[parent_id].append(loop_id)
 
         for loop_id, loop in current_loops.items():
@@ -628,7 +933,11 @@ def parse_bubo_log(path: Path) -> BuboData:
     return BuboData(loops, total_cycles, encoding_count)
 
 
-def write_csv(path: Path, fieldnames: List[str], rows: Iterable[Dict[str, object]]) -> None:
+def write_csv(
+    path: Path,
+    fieldnames: List[str],
+    rows: Iterable[Dict[str, object]],
+) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as destination:
         writer = csv.DictWriter(destination, fieldnames=fieldnames)
@@ -637,7 +946,8 @@ def write_csv(path: Path, fieldnames: List[str], rows: Iterable[Dict[str, object
 
 
 def write_cfg_map(
-    output_dir: Path, node_to_loop: Dict[Tuple[int, str, int], int]
+    output_dir: Path,
+    node_map: Dict[Tuple[int, str, int], int],
 ) -> None:
     rows = [
         {
@@ -646,8 +956,9 @@ def write_cfg_map(
             "graal_block_id": graal_block_id,
             "loop_id": loop_id,
         }
-        for (comp_id, method, graal_block_id), loop_id in sorted(node_to_loop.items())
+        for (comp_id, method, graal_block_id), loop_id in sorted(node_map.items())
     ]
+
     write_csv(
         output_dir / "CFG-Block-to-Loop.csv",
         ["comp_id", "method", "graal_block_id", "loop_id"],
@@ -657,7 +968,7 @@ def write_cfg_map(
 
 def write_vtune_outputs(
     output_dir: Path,
-    grouped: Dict[Tuple[int, str, int], LoopTimes],
+    grouped: Dict[Tuple[int, str, int], LoopAgg],
     block_rows: List[Dict[str, object]],
 ) -> Dict[Tuple[int, str, int], float]:
     loop_values: Dict[Tuple[int, str, int], float] = {}
@@ -666,16 +977,17 @@ def write_vtune_outputs(
     for key in sorted(grouped):
         comp_id, method, loop_id = key
         totals = grouped[key]
-        total_normal = totals.normal_time + totals.probe_normal_time
-        total_slowdown = totals.slowdown_time + totals.probe_slowdown_time
-        slowdown_pct = percentage_increase(total_normal, total_slowdown)
+        total_normal = totals.sum_normal + totals.probe_sum_normal
+        total_slowdown = totals.sum_slow + totals.probe_sum_slow
+        slowdown_pct = safe_pct_increase(total_normal, total_slowdown)
         loop_values[key] = slowdown_pct
+
         loop_rows.append(
             {
                 "comp_id": comp_id,
                 "method": method,
                 "loop_id": loop_id,
-                "num_blocks_matched": totals.block_count,
+                "num_blocks_matched": totals.num_blocks,
                 "num_probe_blocks_matched": totals.probe_count,
                 "total_normal_time": total_normal,
                 "total_slowdown_time": total_slowdown,
@@ -697,6 +1009,7 @@ def write_vtune_outputs(
         ],
         loop_rows,
     )
+
     write_csv(
         output_dir / "VTune-Block-to-Loop.csv",
         [
@@ -711,6 +1024,7 @@ def write_vtune_outputs(
         ],
         block_rows,
     )
+
     return loop_values
 
 
@@ -728,6 +1042,15 @@ def compare_bubol_with_vtune(
     qualifying_count = 0
     missing_normal: List[str] = []
     missing_vtune: List[str] = []
+
+    # VTune has already selected one compilation per method.  For the final
+    # BuboL comparison, match that selected VTune result by method + loop ID,
+    # as the working script does, rather than requiring BuboL's compilation ID
+    # to be identical to VTune's selected compilation ID.
+    vtune_by_method_loop: Dict[Tuple[str, int], float] = {
+        (method, loop_id): value
+        for (_comp_id, method, loop_id), value in vtune_loop_values.items()
+    }
 
     for key in sorted(slowdown_bubo.loops):
         slowdown_loop = slowdown_bubo.loops[key]
@@ -757,17 +1080,14 @@ def compare_bubol_with_vtune(
 
         bubol_pct: Optional[float] = None
         if normal_loop.exclusive_cycles > 0:
-            bubol_pct = percentage_increase(
+            bubol_pct = safe_pct_increase(
                 float(normal_loop.exclusive_cycles),
                 float(slowdown_loop.exclusive_cycles),
             )
 
-        vtune_key = (
-            slowdown_loop.comp_id,
-            method,
-            slowdown_loop.loop_id,
+        vtune_pct = vtune_by_method_loop.get(
+            (method, slowdown_loop.loop_id)
         )
-        vtune_pct = vtune_loop_values.get(vtune_key)
         difference: Optional[float] = None
         if bubol_pct is not None and vtune_pct is not None:
             difference = abs(bubol_pct - vtune_pct)
@@ -779,21 +1099,13 @@ def compare_bubol_with_vtune(
                     "has zero baseline exclusive cycles"
                 )
             elif vtune_pct is None:
-                alternative_compilations = sorted(
-                    comp_id
-                    for comp_id, vtune_method, vtune_loop_id in vtune_loop_values
-                    if vtune_method == method and vtune_loop_id == slowdown_loop.loop_id
-                )
-                suffix = (
-                    f"; VTune used compilation(s) {alternative_compilations}"
-                    if alternative_compilations
-                    else "; VTune has no matching method and loop"
-                )
                 missing_vtune.append(
-                    f"comp {slowdown_loop.comp_id}, {method}, loop {slowdown_loop.loop_id}{suffix}"
+                    f"{method}, loop {slowdown_loop.loop_id}"
                 )
             else:
-                qualifying_differences.append(difference if difference is not None else 0.0)
+                qualifying_differences.append(
+                    difference if difference is not None else 0.0
+                )
 
         reason = "qualifying"
         if not is_benchmark_method:
@@ -858,11 +1170,15 @@ def compare_bubol_with_vtune(
         comparison_rows,
     )
 
-    print(f"[INFO] BuboL baseline: {normal_bubo.encoding_count} encodings, "
-          f"{len(normal_bubo.loops)} loops")
-    print(f"[INFO] BuboL slowdown: {slowdown_bubo.encoding_count} encodings, "
-          f"{len(slowdown_bubo.loops)} loops, "
-          f"{slowdown_bubo.total_cycles} total cycles")
+    print(
+        f"[INFO] BuboL baseline: {normal_bubo.encoding_count} encodings, "
+        f"{len(normal_bubo.loops)} loops"
+    )
+    print(
+        f"[INFO] BuboL slowdown: {slowdown_bubo.encoding_count} encodings, "
+        f"{len(slowdown_bubo.loops)} loops, "
+        f"{slowdown_bubo.total_cycles} total cycles"
+    )
     print(f"[INFO] Qualifying loops: {qualifying_count}")
     print(f"[INFO] Comparison CSV: {comparison_path}")
 
@@ -872,10 +1188,13 @@ def compare_bubol_with_vtune(
             f"no pure {benchmark} loops exceeded {min_runtime_share:.2f}% runtime share"
         )
     if missing_normal:
-        failures.append("qualifying BuboL loops were absent from the baseline: " + "; ".join(missing_normal))
+        failures.append(
+            "qualifying BuboL loops were absent from the baseline: "
+            + "; ".join(missing_normal)
+        )
     if missing_vtune:
         failures.append(
-            "qualifying loops did not have an exact VTune compilation match: "
+            "qualifying loops did not have a matching VTune method and loop: "
             + "; ".join(missing_vtune)
         )
 
@@ -897,7 +1216,10 @@ def compare_bubol_with_vtune(
             )
 
         for row in comparison_rows:
-            if row["qualifies"] == "true" and row["absolute_difference_pct_points"] != "":
+            if (
+                row["qualifies"] == "true"
+                and row["absolute_difference_pct_points"] != ""
+            ):
                 print(
                     f"[INFO] Comp {row['comp_id']} {row['method']} loop {row['loop_id']}: "
                     f"BuboL={float(row['bubol_slowdown_pct']):.3f}%, "
@@ -910,6 +1232,11 @@ def compare_bubol_with_vtune(
         raise AnalysisError("; ".join(failures))
 
     print("[PASS] BuboL per-loop measurements agree with VTune")
+
+
+# ============================================================
+# New ecosystem command-line interface and output locations.
+# ============================================================
 
 
 def positive_float(value: str) -> float:
@@ -956,47 +1283,67 @@ def run(args: argparse.Namespace) -> None:
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
-    compilations = parse_cfg_log(args.cfg_log)
-    node_to_loop, probe_blocks, method_compilations = build_cfg_maps(compilations)
-    write_cfg_map(args.output_dir, node_to_loop)
+    # Same logical stages as the old working script, but kept in memory so the
+    # new stage does not need its old processed/cfg/dots directory structure.
+    debug_text = args.cfg_log.read_text(encoding="utf-8", errors="replace")
+    compilations = parse_debug_output(debug_text)
+    if not compilations:
+        raise AnalysisError(
+            f"No HumphreysDebugDataPhase sections were found in {args.cfg_log}"
+        )
 
-    bridge = load_bridge(args.bridge_json)
-    marker_phase = load_marker_phase(args.markerphase_json)
-    vtune_blocks, rdtsc_rows = parse_vtune_report(args.vtune_report)
-    marker_fallback = invert_marker_phase(marker_phase)
-    selected_compilations = select_compilations(
-        vtune_blocks,
-        bridge,
-        marker_fallback,
-        node_to_loop,
-        method_compilations,
+    method_to_comps, node_map, probe_blocks_by_loop = build_cfg_maps_from_debug(
+        compilations
+    )
+    write_cfg_map(args.output_dir, node_map)
+
+    grouped, block_rows, mapping_statistics, selected_compilations = (
+        build_vtune_totals(
+            args.vtune_report,
+            args.bridge_json,
+            args.markerphase_json,
+            method_to_comps,
+            node_map,
+            probe_blocks_by_loop,
+        )
     )
 
-    grouped, block_rows, mapping_statistics = aggregate_vtune_loops(
-        vtune_blocks,
-        rdtsc_rows,
-        bridge,
-        marker_phase,
-        node_to_loop,
-        probe_blocks,
-        selected_compilations,
+    vtune_loop_values = write_vtune_outputs(
+        args.output_dir,
+        grouped,
+        block_rows,
     )
-    vtune_loop_values = write_vtune_outputs(args.output_dir, grouped, block_rows)
 
     print(f"[INFO] CFG compilations: {len(compilations)}")
-    print(f"[INFO] CFG block-to-loop mappings: {len(node_to_loop)}")
+    print(f"[INFO] CFG block-to-loop mappings: {len(node_map)}")
+    print(
+        f"[INFO] VTune report: {mapping_statistics['report_lines']} lines, "
+        f"{mapping_statistics['matched_blocks']} block rows, "
+        f"{mapping_statistics['matched_rdtsc']} RDTSC rows"
+    )
     print(f"[INFO] VTune blocks used: {mapping_statistics['blocks_used']}")
     print(f"[INFO] VTune bridge misses: {mapping_statistics['bridge_misses']}")
     print(f"[INFO] VTune CFG misses: {mapping_statistics['cfg_misses']}")
-    print(f"[INFO] RDTSC probe blocks added: {mapping_statistics['probe_blocks_added']}")
-    print(f"[INFO] Probe MarkerPhaseInfo misses: {mapping_statistics['probe_marker_misses']}")
-    print(f"[INFO] Probe timing misses: {mapping_statistics['probe_timing_misses']}")
+    print(
+        f"[INFO] RDTSC probe blocks added: "
+        f"{mapping_statistics['probe_blocks_added']}"
+    )
+    print(
+        f"[INFO] Probe MarkerPhaseInfo misses: "
+        f"{mapping_statistics['probe_marker_misses']}"
+    )
+    print(
+        f"[INFO] Probe timing misses: "
+        f"{mapping_statistics['probe_timing_misses']}"
+    )
+
     for method, comp_id in sorted(selected_compilations.items()):
         if method.startswith(f"{args.benchmark}."):
             print(f"[INFO] Selected CFG compilation: {comp_id} for {method}")
 
     normal_bubo = parse_bubo_log(args.normal_bubol_log)
     slowdown_bubo = parse_bubo_log(args.slowdown_bubol_log)
+
     compare_bubol_with_vtune(
         args.benchmark,
         normal_bubo,
