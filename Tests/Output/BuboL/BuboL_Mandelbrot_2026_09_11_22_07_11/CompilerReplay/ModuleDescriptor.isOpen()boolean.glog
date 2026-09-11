@@ -1,0 +1,22 @@
+{
+  "identifier": "HotSpotCompilation-74[java.lang.module.ModuleDescriptor.isOpen()]",
+  "method": "java.lang.module.ModuleDescriptor.isOpen()boolean",
+  "entryBCI": -1,
+  "codeSignature": "7251ebfc69511ba11260ce3e5fe8de41e1ee424c1c84ef382507a4b520f46599",
+  "graphSignature": "84932e69dc30550c650357abc17e9ab829f3a4eab0efcb8b7994f6ac04079ca6",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.lang.module.ModuleDescriptor.isOpen()boolean",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.lang.module.ModuleDescriptor.isOpen()boolean",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}

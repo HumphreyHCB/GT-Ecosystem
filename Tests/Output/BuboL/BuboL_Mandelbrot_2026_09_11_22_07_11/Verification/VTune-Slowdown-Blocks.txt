@@ -1,0 +1,56 @@
+Method: Mandelbrot::mandelbrot, Block ID: 80, Normal Time: 0.001, Slowdown Time: 0.008, Percentage Increase: 700.0%
+Method: Mandelbrot::mandelbrot, Block ID: 81, Normal Time: 0.005, Slowdown Time: 0.04, Percentage Increase: 700.0000000000001%
+Method: Mandelbrot::mandelbrot, Block ID: 82, Normal Time: 2.064, Slowdown Time: 4.0, Percentage Increase: 93.7984496124031%
+Method: Mandelbrot::mandelbrot, Block ID: 83, Normal Time: 0.043, Slowdown Time: 0.061, Percentage Increase: 41.86046511627908%
+Method: Mandelbrot::mandelbrot, Block ID: 84, Normal Time: 2.747, Slowdown Time: 2.868, Percentage Increase: 4.404805242082271%
+Method: Mandelbrot::mandelbrot, Block ID: 85, Normal Time: 1.773, Slowdown Time: 1.778, Percentage Increase: 0.28200789622110073%
+Method: Mandelbrot::mandelbrot, Block ID: 86, Normal Time: 0.014, Slowdown Time: 1.642, Percentage Increase: 11628.571428571428%
+Method: Mandelbrot::mandelbrot, Block ID: 87, Normal Time: 38.946, Slowdown Time: 76.359, Percentage Increase: 96.06378061931905%
+Method: Mandelbrot::mandelbrot, Block ID: 88, Normal Time: 0.112, Slowdown Time: 0.193, Percentage Increase: 72.32142857142857%
+Method: Mandelbrot::mandelbrot, Block ID: 89, Normal Time: 1.042, Slowdown Time: 0.955, Percentage Increase: -8.349328214971216%
+Method: Mandelbrot::mandelbrot, Block ID: 90, Normal Time: 0.466, Slowdown Time: 0.955, Percentage Increase: 104.93562231759654%
+Method: Mandelbrot::mandelbrot, Block ID: 91, Normal Time: 0.015, Slowdown Time: 0.042, Percentage Increase: 180.00000000000003%
+Method: Mandelbrot::mandelbrot, Block ID: 92, Normal Time: 0.061, Slowdown Time: 0.097, Percentage Increase: 59.01639344262296%
+Method: Mandelbrot::mandelbrot, Block ID: 94, Normal Time: 0.02, Slowdown Time: 0.039, Percentage Increase: 95.0%
+Method: Mandelbrot::mandelbrot, Block ID: 95, Normal Time: 2.006, Slowdown Time: 1.964, Percentage Increase: -2.093718843469582%
+Method: Mandelbrot::mandelbrot, Block ID: 96, Normal Time: 0.0, Slowdown Time: 0.001, Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 97, Normal Time: 0.008, Slowdown Time: 0.003, Percentage Increase: -62.5%
+Method: Mandelbrot::mandelbrot, Block ID: 42, Normal Time: 0.005, Slowdown Time: 0.007, Percentage Increase: 40.0%
+Method: Mandelbrot::mandelbrot, Block ID: 44, Normal Time: 0.012, Slowdown Time: 0.011, Percentage Increase: -8.333333333333341%
+Method: Mandelbrot::mandelbrot, Block ID: 45, Normal Time: 0.003, Slowdown Time: 0.008, Percentage Increase: 166.66666666666669%
+Method: Mandelbrot::mandelbrot, Block ID: 47, Normal Time: 0.13, Slowdown Time: 0.12, Percentage Increase: -7.692307692307699%
+Method: Mandelbrot::mandelbrot, Block ID: 48, Normal Time: 0.002, Slowdown Time: 0.007, Percentage Increase: 250.0%
+Method: Mandelbrot::mandelbrot, Block ID: 49, Normal Time: 0.0, Slowdown Time: 0.001, Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 51, Normal Time: 0.003, Slowdown Time: 0.003, Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 52, Normal Time: 0.002, Slowdown Time: 0.0, Percentage Increase: -100.0%
+Method: Mandelbrot::mandelbrot, Block ID: 56, Normal Time: 0.007, Slowdown Time: 0.008, Percentage Increase: 14.285714285714285%
+Method: Mandelbrot::mandelbrot, Median Percentage Increase: 95.0%
+
+ ExtraBuboData:
+ExtraBuboData:
+Method: Mandelbrot::mandelbrot, Block ID: 97, RDTSC Normal Time: 0.0, RDTSC Slowdown Time: 0.0, RDTSC Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 67, RDTSC Normal Time: 0.0, RDTSC Slowdown Time: 0.0, RDTSC Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 99, RDTSC Normal Time: 0.0, RDTSC Slowdown Time: 0.0, RDTSC Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 37, RDTSC Normal Time: 0.0, RDTSC Slowdown Time: 0.0, RDTSC Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 70, RDTSC Normal Time: 0.0, RDTSC Slowdown Time: 0.0, RDTSC Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 39, RDTSC Normal Time: 0.0, RDTSC Slowdown Time: 0.0, RDTSC Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 40, RDTSC Normal Time: 0.0, RDTSC Slowdown Time: 0.0, RDTSC Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 11, RDTSC Normal Time: 0.0, RDTSC Slowdown Time: 0.0, RDTSC Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 44, RDTSC Normal Time: 0.011, RDTSC Slowdown Time: 0.011, RDTSC Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 79, RDTSC Normal Time: 0.0, RDTSC Slowdown Time: 0.0, RDTSC Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 80, RDTSC Normal Time: 0.001, RDTSC Slowdown Time: 0.006, RDTSC Percentage Increase: 500.0%
+Method: Mandelbrot::mandelbrot, Block ID: 17, RDTSC Normal Time: 0.0, RDTSC Slowdown Time: 0.0, RDTSC Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 51, RDTSC Normal Time: 0.0, RDTSC Slowdown Time: 0.0, RDTSC Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 84, RDTSC Normal Time: 2.548, RDTSC Slowdown Time: 2.599, RDTSC Percentage Increase: 2.001569858712722%
+Method: Mandelbrot::mandelbrot, Block ID: 21, RDTSC Normal Time: 0.0, RDTSC Slowdown Time: 0.0, RDTSC Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 56, RDTSC Normal Time: 0.0, RDTSC Slowdown Time: 0.0, RDTSC Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 25, RDTSC Normal Time: 0.0, RDTSC Slowdown Time: 0.0, RDTSC Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 89, RDTSC Normal Time: 0.008, RDTSC Slowdown Time: 0.002, RDTSC Percentage Increase: -75.0%
+Method: Mandelbrot::mandelbrot, Block ID: 58, RDTSC Normal Time: 0.0, RDTSC Slowdown Time: 0.0, RDTSC Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 31, RDTSC Normal Time: 0.0, RDTSC Slowdown Time: 0.0, RDTSC Percentage Increase: 0.0%
+Method: Mandelbrot::mandelbrot, Block ID: 95, RDTSC Normal Time: 0.027, RDTSC Slowdown Time: 0.0, RDTSC Percentage Increase: -100.0%
+
+Total Average Percentage Increase: 95.0%
+Total Normal Time: 49.487000000000016
+Total Slowdown Time: 91.17
+Total Percentage Increase Overall: 84.23020187119845%

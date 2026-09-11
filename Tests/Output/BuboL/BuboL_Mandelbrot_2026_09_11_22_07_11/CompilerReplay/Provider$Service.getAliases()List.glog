@@ -1,0 +1,22 @@
+{
+  "identifier": "HotSpotCompilation-104[java.security.Provider$Service.getAliases()]",
+  "method": "java.security.Provider$Service.getAliases()java.util.List",
+  "entryBCI": -1,
+  "codeSignature": "ec9959256dfdc1e5d707b10920cbff0d77d6151df3608588ba4900964b3e0488",
+  "graphSignature": "560fbceb5a3b763c5375266b0b25d6acc286fd9983237703f8164fa672f6f318",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.security.Provider$Service.getAliases()java.util.List",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.security.Provider$Service.getAliases()java.util.List",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}

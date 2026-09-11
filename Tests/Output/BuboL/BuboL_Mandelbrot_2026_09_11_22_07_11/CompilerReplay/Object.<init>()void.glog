@@ -1,0 +1,22 @@
+{
+  "identifier": "HotSpotCompilation-35[java.lang.Object.<init>()]",
+  "method": "java.lang.Object.<init>()void",
+  "entryBCI": -1,
+  "codeSignature": "fe534d3aac0502b22527b54e744892c09d7496fd765947a3ee3ec9a070d56f92",
+  "graphSignature": "53d4769a31fdffbc178cfbdf0ff454d5e37ea9db7d0a46604ecac26b60bad021",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.lang.Object.<init>()void",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.lang.Object.<init>()void",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}
