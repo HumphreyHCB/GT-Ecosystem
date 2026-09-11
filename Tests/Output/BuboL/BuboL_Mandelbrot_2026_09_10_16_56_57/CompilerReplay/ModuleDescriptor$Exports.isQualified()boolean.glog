@@ -1,0 +1,62 @@
+{
+  "identifier": "HotSpotCompilation-54[java.lang.module.ModuleDescriptor$Exports.isQualified()]",
+  "method": "java.lang.module.ModuleDescriptor$Exports.isQualified()boolean",
+  "entryBCI": -1,
+  "codeSignature": "d0252a2354d5fe9aba962c7286cffeb2eb12090606525dfd94e3d2aefbe8158d",
+  "graphSignature": "ece76d5e09e5d346069d4967d32d58a590766573ad29fd2232f64bb7a51fd005",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.lang.module.ModuleDescriptor$Exports.isQualified()boolean",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.lang.module.ModuleDescriptor$Exports.isQualified()boolean",
+      "isMature": true,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 4,
+          "exceptionSeen": "FALSE",
+          "typeProfile": {
+            "nullSeen": "FALSE",
+            "types": [
+              {
+                "type": "Ljava/util/ImmutableCollections$SetN;",
+                "probability": 0.671875
+              },
+              {
+                "type": "Ljava/util/ImmutableCollections$Set12;",
+                "probability": 0.328125
+              }
+            ],
+            "notRecordedProbability": 0.0
+          }
+        },
+        {
+          "bci": 9,
+          "branchTakenProbability": 0.5306640625
+        }
+      ]
+    },
+    {
+      "method": "java.util.ImmutableCollections$SetN.isEmpty()boolean",
+      "isMature": true,
+      "compilerIRSize": 0,
+      "data": [
+        {
+          "bci": 4,
+          "branchTakenProbability": 0.20760330578512395
+        }
+      ]
+    },
+    {
+      "method": "java.util.ImmutableCollections$Set12.isEmpty()boolean",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}

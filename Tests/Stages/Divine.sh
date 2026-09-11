@@ -170,6 +170,7 @@ run_scheduler() {
 
 verify_and_tidy_outputs() {
     local final_json="$RUN_OUTPUT/Final_$BENCHMARK.json"
+    local marker_phase_json="$RUN_OUTPUT/MarkerPhase_BuboIncluded.json"
     local latest_result="$OUTPUT_ROOT/Latest-$BENCHMARK"
     local replay_directory
     local replay_file
@@ -182,6 +183,16 @@ verify_and_tidy_outputs() {
 
     if [[ ! -s "$final_json" ]]; then
         die "Final slowdown JSON is empty: $final_json"
+    fi
+
+    if [[ "$ENABLE_BUBO_LIR_PHASE" == true ]]; then
+        require_file \
+            "$marker_phase_json" \
+            'BuboL marker phase JSON'
+
+        if [[ ! -s "$marker_phase_json" ]]; then
+            die "BuboL marker phase JSON is empty: $marker_phase_json"
+        fi
     fi
 
     while IFS= read -r replay_directory; do
@@ -230,6 +241,11 @@ verify_and_tidy_outputs() {
         "$latest_result"
 
     pass "Final slowdown JSON: $final_json"
+
+    if [[ "$ENABLE_BUBO_LIR_PHASE" == true ]]; then
+        pass "BuboL marker phase JSON: $marker_phase_json"
+    fi
+
     pass "Compiler replay: $RUN_OUTPUT/CompilerReplay"
     pass "Divine log: $RUN_OUTPUT/Divine.log"
     pass "Latest completed $DIVINE_MODE result: $latest_result"

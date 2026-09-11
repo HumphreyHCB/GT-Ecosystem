@@ -1,0 +1,22 @@
+{
+  "identifier": "HotSpotCompilation-37[jdk.internal.module.ModuleReferenceImpl.moduleResolution()]",
+  "method": "jdk.internal.module.ModuleReferenceImpl.moduleResolution()jdk.internal.module.ModuleResolution",
+  "entryBCI": -1,
+  "codeSignature": "b76db95b8fd3a055b26c3a6c15023743ea3cd488646d474319964a2e9e13b73e",
+  "graphSignature": "560fbceb5a3b763c5375266b0b25d6acc286fd9983237703f8164fa672f6f318",
+  "result": true,
+  "profiles": [
+    {
+      "method": "jdk.internal.module.ModuleReferenceImpl.moduleResolution()jdk.internal.module.ModuleResolution",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "jdk.internal.module.ModuleReferenceImpl.moduleResolution()jdk.internal.module.ModuleResolution",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "identifier": "HotSpotCompilation-50[java.lang.module.ModuleDescriptor.uses()]",
+  "method": "java.lang.module.ModuleDescriptor.uses()java.util.Set",
+  "entryBCI": -1,
+  "codeSignature": "e3ce51591a4fee3aaff0c687fbb639bc8c1569c92e84d989cdc906a081a3aa6f",
+  "graphSignature": "560fbceb5a3b763c5375266b0b25d6acc286fd9983237703f8164fa672f6f318",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.lang.module.ModuleDescriptor.uses()java.util.Set",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.lang.module.ModuleDescriptor.uses()java.util.Set",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "identifier": "HotSpotCompilation-34[java.util.stream.FindOps$FindSink.cancellationRequested()]",
+  "method": "java.util.stream.FindOps$FindSink.cancellationRequested()boolean",
+  "entryBCI": -1,
+  "codeSignature": "55af0dc4b7688c78180d5f5b00584e4bf66cf93bd60716f9aab49e7a6fd64ac4",
+  "graphSignature": "84932e69dc30550c650357abc17e9ab829f3a4eab0efcb8b7994f6ac04079ca6",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.util.stream.FindOps$FindSink.cancellationRequested()boolean",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.util.stream.FindOps$FindSink.cancellationRequested()boolean",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}

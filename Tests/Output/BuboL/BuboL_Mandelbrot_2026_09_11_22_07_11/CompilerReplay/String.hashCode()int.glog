@@ -1,0 +1,98 @@
+{
+  "identifier": "HotSpotCompilation-36[java.lang.String.hashCode()]",
+  "method": "java.lang.String.hashCode()int",
+  "entryBCI": -1,
+  "codeSignature": "cd869c87835ef8242ee90410caccd8a61a63cd99231e11f83fcdc76366e70264",
+  "graphSignature": "62c808559f13c92be6fba4e06f3e73756902488309a142c4216b28f3a7e2aeb8",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.lang.String.hashCode()int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.lang.String.hashCode()int",
+      "isMature": true,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 6,
+          "branchTakenProbability": 0.97265625
+        },
+        {
+          "bci": 13,
+          "branchTakenProbability": 0.02857142857142857
+        },
+        {
+          "bci": 17,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 20,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 42,
+          "branchTakenProbability": 1.0
+        }
+      ]
+    },
+    {
+      "method": "java.lang.StringLatin1.hashCode(byte[])int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 3,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 5,
+          "exceptionSeen": "FALSE"
+        }
+      ]
+    },
+    {
+      "method": "java.lang.String.isLatin1()boolean",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 3,
+          "branchTakenProbability": -1.0
+        },
+        {
+          "bci": 10,
+          "branchTakenProbability": -1.0
+        }
+      ]
+    },
+    {
+      "method": "jdk.internal.util.ArraysSupport.hashCodeOfUnsigned(byte[], int, int, int)int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 1,
+          "switchProbabilities": []
+        },
+        {
+          "bci": 38,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 51,
+          "exceptionSeen": "FALSE"
+        }
+      ]
+    },
+    {
+      "method": "java.lang.Byte.toUnsignedInt(byte)int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}

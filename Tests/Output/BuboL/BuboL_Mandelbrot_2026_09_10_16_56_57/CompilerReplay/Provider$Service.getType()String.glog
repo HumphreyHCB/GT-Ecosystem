@@ -1,0 +1,22 @@
+{
+  "identifier": "HotSpotCompilation-102[java.security.Provider$Service.getType()]",
+  "method": "java.security.Provider$Service.getType()java.lang.String",
+  "entryBCI": -1,
+  "codeSignature": "90f01eeb46d88d53d0e4e48ef19445eb3bdf8101a00c7dc3f717a337df9fb41f",
+  "graphSignature": "560fbceb5a3b763c5375266b0b25d6acc286fd9983237703f8164fa672f6f318",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.security.Provider$Service.getType()java.lang.String",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.security.Provider$Service.getType()java.lang.String",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}

@@ -4,345 +4,344 @@ Skipping Loading (this might cause a fatal crash if GTSlowdown is on)
 Requesting uncached profile for bci 44 in java.util.ImmutableCollections$SetN$SetNIterator.next()java.lang.Object method getBytecodeProfile
 Requesting uncached profile for bci 44 in java.util.ImmutableCollections$SetN$SetNIterator.next()java.lang.Object method getBranchTakenProbability
 java.util.ImmutableCollections$SetN$SetNIterator.next()java.lang.Object -1 graphSignature differs cc325e064e7585e0e6736addc07d3b5b1a1e9ec52f960e7777496af159b5096f != b05d592371fcce917a90fc28debaf21f7e7532d4836b1c9812ac396e129c7095
-java.util.HashMap.putVal(int, java.lang.Object, java.lang.Object, boolean, boolean)java.lang.Object -1 graphSignature differs ee09f2c8e8aef299f145f669ac6d290ab921c200bee62674b2ab14a5f207c19a != 71c7befc4bcc50903c01cb500806055811a71080bd754d077284439fcd10103c
 Could not locate BlockSlowdown.json
 Skipping Loading (this might cause a fatal crash if GTSlowdown is on)
 Starting Mandelbrot benchmark ...
-Mandelbrot: iterations=1 runtime: 178155us
-Mandelbrot: iterations=2 runtime: 165904us
-Mandelbrot: iterations=3 runtime: 165787us
-Mandelbrot: iterations=4 runtime: 165910us
-Mandelbrot: iterations=5 runtime: 165898us
-Mandelbrot: iterations=6 runtime: 165709us
-Mandelbrot: iterations=7 runtime: 165771us
-Mandelbrot: iterations=8 runtime: 165762us
-Mandelbrot: iterations=9 runtime: 165845us
-Mandelbrot: iterations=10 runtime: 165795us
-Mandelbrot: iterations=11 runtime: 165907us
-Mandelbrot: iterations=12 runtime: 165762us
-Mandelbrot: iterations=13 runtime: 165783us
-Mandelbrot: iterations=14 runtime: 165813us
-Mandelbrot: iterations=15 runtime: 165842us
-Mandelbrot: iterations=16 runtime: 165828us
-Mandelbrot: iterations=17 runtime: 165713us
-Mandelbrot: iterations=18 runtime: 165856us
-Mandelbrot: iterations=19 runtime: 165476us
+Mandelbrot: iterations=1 runtime: 178040us
+Mandelbrot: iterations=2 runtime: 165642us
+Mandelbrot: iterations=3 runtime: 165829us
+Mandelbrot: iterations=4 runtime: 165642us
+Mandelbrot: iterations=5 runtime: 165768us
+Mandelbrot: iterations=6 runtime: 165899us
+Mandelbrot: iterations=7 runtime: 165606us
+Mandelbrot: iterations=8 runtime: 165574us
+Mandelbrot: iterations=9 runtime: 165432us
+Mandelbrot: iterations=10 runtime: 165919us
+Mandelbrot: iterations=11 runtime: 165712us
+Mandelbrot: iterations=12 runtime: 165928us
+Mandelbrot: iterations=13 runtime: 165931us
+Mandelbrot: iterations=14 runtime: 166065us
+Mandelbrot: iterations=15 runtime: 165762us
+Mandelbrot: iterations=16 runtime: 165491us
+Mandelbrot: iterations=17 runtime: 165767us
+Mandelbrot: iterations=18 runtime: 165754us
+Mandelbrot: iterations=19 runtime: 165801us
 Could not locate BlockSlowdown.json
 Skipping Loading (this might cause a fatal crash if GTSlowdown is on)
-Mandelbrot: iterations=20 runtime: 165802us
-Mandelbrot: iterations=21 runtime: 165775us
-Mandelbrot: iterations=22 runtime: 165749us
-Mandelbrot: iterations=23 runtime: 165822us
-Mandelbrot: iterations=24 runtime: 165915us
-Mandelbrot: iterations=25 runtime: 165710us
-Mandelbrot: iterations=26 runtime: 165725us
-Mandelbrot: iterations=27 runtime: 165463us
-Mandelbrot: iterations=28 runtime: 165429us
-Mandelbrot: iterations=29 runtime: 165856us
-Mandelbrot: iterations=30 runtime: 165836us
-Mandelbrot: iterations=31 runtime: 165757us
-Mandelbrot: iterations=32 runtime: 165810us
-Mandelbrot: iterations=33 runtime: 165915us
-Mandelbrot: iterations=34 runtime: 165945us
-Mandelbrot: iterations=35 runtime: 165935us
-Mandelbrot: iterations=36 runtime: 165850us
-Mandelbrot: iterations=37 runtime: 165830us
-Mandelbrot: iterations=38 runtime: 165826us
-Mandelbrot: iterations=39 runtime: 165530us
-Mandelbrot: iterations=40 runtime: 165731us
-Mandelbrot: iterations=41 runtime: 165452us
-Mandelbrot: iterations=42 runtime: 165454us
-Mandelbrot: iterations=43 runtime: 165848us
-Mandelbrot: iterations=44 runtime: 165793us
-Mandelbrot: iterations=45 runtime: 165780us
-Mandelbrot: iterations=46 runtime: 165734us
-Mandelbrot: iterations=47 runtime: 165797us
-Mandelbrot: iterations=48 runtime: 165501us
-Mandelbrot: iterations=49 runtime: 165791us
-Mandelbrot: iterations=50 runtime: 165796us
-Mandelbrot: iterations=51 runtime: 165692us
-Mandelbrot: iterations=52 runtime: 165403us
-Mandelbrot: iterations=53 runtime: 165362us
-Mandelbrot: iterations=54 runtime: 165543us
-Mandelbrot: iterations=55 runtime: 165437us
-Mandelbrot: iterations=56 runtime: 165784us
-Mandelbrot: iterations=57 runtime: 165461us
-Mandelbrot: iterations=58 runtime: 165788us
-Mandelbrot: iterations=59 runtime: 165818us
-Mandelbrot: iterations=60 runtime: 165747us
-Mandelbrot: iterations=61 runtime: 165837us
-Mandelbrot: iterations=62 runtime: 165406us
-Mandelbrot: iterations=63 runtime: 165893us
-Mandelbrot: iterations=64 runtime: 165692us
-Mandelbrot: iterations=65 runtime: 165412us
-Mandelbrot: iterations=66 runtime: 165687us
-Mandelbrot: iterations=67 runtime: 165708us
-Mandelbrot: iterations=68 runtime: 165874us
-Mandelbrot: iterations=69 runtime: 165736us
-Mandelbrot: iterations=70 runtime: 165801us
-Mandelbrot: iterations=71 runtime: 165848us
-Mandelbrot: iterations=72 runtime: 165760us
-Mandelbrot: iterations=73 runtime: 165345us
-Mandelbrot: iterations=74 runtime: 165868us
-Mandelbrot: iterations=75 runtime: 165755us
-Mandelbrot: iterations=76 runtime: 165807us
-Mandelbrot: iterations=77 runtime: 165873us
-Mandelbrot: iterations=78 runtime: 165835us
-Mandelbrot: iterations=79 runtime: 165777us
-Mandelbrot: iterations=80 runtime: 165466us
-Mandelbrot: iterations=81 runtime: 165729us
-Mandelbrot: iterations=82 runtime: 165791us
-Mandelbrot: iterations=83 runtime: 165843us
-Mandelbrot: iterations=84 runtime: 165935us
-Mandelbrot: iterations=85 runtime: 165823us
-Mandelbrot: iterations=86 runtime: 165829us
-Mandelbrot: iterations=87 runtime: 165752us
-Mandelbrot: iterations=88 runtime: 165784us
-Mandelbrot: iterations=89 runtime: 165930us
-Mandelbrot: iterations=90 runtime: 165619us
+Mandelbrot: iterations=20 runtime: 165784us
+Mandelbrot: iterations=21 runtime: 165702us
+Mandelbrot: iterations=22 runtime: 165712us
+Mandelbrot: iterations=23 runtime: 165826us
+Mandelbrot: iterations=24 runtime: 165663us
+Mandelbrot: iterations=25 runtime: 165453us
+Mandelbrot: iterations=26 runtime: 165819us
+Mandelbrot: iterations=27 runtime: 165542us
+Mandelbrot: iterations=28 runtime: 165709us
+Mandelbrot: iterations=29 runtime: 165874us
+Mandelbrot: iterations=30 runtime: 165733us
+Mandelbrot: iterations=31 runtime: 165783us
+Mandelbrot: iterations=32 runtime: 165727us
+Mandelbrot: iterations=33 runtime: 165728us
+Mandelbrot: iterations=34 runtime: 165301us
+Mandelbrot: iterations=35 runtime: 165773us
+Mandelbrot: iterations=36 runtime: 165807us
+Mandelbrot: iterations=37 runtime: 165669us
+Mandelbrot: iterations=38 runtime: 165361us
+Mandelbrot: iterations=39 runtime: 165847us
+Mandelbrot: iterations=40 runtime: 165824us
+Mandelbrot: iterations=41 runtime: 165851us
+Mandelbrot: iterations=42 runtime: 165772us
+Mandelbrot: iterations=43 runtime: 165806us
+Mandelbrot: iterations=44 runtime: 165707us
+Mandelbrot: iterations=45 runtime: 165719us
+Mandelbrot: iterations=46 runtime: 165309us
+Mandelbrot: iterations=47 runtime: 165674us
+Mandelbrot: iterations=48 runtime: 165758us
+Mandelbrot: iterations=49 runtime: 165334us
+Mandelbrot: iterations=50 runtime: 165415us
+Mandelbrot: iterations=51 runtime: 165708us
+Mandelbrot: iterations=52 runtime: 165787us
+Mandelbrot: iterations=53 runtime: 165831us
+Mandelbrot: iterations=54 runtime: 165691us
+Mandelbrot: iterations=55 runtime: 165806us
+Mandelbrot: iterations=56 runtime: 165735us
+Mandelbrot: iterations=57 runtime: 165806us
+Mandelbrot: iterations=58 runtime: 165771us
+Mandelbrot: iterations=59 runtime: 165754us
+Mandelbrot: iterations=60 runtime: 165755us
+Mandelbrot: iterations=61 runtime: 165763us
+Mandelbrot: iterations=62 runtime: 165748us
+Mandelbrot: iterations=63 runtime: 165696us
+Mandelbrot: iterations=64 runtime: 165704us
+Mandelbrot: iterations=65 runtime: 165796us
+Mandelbrot: iterations=66 runtime: 165922us
+Mandelbrot: iterations=67 runtime: 166138us
+Mandelbrot: iterations=68 runtime: 165798us
+Mandelbrot: iterations=69 runtime: 165515us
+Mandelbrot: iterations=70 runtime: 165843us
+Mandelbrot: iterations=71 runtime: 165711us
+Mandelbrot: iterations=72 runtime: 165806us
+Mandelbrot: iterations=73 runtime: 165803us
+Mandelbrot: iterations=74 runtime: 165381us
+Mandelbrot: iterations=75 runtime: 165801us
+Mandelbrot: iterations=76 runtime: 165704us
+Mandelbrot: iterations=77 runtime: 165423us
+Mandelbrot: iterations=78 runtime: 165543us
+Mandelbrot: iterations=79 runtime: 165746us
+Mandelbrot: iterations=80 runtime: 165734us
+Mandelbrot: iterations=81 runtime: 165708us
+Mandelbrot: iterations=82 runtime: 165698us
+Mandelbrot: iterations=83 runtime: 165700us
+Mandelbrot: iterations=84 runtime: 165702us
+Mandelbrot: iterations=85 runtime: 165749us
+Mandelbrot: iterations=86 runtime: 165798us
+Mandelbrot: iterations=87 runtime: 165900us
+Mandelbrot: iterations=88 runtime: 165442us
+Mandelbrot: iterations=89 runtime: 165752us
+Mandelbrot: iterations=90 runtime: 165750us
 Could not locate BlockSlowdown.json
 Skipping Loading (this might cause a fatal crash if GTSlowdown is on)
-Mandelbrot: iterations=91 runtime: 165908us
-Mandelbrot: iterations=92 runtime: 165944us
-Mandelbrot: iterations=93 runtime: 166021us
-Mandelbrot: iterations=94 runtime: 166031us
-Mandelbrot: iterations=95 runtime: 165993us
-Mandelbrot: iterations=96 runtime: 165962us
-Mandelbrot: iterations=97 runtime: 165997us
-Mandelbrot: iterations=98 runtime: 165661us
-Mandelbrot: iterations=99 runtime: 165951us
-Mandelbrot: iterations=100 runtime: 165971us
-Mandelbrot: iterations=101 runtime: 165945us
-Mandelbrot: iterations=102 runtime: 165964us
-Mandelbrot: iterations=103 runtime: 165950us
-Mandelbrot: iterations=104 runtime: 165874us
-Mandelbrot: iterations=105 runtime: 165956us
-Mandelbrot: iterations=106 runtime: 166098us
-Mandelbrot: iterations=107 runtime: 165986us
-Mandelbrot: iterations=108 runtime: 165636us
-Mandelbrot: iterations=109 runtime: 166023us
-Mandelbrot: iterations=110 runtime: 165949us
-Mandelbrot: iterations=111 runtime: 165905us
-Mandelbrot: iterations=112 runtime: 165906us
-Mandelbrot: iterations=113 runtime: 165897us
-Mandelbrot: iterations=114 runtime: 166012us
-Mandelbrot: iterations=115 runtime: 166014us
-Mandelbrot: iterations=116 runtime: 165971us
-Mandelbrot: iterations=117 runtime: 165860us
-Mandelbrot: iterations=118 runtime: 165963us
-Mandelbrot: iterations=119 runtime: 165826us
-Mandelbrot: iterations=120 runtime: 165959us
-Mandelbrot: iterations=121 runtime: 165936us
-Mandelbrot: iterations=122 runtime: 165968us
-Mandelbrot: iterations=123 runtime: 165664us
-Mandelbrot: iterations=124 runtime: 165799us
-Mandelbrot: iterations=125 runtime: 165969us
-Mandelbrot: iterations=126 runtime: 165965us
+Mandelbrot: iterations=91 runtime: 165760us
+Mandelbrot: iterations=92 runtime: 165666us
+Mandelbrot: iterations=93 runtime: 165718us
+Mandelbrot: iterations=94 runtime: 165791us
+Mandelbrot: iterations=95 runtime: 165439us
+Mandelbrot: iterations=96 runtime: 165460us
+Mandelbrot: iterations=97 runtime: 165732us
+Mandelbrot: iterations=98 runtime: 165381us
+Mandelbrot: iterations=99 runtime: 165771us
+Mandelbrot: iterations=100 runtime: 165937us
+Mandelbrot: iterations=101 runtime: 165817us
+Mandelbrot: iterations=102 runtime: 165754us
+Mandelbrot: iterations=103 runtime: 165789us
+Mandelbrot: iterations=104 runtime: 165789us
+Mandelbrot: iterations=105 runtime: 165722us
+Mandelbrot: iterations=106 runtime: 165748us
+Mandelbrot: iterations=107 runtime: 165711us
+Mandelbrot: iterations=108 runtime: 165764us
+Mandelbrot: iterations=109 runtime: 165723us
+Mandelbrot: iterations=110 runtime: 165798us
+Mandelbrot: iterations=111 runtime: 165344us
+Mandelbrot: iterations=112 runtime: 165706us
+Mandelbrot: iterations=113 runtime: 165699us
+Mandelbrot: iterations=114 runtime: 165700us
+Mandelbrot: iterations=115 runtime: 165851us
+Mandelbrot: iterations=116 runtime: 165678us
+Mandelbrot: iterations=117 runtime: 165915us
+Mandelbrot: iterations=118 runtime: 165687us
+Mandelbrot: iterations=119 runtime: 165708us
+Mandelbrot: iterations=120 runtime: 165823us
+Mandelbrot: iterations=121 runtime: 165829us
+Mandelbrot: iterations=122 runtime: 165324us
+Mandelbrot: iterations=123 runtime: 165754us
+Mandelbrot: iterations=124 runtime: 165755us
+Mandelbrot: iterations=125 runtime: 165796us
+Mandelbrot: iterations=126 runtime: 165761us
 Could not locate BlockSlowdown.json
 Skipping Loading (this might cause a fatal crash if GTSlowdown is on)
-Mandelbrot: iterations=127 runtime: 165979us
-Mandelbrot: iterations=128 runtime: 166045us
-Mandelbrot: iterations=129 runtime: 165597us
-Mandelbrot: iterations=130 runtime: 165971us
-Mandelbrot: iterations=131 runtime: 166009us
-Mandelbrot: iterations=132 runtime: 165968us
-Mandelbrot: iterations=133 runtime: 166018us
-Mandelbrot: iterations=134 runtime: 165606us
-Mandelbrot: iterations=135 runtime: 165466us
-Mandelbrot: iterations=136 runtime: 165820us
-Mandelbrot: iterations=137 runtime: 165624us
-Mandelbrot: iterations=138 runtime: 165670us
-Mandelbrot: iterations=139 runtime: 165701us
-Mandelbrot: iterations=140 runtime: 165390us
-Mandelbrot: iterations=141 runtime: 165888us
-Mandelbrot: iterations=142 runtime: 165602us
-Mandelbrot: iterations=143 runtime: 165513us
-Mandelbrot: iterations=144 runtime: 165811us
-Mandelbrot: iterations=145 runtime: 166014us
-Mandelbrot: iterations=146 runtime: 165912us
-Mandelbrot: iterations=147 runtime: 165897us
-Mandelbrot: iterations=148 runtime: 165852us
-Mandelbrot: iterations=149 runtime: 165703us
-Mandelbrot: iterations=150 runtime: 165692us
-Mandelbrot: iterations=151 runtime: 165936us
-Mandelbrot: iterations=152 runtime: 165571us
-Mandelbrot: iterations=153 runtime: 165958us
-Mandelbrot: iterations=154 runtime: 165997us
-Mandelbrot: iterations=155 runtime: 165923us
-Mandelbrot: iterations=156 runtime: 166279us
-Mandelbrot: iterations=157 runtime: 165877us
-Mandelbrot: iterations=158 runtime: 165742us
-Mandelbrot: iterations=159 runtime: 166053us
-Mandelbrot: iterations=160 runtime: 165925us
-Mandelbrot: iterations=161 runtime: 165738us
-Mandelbrot: iterations=162 runtime: 165961us
-Mandelbrot: iterations=163 runtime: 165952us
-Mandelbrot: iterations=164 runtime: 165953us
-Mandelbrot: iterations=165 runtime: 165338us
-Mandelbrot: iterations=166 runtime: 165441us
-Mandelbrot: iterations=167 runtime: 165787us
-Mandelbrot: iterations=168 runtime: 165683us
-Mandelbrot: iterations=169 runtime: 165560us
-Mandelbrot: iterations=170 runtime: 165956us
-Mandelbrot: iterations=171 runtime: 165880us
-Mandelbrot: iterations=172 runtime: 165947us
-Mandelbrot: iterations=173 runtime: 165872us
-Mandelbrot: iterations=174 runtime: 165771us
-Mandelbrot: iterations=175 runtime: 165645us
-Mandelbrot: iterations=176 runtime: 165748us
-Mandelbrot: iterations=177 runtime: 165905us
-Mandelbrot: iterations=178 runtime: 166046us
-Mandelbrot: iterations=179 runtime: 165848us
-Mandelbrot: iterations=180 runtime: 165738us
-Mandelbrot: iterations=181 runtime: 165717us
-Mandelbrot: iterations=182 runtime: 165986us
-Mandelbrot: iterations=183 runtime: 165782us
-Mandelbrot: iterations=184 runtime: 165995us
-Mandelbrot: iterations=185 runtime: 165633us
-Mandelbrot: iterations=186 runtime: 165432us
-Mandelbrot: iterations=187 runtime: 165731us
-Mandelbrot: iterations=188 runtime: 165999us
-Mandelbrot: iterations=189 runtime: 165707us
-Mandelbrot: iterations=190 runtime: 165945us
-Mandelbrot: iterations=191 runtime: 165981us
-Mandelbrot: iterations=192 runtime: 165940us
-Mandelbrot: iterations=193 runtime: 165798us
-Mandelbrot: iterations=194 runtime: 165955us
-Mandelbrot: iterations=195 runtime: 165815us
-Mandelbrot: iterations=196 runtime: 165464us
-Mandelbrot: iterations=197 runtime: 165675us
-Mandelbrot: iterations=198 runtime: 165976us
-Mandelbrot: iterations=199 runtime: 165976us
-Mandelbrot: iterations=200 runtime: 165778us
-Mandelbrot: iterations=201 runtime: 165948us
-Mandelbrot: iterations=202 runtime: 165938us
-Mandelbrot: iterations=203 runtime: 165920us
-Mandelbrot: iterations=204 runtime: 165944us
-Mandelbrot: iterations=205 runtime: 166146us
-Mandelbrot: iterations=206 runtime: 165877us
-Mandelbrot: iterations=207 runtime: 165961us
-Mandelbrot: iterations=208 runtime: 165626us
-Mandelbrot: iterations=209 runtime: 165896us
-Mandelbrot: iterations=210 runtime: 165864us
-Mandelbrot: iterations=211 runtime: 165797us
-Mandelbrot: iterations=212 runtime: 165933us
-Mandelbrot: iterations=213 runtime: 166050us
-Mandelbrot: iterations=214 runtime: 165980us
-Mandelbrot: iterations=215 runtime: 165963us
-Mandelbrot: iterations=216 runtime: 165903us
-Mandelbrot: iterations=217 runtime: 165700us
-Mandelbrot: iterations=218 runtime: 165740us
-Mandelbrot: iterations=219 runtime: 165724us
-Mandelbrot: iterations=220 runtime: 165956us
-Mandelbrot: iterations=221 runtime: 165441us
-Mandelbrot: iterations=222 runtime: 165924us
-Mandelbrot: iterations=223 runtime: 165942us
-Mandelbrot: iterations=224 runtime: 165719us
-Mandelbrot: iterations=225 runtime: 165948us
-Mandelbrot: iterations=226 runtime: 166012us
-Mandelbrot: iterations=227 runtime: 165930us
-Mandelbrot: iterations=228 runtime: 165757us
-Mandelbrot: iterations=229 runtime: 165831us
-Mandelbrot: iterations=230 runtime: 165620us
-Mandelbrot: iterations=231 runtime: 165947us
-Mandelbrot: iterations=232 runtime: 165724us
-Mandelbrot: iterations=233 runtime: 165918us
-Mandelbrot: iterations=234 runtime: 165557us
-Mandelbrot: iterations=235 runtime: 166191us
-Mandelbrot: iterations=236 runtime: 165919us
-Mandelbrot: iterations=237 runtime: 165627us
-Mandelbrot: iterations=238 runtime: 165969us
-Mandelbrot: iterations=239 runtime: 165949us
-Mandelbrot: iterations=240 runtime: 165729us
-Mandelbrot: iterations=241 runtime: 165988us
-Mandelbrot: iterations=242 runtime: 165881us
-Mandelbrot: iterations=243 runtime: 165889us
-Mandelbrot: iterations=244 runtime: 165449us
-Mandelbrot: iterations=245 runtime: 165861us
-Mandelbrot: iterations=246 runtime: 165781us
-Mandelbrot: iterations=247 runtime: 165531us
-Mandelbrot: iterations=248 runtime: 165948us
-Mandelbrot: iterations=249 runtime: 166256us
-Mandelbrot: iterations=250 runtime: 165927us
-Mandelbrot: iterations=251 runtime: 165756us
-Mandelbrot: iterations=252 runtime: 165938us
-Mandelbrot: iterations=253 runtime: 165684us
-Mandelbrot: iterations=254 runtime: 165914us
-Mandelbrot: iterations=255 runtime: 165913us
-Mandelbrot: iterations=256 runtime: 165798us
-Mandelbrot: iterations=257 runtime: 165569us
-Mandelbrot: iterations=258 runtime: 165873us
-Mandelbrot: iterations=259 runtime: 165402us
-Mandelbrot: iterations=260 runtime: 165935us
-Mandelbrot: iterations=261 runtime: 165922us
-Mandelbrot: iterations=262 runtime: 165860us
-Mandelbrot: iterations=263 runtime: 165657us
-Mandelbrot: iterations=264 runtime: 165538us
-Mandelbrot: iterations=265 runtime: 165705us
-Mandelbrot: iterations=266 runtime: 165778us
-Mandelbrot: iterations=267 runtime: 165882us
-Mandelbrot: iterations=268 runtime: 165810us
-Mandelbrot: iterations=269 runtime: 165968us
-Mandelbrot: iterations=270 runtime: 165878us
-Mandelbrot: iterations=271 runtime: 165565us
-Mandelbrot: iterations=272 runtime: 165730us
-Mandelbrot: iterations=273 runtime: 165865us
-Mandelbrot: iterations=274 runtime: 165811us
-Mandelbrot: iterations=275 runtime: 165832us
-Mandelbrot: iterations=276 runtime: 165969us
-Mandelbrot: iterations=277 runtime: 165680us
-Mandelbrot: iterations=278 runtime: 165677us
-Mandelbrot: iterations=279 runtime: 165829us
-Mandelbrot: iterations=280 runtime: 165694us
-Mandelbrot: iterations=281 runtime: 165900us
-Mandelbrot: iterations=282 runtime: 165549us
-Mandelbrot: iterations=283 runtime: 165996us
-Mandelbrot: iterations=284 runtime: 165876us
-Mandelbrot: iterations=285 runtime: 166001us
-Mandelbrot: iterations=286 runtime: 165667us
-Mandelbrot: iterations=287 runtime: 165960us
-Mandelbrot: iterations=288 runtime: 165838us
-Mandelbrot: iterations=289 runtime: 166150us
-Mandelbrot: iterations=290 runtime: 165725us
-Mandelbrot: iterations=291 runtime: 166295us
-Mandelbrot: iterations=292 runtime: 165731us
-Mandelbrot: iterations=293 runtime: 165978us
-Mandelbrot: iterations=294 runtime: 165994us
-Mandelbrot: iterations=295 runtime: 165907us
-Mandelbrot: iterations=296 runtime: 165857us
-Mandelbrot: iterations=297 runtime: 165950us
-Mandelbrot: iterations=298 runtime: 166005us
-Mandelbrot: iterations=299 runtime: 165968us
-Mandelbrot: iterations=300 runtime: 165934us
+Mandelbrot: iterations=127 runtime: 165748us
+Mandelbrot: iterations=128 runtime: 165727us
+Mandelbrot: iterations=129 runtime: 165754us
+Mandelbrot: iterations=130 runtime: 165889us
+Mandelbrot: iterations=131 runtime: 165714us
+Mandelbrot: iterations=132 runtime: 165675us
+Mandelbrot: iterations=133 runtime: 165373us
+Mandelbrot: iterations=134 runtime: 165460us
+Mandelbrot: iterations=135 runtime: 165772us
+Mandelbrot: iterations=136 runtime: 165818us
+Mandelbrot: iterations=137 runtime: 165779us
+Mandelbrot: iterations=138 runtime: 165680us
+Mandelbrot: iterations=139 runtime: 165737us
+Mandelbrot: iterations=140 runtime: 165772us
+Mandelbrot: iterations=141 runtime: 165681us
+Mandelbrot: iterations=142 runtime: 165370us
+Mandelbrot: iterations=143 runtime: 165807us
+Mandelbrot: iterations=144 runtime: 165813us
+Mandelbrot: iterations=145 runtime: 165705us
+Mandelbrot: iterations=146 runtime: 165396us
+Mandelbrot: iterations=147 runtime: 165527us
+Mandelbrot: iterations=148 runtime: 165666us
+Mandelbrot: iterations=149 runtime: 165698us
+Mandelbrot: iterations=150 runtime: 165858us
+Mandelbrot: iterations=151 runtime: 165737us
+Mandelbrot: iterations=152 runtime: 165732us
+Mandelbrot: iterations=153 runtime: 165468us
+Mandelbrot: iterations=154 runtime: 165784us
+Mandelbrot: iterations=155 runtime: 165301us
+Mandelbrot: iterations=156 runtime: 165773us
+Mandelbrot: iterations=157 runtime: 165378us
+Mandelbrot: iterations=158 runtime: 165757us
+Mandelbrot: iterations=159 runtime: 165677us
+Mandelbrot: iterations=160 runtime: 165892us
+Mandelbrot: iterations=161 runtime: 165749us
+Mandelbrot: iterations=162 runtime: 165773us
+Mandelbrot: iterations=163 runtime: 165684us
+Mandelbrot: iterations=164 runtime: 165766us
+Mandelbrot: iterations=165 runtime: 165686us
+Mandelbrot: iterations=166 runtime: 165769us
+Mandelbrot: iterations=167 runtime: 165735us
+Mandelbrot: iterations=168 runtime: 165807us
+Mandelbrot: iterations=169 runtime: 165390us
+Mandelbrot: iterations=170 runtime: 165728us
+Mandelbrot: iterations=171 runtime: 165775us
+Mandelbrot: iterations=172 runtime: 165694us
+Mandelbrot: iterations=173 runtime: 165784us
+Mandelbrot: iterations=174 runtime: 165760us
+Mandelbrot: iterations=175 runtime: 165815us
+Mandelbrot: iterations=176 runtime: 165675us
+Mandelbrot: iterations=177 runtime: 165966us
+Mandelbrot: iterations=178 runtime: 165721us
+Mandelbrot: iterations=179 runtime: 165753us
+Mandelbrot: iterations=180 runtime: 165747us
+Mandelbrot: iterations=181 runtime: 165407us
+Mandelbrot: iterations=182 runtime: 165758us
+Mandelbrot: iterations=183 runtime: 165761us
+Mandelbrot: iterations=184 runtime: 165703us
+Mandelbrot: iterations=185 runtime: 165713us
+Mandelbrot: iterations=186 runtime: 165404us
+Mandelbrot: iterations=187 runtime: 165782us
+Mandelbrot: iterations=188 runtime: 165741us
+Mandelbrot: iterations=189 runtime: 165744us
+Mandelbrot: iterations=190 runtime: 165502us
+Mandelbrot: iterations=191 runtime: 165767us
+Mandelbrot: iterations=192 runtime: 165668us
+Mandelbrot: iterations=193 runtime: 165385us
+Mandelbrot: iterations=194 runtime: 165726us
+Mandelbrot: iterations=195 runtime: 165734us
+Mandelbrot: iterations=196 runtime: 165754us
+Mandelbrot: iterations=197 runtime: 165796us
+Mandelbrot: iterations=198 runtime: 165809us
+Mandelbrot: iterations=199 runtime: 165710us
+Mandelbrot: iterations=200 runtime: 165462us
+Mandelbrot: iterations=201 runtime: 165768us
+Mandelbrot: iterations=202 runtime: 165746us
+Mandelbrot: iterations=203 runtime: 165806us
+Mandelbrot: iterations=204 runtime: 165773us
+Mandelbrot: iterations=205 runtime: 165736us
+Mandelbrot: iterations=206 runtime: 165771us
+Mandelbrot: iterations=207 runtime: 165822us
+Mandelbrot: iterations=208 runtime: 165770us
+Mandelbrot: iterations=209 runtime: 165724us
+Mandelbrot: iterations=210 runtime: 165788us
+Mandelbrot: iterations=211 runtime: 165677us
+Mandelbrot: iterations=212 runtime: 165544us
+Mandelbrot: iterations=213 runtime: 165852us
+Mandelbrot: iterations=214 runtime: 165868us
+Mandelbrot: iterations=215 runtime: 165867us
+Mandelbrot: iterations=216 runtime: 165877us
+Mandelbrot: iterations=217 runtime: 165859us
+Mandelbrot: iterations=218 runtime: 165973us
+Mandelbrot: iterations=219 runtime: 165867us
+Mandelbrot: iterations=220 runtime: 165867us
+Mandelbrot: iterations=221 runtime: 165926us
+Mandelbrot: iterations=222 runtime: 165892us
+Mandelbrot: iterations=223 runtime: 165892us
+Mandelbrot: iterations=224 runtime: 165893us
+Mandelbrot: iterations=225 runtime: 165885us
+Mandelbrot: iterations=226 runtime: 165822us
+Mandelbrot: iterations=227 runtime: 165572us
+Mandelbrot: iterations=228 runtime: 165585us
+Mandelbrot: iterations=229 runtime: 165569us
+Mandelbrot: iterations=230 runtime: 165682us
+Mandelbrot: iterations=231 runtime: 165878us
+Mandelbrot: iterations=232 runtime: 165467us
+Mandelbrot: iterations=233 runtime: 165864us
+Mandelbrot: iterations=234 runtime: 165862us
+Mandelbrot: iterations=235 runtime: 165856us
+Mandelbrot: iterations=236 runtime: 165857us
+Mandelbrot: iterations=237 runtime: 165933us
+Mandelbrot: iterations=238 runtime: 165905us
+Mandelbrot: iterations=239 runtime: 165897us
+Mandelbrot: iterations=240 runtime: 165918us
+Mandelbrot: iterations=241 runtime: 165863us
+Mandelbrot: iterations=242 runtime: 165973us
+Mandelbrot: iterations=243 runtime: 165863us
+Mandelbrot: iterations=244 runtime: 165558us
+Mandelbrot: iterations=245 runtime: 165858us
+Mandelbrot: iterations=246 runtime: 165529us
+Mandelbrot: iterations=247 runtime: 165857us
+Mandelbrot: iterations=248 runtime: 165863us
+Mandelbrot: iterations=249 runtime: 165862us
+Mandelbrot: iterations=250 runtime: 165828us
+Mandelbrot: iterations=251 runtime: 165875us
+Mandelbrot: iterations=252 runtime: 165657us
+Mandelbrot: iterations=253 runtime: 165311us
+Mandelbrot: iterations=254 runtime: 165414us
+Mandelbrot: iterations=255 runtime: 165358us
+Mandelbrot: iterations=256 runtime: 165883us
+Mandelbrot: iterations=257 runtime: 165892us
+Mandelbrot: iterations=258 runtime: 165856us
+Mandelbrot: iterations=259 runtime: 165790us
+Mandelbrot: iterations=260 runtime: 165648us
+Mandelbrot: iterations=261 runtime: 166410us
+Mandelbrot: iterations=262 runtime: 165830us
+Mandelbrot: iterations=263 runtime: 165603us
+Mandelbrot: iterations=264 runtime: 165940us
+Mandelbrot: iterations=265 runtime: 165928us
+Mandelbrot: iterations=266 runtime: 165979us
+Mandelbrot: iterations=267 runtime: 165677us
+Mandelbrot: iterations=268 runtime: 166013us
+Mandelbrot: iterations=269 runtime: 165792us
+Mandelbrot: iterations=270 runtime: 165839us
+Mandelbrot: iterations=271 runtime: 165834us
+Mandelbrot: iterations=272 runtime: 165924us
+Mandelbrot: iterations=273 runtime: 165877us
+Mandelbrot: iterations=274 runtime: 165818us
+Mandelbrot: iterations=275 runtime: 165881us
+Mandelbrot: iterations=276 runtime: 165717us
+Mandelbrot: iterations=277 runtime: 165724us
+Mandelbrot: iterations=278 runtime: 165562us
+Mandelbrot: iterations=279 runtime: 165788us
+Mandelbrot: iterations=280 runtime: 165761us
+Mandelbrot: iterations=281 runtime: 165864us
+Mandelbrot: iterations=282 runtime: 165320us
+Mandelbrot: iterations=283 runtime: 165717us
+Mandelbrot: iterations=284 runtime: 165783us
+Mandelbrot: iterations=285 runtime: 165904us
+Mandelbrot: iterations=286 runtime: 165815us
+Mandelbrot: iterations=287 runtime: 165719us
+Mandelbrot: iterations=288 runtime: 165747us
+Mandelbrot: iterations=289 runtime: 165872us
+Mandelbrot: iterations=290 runtime: 165947us
+Mandelbrot: iterations=291 runtime: 165718us
+Mandelbrot: iterations=292 runtime: 165767us
+Mandelbrot: iterations=293 runtime: 165890us
+Mandelbrot: iterations=294 runtime: 165782us
+Mandelbrot: iterations=295 runtime: 165822us
+Mandelbrot: iterations=296 runtime: 165823us
+Mandelbrot: iterations=297 runtime: 165901us
+Mandelbrot: iterations=298 runtime: 165971us
+Mandelbrot: iterations=299 runtime: 165829us
+Mandelbrot: iterations=300 runtime: 165896us
 Could not locate BlockSlowdown.json
 Skipping Loading (this might cause a fatal crash if GTSlowdown is on)
-Mandelbrot: iterations=300 average: 165857us total: 49757364us
+Mandelbrot: iterations=300 average: 165778us total: 49733415us
 
 
-Total Runtime: 49757364us
-Bubo.RDTSC.Harness.main Total RDTSC cycles: 165017462286
+Total Runtime: 49733415us
+Bubo.RDTSC.Harness.main Total RDTSC cycles: 164946879536
 Comp 52 (java.util.ImmutableCollections$SetN$SetNIterator.next()) loops:
 Found Encoding : 0:-1
 └── Loop 0
-  loop 0 Cycles: 375526 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.ImmutableCollections$SetN$SetNIterator.next(ImmutableCollections.java:1213) [bci: 21] | -at java.util.ImmutableCollections$SetN$SetNIterator.next(ImmutableCollections.java:1223) [bci: 65]
+  loop 0 Cycles: 381194 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.ImmutableCollections$SetN$SetNIterator.next(ImmutableCollections.java:1213) [bci: 21] | -at java.util.ImmutableCollections$SetN$SetNIterator.next(ImmutableCollections.java:1223) [bci: 65]
 Comp 57 (java.util.HashMap.putVal(int,) loops:
 Found Encoding : 0:-1
 └── Loop 0
-  loop 0 Cycles: 10278 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.HashMap.putVal(HashMap.java:648) [bci: 134] | -at java.util.HashMap.putVal(HashMap.java:649) [bci: 145]
+  loop 0 Cycles: 11822 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.HashMap.putVal(HashMap.java:648) [bci: 134] | -at java.util.HashMap.putVal(HashMap.java:649) [bci: 145]
 Comp 58 (java.lang.String.equals(Object)) loops:
 Found Encoding : 0:-1
 └── Loop 0
-  loop 0 Cycles: 5230 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.lang.StringLatin1.equals(StringLatin1.java:100) [bci: 9]
+  loop 0 Cycles: 5130 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.lang.StringLatin1.equals(StringLatin1.java:100) [bci: 9]
 -at java.lang.String.equals(String.java:1926) [bci: 44] | -at java.lang.StringLatin1.equals(StringLatin1.java:105) [bci: 32]
 -at java.lang.String.equals(String.java:1926) [bci: 44]
-Comp 69 (java.util.HashMap.resize()) loops:
+Comp 70 (java.util.HashMap.resize()) loops:
 Found Encoding : 2:-1,0:-1,1:0
 ├── Loop 2
 └── Loop 0
     └── Loop 1
-  loop 0 Cycles: 21024 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.HashMap.resize(HashMap.java:714) [bci: 151] | -at java.util.HashMap.resize(HashMap.java:755) [bci: 353]
-  loop 1 Cycles: 5906 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.HashMap.resize(HashMap.java:727) [bci: 235] | -at java.util.HashMap.resize(HashMap.java:743) [bci: 309]
-  loop 2 Cycles: 58442 || Activation Count:0 | LoopCallCount: 0 |  Source: -at jdk.graal.compiler.hotspot.replacements.HotSpotAllocationSnippets.allocateArray(KlassPointer, int, int, int, AllocationSnippets$FillContent, int, boolean, boolean, boolean, boolean, HotSpotAllocationSnippets$HotSpotAllocationProfilingData, boolea
+  loop 0 Cycles: 36132 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.HashMap.resize(HashMap.java:714) [bci: 151] | -at java.util.HashMap.resize(HashMap.java:755) [bci: 353]
+  loop 1 Cycles: 10800 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.HashMap.resize(HashMap.java:727) [bci: 235] | -at java.util.HashMap.resize(HashMap.java:743) [bci: 309]
+  loop 2 Cycles: 41264 || Activation Count:0 | LoopCallCount: 0 |  Source: -at jdk.graal.compiler.hotspot.replacements.HotSpotAllocationSnippets.allocateArray(KlassPointer, int, int, int, AllocationSnippets$FillContent, int, boolean, boolean, boolean, boolean, HotSpotAllocationSnippets$HotSpotAllocationProfilingData, boolea
 Comp 88 (java.util.Properties$LineReader.readLine()) loops:
 Found Encoding : 5:-1,3:-1,4:3,0:-1,1:0,2:1
 ├── Loop 5
@@ -351,29 +350,29 @@ Found Encoding : 5:-1,3:-1,4:3,0:-1,1:0,2:1
 └── Loop 0
     └── Loop 1
         └── Loop 2
-  loop 1 Cycles: 255390 || Activation Count:0 | LoopCallCount: 1 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:538) [bci: 219] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
-  loop 2 Cycles: 16482 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:540) [bci: 224] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
-  loop 5 Cycles: 394 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:540) [bci: 224] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+  loop 1 Cycles: 287302 || Activation Count:0 | LoopCallCount: 1 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:538) [bci: 219] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+  loop 2 Cycles: 16486 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:540) [bci: 224] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+  loop 5 Cycles: 498 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:540) [bci: 224] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
 Comp 89 (java.util.Properties$LineReader.readLine()-Re-Comp) loops:
 Found Encoding : 0:-1,1:0,2:1
 └── Loop 0
     └── Loop 1
         └── Loop 2
-  loop 0 Cycles: 562786 || Activation Count:0 | LoopCallCount: 2 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:504) [bci: 53] | -at java.util.Properties$LineReader.readLine(Properties.java:615) [bci: 577]
-  loop 1 Cycles: 503540 || Activation Count:0 | LoopCallCount: 1 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:538) [bci: 219] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
-  loop 2 Cycles: 143960 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:540) [bci: 224] | -at java.util.Properties$LineReader.readLine(Properties.java:545) [bci: 262]
+  loop 0 Cycles: 556534 || Activation Count:0 | LoopCallCount: 2 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:504) [bci: 53] | -at java.util.Properties$LineReader.readLine(Properties.java:615) [bci: 577]
+  loop 1 Cycles: 496998 || Activation Count:0 | LoopCallCount: 1 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:538) [bci: 219] | -at java.util.Properties$LineReader.readLine(Properties.java:543) [bci: 259]
+  loop 2 Cycles: 143504 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.util.Properties$LineReader.readLine(Properties.java:540) [bci: 224] | -at java.util.Properties$LineReader.readLine(Properties.java:545) [bci: 262]
 Comp 92 (jdk.internal.util.ArraysSupport.unsignedHashCode(int,) loops:
 Found Encoding : 0:-1,1:-1,2:-1
 ├── Loop 0
 ├── Loop 1
 └── Loop 2
-  loop 0 Cycles: 57542 || Activation Count:0 | LoopCallCount: 0 |  Source: -at jdk.internal.util.ArraysSupport.unsignedHashCode(ArraysSupport.java:378) [bci: 8] | -at jdk.internal.util.ArraysSupport.unsignedHashCode(ArraysSupport.java:381) [bci: 34]
-  loop 1 Cycles: 108848 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at jdk.internal.util.ArraysSupport.unsignedHashCode(ArraysSupport.java:381) [bci: 34]
-  loop 2 Cycles: 91592 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at jdk.internal.util.ArraysSupport.unsignedHashCode(ArraysSupport.java:381) [bci: 34]
-Comp 113 (java.lang.StringLatin1.equals(byte[],) loops:
+  loop 0 Cycles: 57562 || Activation Count:0 | LoopCallCount: 0 |  Source: -at jdk.internal.util.ArraysSupport.unsignedHashCode(ArraysSupport.java:378) [bci: 8] | -at jdk.internal.util.ArraysSupport.unsignedHashCode(ArraysSupport.java:381) [bci: 34]
+  loop 1 Cycles: 108934 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at jdk.internal.util.ArraysSupport.unsignedHashCode(ArraysSupport.java:381) [bci: 34]
+  loop 2 Cycles: 91280 || Activation Count:0 | LoopCallCount: 0 |  Source: Source Missing | -at jdk.internal.util.ArraysSupport.unsignedHashCode(ArraysSupport.java:381) [bci: 34]
+Comp 114 (java.lang.StringLatin1.equals(byte[],) loops:
 Found Encoding : 0:-1
 └── Loop 0
-  loop 0 Cycles: 7974 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.lang.StringLatin1.equals(StringLatin1.java:100) [bci: 9] | -at java.lang.StringLatin1.equals(StringLatin1.java:105) [bci: 32]
+  loop 0 Cycles: 7884 || Activation Count:0 | LoopCallCount: 0 |  Source: -at java.lang.StringLatin1.equals(StringLatin1.java:100) [bci: 9] | -at java.lang.StringLatin1.equals(StringLatin1.java:105) [bci: 32]
 Comp 120 (Mandelbrot.mandelbrot(int)) loops:
 Found Encoding : 5:-1,3:-1,4:3,0:-1,1:0,2:1
 ├── Loop 5
@@ -382,17 +381,17 @@ Found Encoding : 5:-1,3:-1,4:3,0:-1,1:0,2:1
 └── Loop 0
     └── Loop 1
         └── Loop 2
-  loop 0 Cycles: 541991566 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Mandelbrot.mandelbrot(int) [bci: 10] | -at Mandelbrot.mandelbrot(int) [bci: 13]
-  loop 1 Cycles: 541938214 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Mandelbrot.mandelbrot(int) [bci: 33] | -at Mandelbrot.mandelbrot(int) [bci: 207]
-  loop 2 Cycles: 479311568 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Mandelbrot.mandelbrot(int) [bci: 73] | -at Mandelbrot.mandelbrot(int) [bci: 147]
-  loop 3 Cycles: 73230 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Mandelbrot.mandelbrot(int) [bci: 33] | -at Mandelbrot.mandelbrot(int) [bci: 207]
-  loop 4 Cycles: 52694 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Mandelbrot.mandelbrot(int) [bci: 73] | -at Mandelbrot.mandelbrot(int) [bci: 147]
-  loop 5 Cycles: 774 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Mandelbrot.mandelbrot(int) [bci: 73] | -at Mandelbrot.mandelbrot(int) [bci: 147]
+  loop 0 Cycles: 541851116 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Mandelbrot.mandelbrot(int) [bci: 10] | -at Mandelbrot.mandelbrot(int) [bci: 13]
+  loop 1 Cycles: 541798376 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Mandelbrot.mandelbrot(int) [bci: 33] | -at Mandelbrot.mandelbrot(int) [bci: 207]
+  loop 2 Cycles: 479345330 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Mandelbrot.mandelbrot(int) [bci: 73] | -at Mandelbrot.mandelbrot(int) [bci: 147]
+  loop 3 Cycles: 73026 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Mandelbrot.mandelbrot(int) [bci: 33] | -at Mandelbrot.mandelbrot(int) [bci: 207]
+  loop 4 Cycles: 52580 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Mandelbrot.mandelbrot(int) [bci: 73] | -at Mandelbrot.mandelbrot(int) [bci: 147]
+  loop 5 Cycles: 408 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Mandelbrot.mandelbrot(int) [bci: 73] | -at Mandelbrot.mandelbrot(int) [bci: 147]
 Comp 121 (Mandelbrot.mandelbrot(int)-Re-Comp) loops:
 Found Encoding : 0:-1,1:0,2:1
 └── Loop 0
     └── Loop 1
         └── Loop 2
-  loop 0 Cycles: 164205485040 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Mandelbrot.mandelbrot(int) [bci: 10] | -at Mandelbrot.mandelbrot(int) [bci: 213]
-  loop 1 Cycles: 164185418354 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Mandelbrot.mandelbrot(int) [bci: 33] | -at Mandelbrot.mandelbrot(int) [bci: 207]
-  loop 2 Cycles: 145238661906 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Mandelbrot.mandelbrot(int) [bci: 73] | -at Mandelbrot.mandelbrot(int) [bci: 147]
+  loop 0 Cycles: 164125965390 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Mandelbrot.mandelbrot(int) [bci: 10] | -at Mandelbrot.mandelbrot(int) [bci: 213]
+  loop 1 Cycles: 164105081778 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Mandelbrot.mandelbrot(int) [bci: 33] | -at Mandelbrot.mandelbrot(int) [bci: 207]
+  loop 2 Cycles: 145160225216 || Activation Count:0 | LoopCallCount: 0 |  Source: -at Mandelbrot.mandelbrot(int) [bci: 73] | -at Mandelbrot.mandelbrot(int) [bci: 147]

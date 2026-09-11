@@ -1,0 +1,16 @@
+comp_id,method,loop_id,vtune_block_id,graal_block_id,normal_time,slowdown_time,pct_increase_block
+170,Mandelbrot.mandelbrot,0,80,2,0.001,0.008,700.0
+170,Mandelbrot.mandelbrot,1,81,3,0.005,0.04,700.0000000000001
+170,Mandelbrot.mandelbrot,1,82,4,2.064,4.0,93.7984496124031
+170,Mandelbrot.mandelbrot,1,83,6,0.043,0.061,41.86046511627908
+170,Mandelbrot.mandelbrot,1,84,7,2.747,2.868,4.404805242082271
+170,Mandelbrot.mandelbrot,2,85,8,1.773,1.778,0.28200789622110073
+170,Mandelbrot.mandelbrot,2,86,9,0.014,1.642,11628.571428571428
+170,Mandelbrot.mandelbrot,2,87,10,38.946,76.359,96.06378061931905
+170,Mandelbrot.mandelbrot,2,88,11,0.112,0.193,72.32142857142857
+170,Mandelbrot.mandelbrot,1,90,15,0.466,0.955,104.93562231759654
+170,Mandelbrot.mandelbrot,1,91,17,0.015,0.042,180.00000000000003
+170,Mandelbrot.mandelbrot,1,92,19,0.061,0.097,59.01639344262296
+170,Mandelbrot.mandelbrot,1,94,16,0.02,0.039,95.0
+170,Mandelbrot.mandelbrot,1,96,18,0.0,0.001,0.0
+170,Mandelbrot.mandelbrot,0,97,20,0.008,0.003,-62.5

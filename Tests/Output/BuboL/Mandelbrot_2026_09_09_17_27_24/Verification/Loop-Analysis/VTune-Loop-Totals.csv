@@ -1,0 +1,4 @@
+comp_id,method,loop_id,num_blocks_matched,num_probe_blocks_matched,total_normal_time,total_slowdown_time,median_pct_slowdown
+170,Mandelbrot.mandelbrot,0,2,0,0.011,0.01,-9.090909090909085
+170,Mandelbrot.mandelbrot,1,9,1,5.4399999999999995,8.163,50.05514705882354
+170,Mandelbrot.mandelbrot,2,4,1,43.382000000000005,85.71300000000001,97.57733622239638
