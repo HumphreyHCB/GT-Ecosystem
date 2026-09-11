@@ -106,7 +106,7 @@ is_complete_bubol_output() {
 
     [[ -d "$candidate" ]] || return 1
     [[ -s "$candidate/Final_$BENCHMARK.json" ]] || return 1
-    [[ -s "$candidate/MarkerPhaseInfo.json" ]] || return 1
+    [[ -s "$candidate/MarkerPhase_BuboIncluded.json" ]] || return 1
     [[ -d "$candidate/CompilerReplay" ]] || return 1
 
     replay_file=$(find "$candidate/CompilerReplay" -type f -print -quit)
@@ -126,7 +126,7 @@ find_latest_bubol_output() {
         [[ -n "$candidate" ]] || die "Cannot resolve latest BuboL result: $latest_result"
         BUBOL_OUTPUT=$candidate
         is_complete_bubol_output "$BUBOL_OUTPUT" || \
-            die "Latest BuboL result is missing Final_$BENCHMARK.json, MarkerPhaseInfo.json, or CompilerReplay: $BUBOL_OUTPUT"
+            die "Latest BuboL result is missing Final_$BENCHMARK.json, MarkerPhase_BuboIncluded.json, or CompilerReplay: $BUBOL_OUTPUT"
     fi
 
     if [[ -z "$BUBOL_OUTPUT" ]]; then
@@ -158,13 +158,13 @@ find_latest_bubol_output() {
     fi
 
     [[ -n "$BUBOL_OUTPUT" ]] || \
-        die "No complete $BENCHMARK BuboL output with MarkerPhaseInfo.json was found in $BUBOL_OUTPUT_ROOT"
+        die "No complete $BENCHMARK BuboL output with MarkerPhase_BuboIncluded.json was found in $BUBOL_OUTPUT_ROOT"
 
     ln -sfnT "$(basename -- "$BUBOL_OUTPUT")" "$latest_result"
 
     COMPILER_REPLAY_DIRECTORY="$BUBOL_OUTPUT/CompilerReplay"
     SLOWDOWN_JSON="$BUBOL_OUTPUT/Final_$BENCHMARK.json"
-    MARKER_PHASE_JSON="$BUBOL_OUTPUT/MarkerPhaseInfo.json"
+    MARKER_PHASE_JSON="$BUBOL_OUTPUT/MarkerPhase_BuboIncluded.json"
     VERIFICATION_OUTPUT="$BUBOL_OUTPUT/Verification"
     ANALYSIS_OUTPUT="$VERIFICATION_OUTPUT/Loop-Analysis"
     NORMAL_BUBOL_LOG="$VERIFICATION_OUTPUT/Normal-BuboL.log"
@@ -204,14 +204,14 @@ validate_inputs() {
     require_file "$NORMAL_BUBOL_LOG" 'Normal BuboL verification log'
     require_file "$SLOWDOWN_BUBOL_LOG" 'Slowdown BuboL verification log'
     require_file "$SLOWDOWN_JSON" 'Final BuboL slowdown JSON'
-    require_file "$MARKER_PHASE_JSON" 'BuboL MarkerPhaseInfo JSON'
+    require_file "$MARKER_PHASE_JSON" 'BuboL marker phase JSON'
     require_directory "$COMPILER_REPLAY_DIRECTORY" 'BuboL CompilerReplay input'
     require_executable "$TESTS_DIR/Analysis/Verify-BuboL-Loop-Accuracy.py" 'BuboL loop analyser'
 
     [[ -s "$NORMAL_BUBOL_LOG" ]] || die "Normal BuboL log is empty: $NORMAL_BUBOL_LOG"
     [[ -s "$SLOWDOWN_BUBOL_LOG" ]] || die "Slowdown BuboL log is empty: $SLOWDOWN_BUBOL_LOG"
     [[ -s "$SLOWDOWN_JSON" ]] || die "Final BuboL slowdown JSON is empty: $SLOWDOWN_JSON"
-    [[ -s "$MARKER_PHASE_JSON" ]] || die "MarkerPhaseInfo JSON is empty: $MARKER_PHASE_JSON"
+    [[ -s "$MARKER_PHASE_JSON" ]] || die "BuboL marker phase JSON is empty: $MARKER_PHASE_JSON"
 
     replay_file=$(find "$COMPILER_REPLAY_DIRECTORY" -type f -print -quit)
     [[ -n "$replay_file" ]] || \

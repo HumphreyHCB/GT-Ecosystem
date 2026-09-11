@@ -786,7 +786,7 @@ def build_vtune_totals(
         raise AnalysisError("No VTune blocks could be assigned to BuboL loops")
     if probe_added_blocks == 0:
         raise AnalysisError(
-            "No RDTSC probe timings were added through MarkerPhaseInfo.json"
+            "No RDTSC probe timings were added through the marker phase JSON"
         )
 
     statistics_map = {
@@ -1275,7 +1275,7 @@ def run(args: argparse.Namespace) -> None:
         (args.cfg_log, "CFG log"),
         (args.vtune_report, "SlowdownTest VTune report"),
         (args.bridge_json, "Final slowdown JSON"),
-        (args.markerphase_json, "MarkerPhaseInfo JSON"),
+        (args.markerphase_json, "marker phase JSON"),
         (args.normal_bubol_log, "normal BuboL log"),
         (args.slowdown_bubol_log, "slowdown BuboL log"),
     ):
@@ -1329,7 +1329,7 @@ def run(args: argparse.Namespace) -> None:
         f"{mapping_statistics['probe_blocks_added']}"
     )
     print(
-        f"[INFO] Probe MarkerPhaseInfo misses: "
+        f"[INFO] Probe marker phase misses: "
         f"{mapping_statistics['probe_marker_misses']}"
     )
     print(
