@@ -1,0 +1,98 @@
+{
+  "identifier": "HotSpotCompilation-59[java.lang.String.equals(Object)]",
+  "method": "java.lang.String.equals(java.lang.Object)boolean",
+  "entryBCI": -1,
+  "codeSignature": "1b81cb89f6505a5995dbabe425a69a03531cfa5e9b0bad05edda29235b5071d3",
+  "graphSignature": "240f841b413bb8bd2af4877cb3753eac11d3bdc482d702e067df992e72784ebb",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.lang.String.equals(java.lang.Object)boolean",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.lang.String.equals(java.lang.Object)boolean",
+      "isMature": true,
+      "compilerIRSize": -1,
+      "data": [
+        {
+          "bci": 2,
+          "branchTakenProbability": 0.8892578125
+        },
+        {
+          "bci": 11,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 15,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 22,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 30,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 33,
+          "branchTakenProbability": 0.0
+        },
+        {
+          "bci": 41,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 44,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 47,
+          "branchTakenProbability": 0.959147814627718
+        }
+      ]
+    },
+    {
+      "method": "java.lang.StringLatin1.equals(byte[], byte[])boolean",
+      "isMature": true,
+      "compilerIRSize": 0,
+      "data": [
+        {
+          "bci": 1,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 3,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 4,
+          "branchTakenProbability": 0.9035863996273871
+        },
+        {
+          "bci": 11,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 12,
+          "branchTakenProbability": 0.03795620437956204
+        },
+        {
+          "bci": 17,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 20,
+          "exceptionSeen": "FALSE"
+        },
+        {
+          "bci": 21,
+          "branchTakenProbability": 0.9497073487968783
+        }
+      ]
+    }
+  ]
+}

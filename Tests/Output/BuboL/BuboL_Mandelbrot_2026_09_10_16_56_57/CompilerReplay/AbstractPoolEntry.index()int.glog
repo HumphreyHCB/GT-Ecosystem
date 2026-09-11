@@ -1,0 +1,22 @@
+{
+  "identifier": "HotSpotCompilation-25[jdk.internal.classfile.impl.AbstractPoolEntry.index()]",
+  "method": "jdk.internal.classfile.impl.AbstractPoolEntry.index()int",
+  "entryBCI": -1,
+  "codeSignature": "d4ce072063a0e5d7b77fa03ca89aafb8f3e3ecf13c518dc1905e344d1e62c58a",
+  "graphSignature": "e7bde89e8dace6a59b4eb25e44651c8d1fee56fcd42d84ff29a6eeb4cd17eb9c",
+  "result": true,
+  "profiles": [
+    {
+      "method": "jdk.internal.classfile.impl.AbstractPoolEntry.index()int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "jdk.internal.classfile.impl.AbstractPoolEntry.index()int",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}

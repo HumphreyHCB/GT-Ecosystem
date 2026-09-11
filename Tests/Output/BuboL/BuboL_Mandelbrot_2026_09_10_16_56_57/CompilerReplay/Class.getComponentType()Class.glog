@@ -1,0 +1,22 @@
+{
+  "identifier": "HotSpotCompilation-154[java.lang.Class.getComponentType()]",
+  "method": "java.lang.Class.getComponentType()java.lang.Class",
+  "entryBCI": -1,
+  "codeSignature": "b319d91a6485f244b602f37bbb015c7b083103cb0168540c8f7172a6f77fcdb4",
+  "graphSignature": "560fbceb5a3b763c5375266b0b25d6acc286fd9983237703f8164fa672f6f318",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.lang.Class.getComponentType()java.lang.Class",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.lang.Class.getComponentType()java.lang.Class",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "identifier": "HotSpotCompilation-10[java.lang.Class.isPrimitive()]",
+  "method": "java.lang.Class.isPrimitive()boolean",
+  "entryBCI": -1,
+  "codeSignature": "98ab40cf2ebcc843a57e4548f9a42e2e9f3f439b3cfc72b2a9affe72c8d06a5f",
+  "graphSignature": "84932e69dc30550c650357abc17e9ab829f3a4eab0efcb8b7994f6ac04079ca6",
+  "result": true,
+  "profiles": [
+    {
+      "method": "java.lang.Class.isPrimitive()boolean",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    },
+    {
+      "method": "java.lang.Class.isPrimitive()boolean",
+      "isMature": false,
+      "compilerIRSize": -1,
+      "data": []
+    }
+  ]
+}
