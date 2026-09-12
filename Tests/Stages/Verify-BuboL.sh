@@ -8,8 +8,8 @@ TESTS_DIR=$(cd -- "$SCRIPT_DIR/.." && pwd)
 # shellcheck source=../lib/common.sh
 source "$TESTS_DIR/lib/common.sh"
 
-if (( ${GT_COMMON_VERSION:-0} < 2 )); then
-    die "Tests/lib/common.sh is out of date; version 2 or later is required"
+if (( ${GT_COMMON_VERSION:-0} < 3 )); then
+    die "Tests/lib/common.sh is out of date; version 3 or later is required"
 fi
 
 # shellcheck source=Graal-Options.sh
@@ -30,6 +30,11 @@ BENCHMARKS_JAR=''
 
 NORMAL_AVERAGE=''
 SLOWDOWN_AVERAGE=''
+NORMAL_BUBOL_DATA=''
+SLOWDOWN_BUBOL_DATA=''
+OBSERVED_SLOWDOWN_RATIO=''
+MINIMUM_SLOWDOWN_RATIO=''
+MAXIMUM_SLOWDOWN_RATIO=''
 
 readonly BENCHMARK=Mandelbrot
 readonly ITERATIONS=300
@@ -258,6 +263,7 @@ extract_average_runtime() {
 
 validate_bubol_output() {
     local output_file=$1
+    local run_kind=$2
     local encoding_count
     local loop_count
     local total_cycles
@@ -301,6 +307,12 @@ validate_bubol_output() {
     fi
 
     pass "BuboL data: $encoding_count encodings, $loop_count loops, $total_cycles total loop cycles"
+
+    if [[ "$run_kind" == normal ]]; then
+        NORMAL_BUBOL_DATA="$encoding_count encodings, $loop_count loops, $total_cycles cycles"
+    else
+        SLOWDOWN_BUBOL_DATA="$encoding_count encodings, $loop_count loops, $total_cycles cycles"
+    fi
 }
 
 run_normal_bubol_replay() {
@@ -314,7 +326,7 @@ run_normal_bubol_replay() {
         "${BUBOL_NORMAL_OPTIONS[@]}" ||
         return 1
 
-    validate_bubol_output "$output_file" ||
+    validate_bubol_output "$output_file" normal ||
         return 1
 
     NORMAL_AVERAGE=$(extract_average_runtime "$output_file") || {
@@ -336,7 +348,7 @@ run_slowdown_bubol_replay() {
         "${BUBOL_SLOWDOWN_OPTIONS[@]}" ||
         return 1
 
-    validate_bubol_output "$output_file" ||
+    validate_bubol_output "$output_file" slowdown ||
         return 1
 
     SLOWDOWN_AVERAGE=$(extract_average_runtime "$output_file") || {
@@ -348,25 +360,21 @@ run_slowdown_bubol_replay() {
 }
 
 verify_slowdown_ratio() {
-    local minimum_ratio
-    local maximum_ratio
-    local observed_ratio
-
-    minimum_ratio=$(
+    MINIMUM_SLOWDOWN_RATIO=$(
         awk \
             -v expected="$EXPECTED_SLOWDOWN" \
             -v tolerance="$SLOWDOWN_TOLERANCE_PERCENT" \
             'BEGIN { printf "%.6f", expected * (1 - tolerance / 100) }'
     )
 
-    maximum_ratio=$(
+    MAXIMUM_SLOWDOWN_RATIO=$(
         awk \
             -v expected="$EXPECTED_SLOWDOWN" \
             -v tolerance="$SLOWDOWN_TOLERANCE_PERCENT" \
             'BEGIN { printf "%.6f", expected * (1 + tolerance / 100) }'
     )
 
-    observed_ratio=$(
+    OBSERVED_SLOWDOWN_RATIO=$(
         awk \
             -v normal="$NORMAL_AVERAGE" \
             -v slowdown="$SLOWDOWN_AVERAGE" \
@@ -374,19 +382,19 @@ verify_slowdown_ratio() {
     )
 
     if ! awk \
-        -v observed="$observed_ratio" \
-        -v minimum="$minimum_ratio" \
-        -v maximum="$maximum_ratio" \
+        -v observed="$OBSERVED_SLOWDOWN_RATIO" \
+        -v minimum="$MINIMUM_SLOWDOWN_RATIO" \
+        -v maximum="$MAXIMUM_SLOWDOWN_RATIO" \
         'BEGIN { exit !(observed >= minimum && observed <= maximum) }'; then
 
-        fail "BuboL slowdown ratio was ${observed_ratio}x"
-        fail "Expected between ${minimum_ratio}x and ${maximum_ratio}x"
+        fail "BuboL slowdown ratio was ${OBSERVED_SLOWDOWN_RATIO}x"
+        fail "Expected between ${MINIMUM_SLOWDOWN_RATIO}x and ${MAXIMUM_SLOWDOWN_RATIO}x"
 
         return 1
     fi
 
-    pass "Observed BuboL slowdown: ${observed_ratio}x"
-    pass "Accepted range: ${minimum_ratio}x to ${maximum_ratio}x"
+    pass "Observed BuboL slowdown: ${OBSERVED_SLOWDOWN_RATIO}x"
+    pass "Accepted range: ${MINIMUM_SLOWDOWN_RATIO}x to ${MAXIMUM_SLOWDOWN_RATIO}x"
 }
 
 main() {
@@ -407,6 +415,11 @@ main() {
         'Validate BuboL verification inputs' \
         validate_inputs
 
+    report_check \
+        bubol \
+        'BuboL Divine output verified' \
+        "Slowdown file: $SLOWDOWN_JSON; compiler replay: $COMPILER_REPLAY_DIRECTORY"
+
     run_step \
         'Run normal BuboL compiler replay' \
         run_normal_bubol_replay
@@ -415,9 +428,19 @@ main() {
         'Run slowdown BuboL compiler replay' \
         run_slowdown_bubol_replay
 
+    report_check \
+        bubol \
+        'BuboL loop data verified' \
+        "Normal: $NORMAL_BUBOL_DATA; slowdown: $SLOWDOWN_BUBOL_DATA"
+
     run_step \
         'Verify BuboL slowdown ratio' \
         verify_slowdown_ratio
+
+    report_check \
+        bubol \
+        'Requested BuboL slowdown verified' \
+        "Observed ${OBSERVED_SLOWDOWN_RATIO}x from ${NORMAL_AVERAGE}us to ${SLOWDOWN_AVERAGE}us; accepted ${MINIMUM_SLOWDOWN_RATIO}x to ${MAXIMUM_SLOWDOWN_RATIO}x"
 
     INDENT_LEVEL=$((INDENT_LEVEL - 1))
     export INDENT_LEVEL

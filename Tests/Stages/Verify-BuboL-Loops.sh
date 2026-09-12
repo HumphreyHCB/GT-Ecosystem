@@ -8,8 +8,8 @@ TESTS_DIR=$(cd -- "$SCRIPT_DIR/.." && pwd)
 # shellcheck source=../lib/common.sh
 source "$TESTS_DIR/lib/common.sh"
 
-if (( ${GT_COMMON_VERSION:-0} < 2 )); then
-    die "Tests/lib/common.sh is out of date; version 2 or later is required"
+if (( ${GT_COMMON_VERSION:-0} < 3 )); then
+    die "Tests/lib/common.sh is out of date; version 3 or later is required"
 fi
 
 # shellcheck source=Graal-Options.sh
@@ -385,6 +385,76 @@ analyse_loop_accuracy() {
         --max-median-difference "$max_median_difference"
 }
 
+record_loop_accuracy_report() {
+    local comparison_csv="$ANALYSIS_OUTPUT/BuboL-VTune-Loop-Comparison.csv"
+    local max_median_difference=${GT_BUBOL_MAX_MEDIAN_DIFFERENCE:-25}
+    local qualifying_count
+    local median_difference
+    local maximum_difference
+    local middle
+    local -a differences=()
+
+    mapfile -t differences < <(
+        awk -F',' '
+            NR == 1 {
+                for (column = 1; column <= NF; column++) {
+                    if ($column == "qualifies") {
+                        qualifies_column = column
+                    }
+                    if ($column == "absolute_difference_pct_points") {
+                        difference_column = column
+                    }
+                }
+                next
+            }
+
+            qualifies_column > 0 &&
+            difference_column > 0 &&
+            $qualifies_column == "true" &&
+            $difference_column ~ /^[0-9]+([.][0-9]+)?([eE][-+]?[0-9]+)?$/ {
+                print $difference_column
+            }
+        ' "$comparison_csv" | sort -n
+    )
+
+    qualifying_count=${#differences[@]}
+
+    if (( qualifying_count == 0 )); then
+        report_check \
+            bubol \
+            'BuboL per-loop accuracy verified against VTune' \
+            "Comparison: $comparison_csv; marker data: $MARKER_PHASE_JSON"
+        return 0
+    fi
+
+    maximum_difference=$(
+        awk \
+            -v value="${differences[qualifying_count - 1]}" \
+            'BEGIN { printf "%.3f", value }'
+    )
+    middle=$((qualifying_count / 2))
+
+    if (( qualifying_count % 2 == 1 )); then
+        median_difference=$(
+            awk \
+                -v value="${differences[middle]}" \
+                'BEGIN { printf "%.3f", value }'
+        )
+    else
+        median_difference=$(
+            awk \
+                -v lower="${differences[middle - 1]}" \
+                -v upper="${differences[middle]}" \
+                'BEGIN { printf "%.3f", (lower + upper) / 2 }'
+        )
+    fi
+
+    report_check \
+        bubol \
+        'BuboL per-loop accuracy verified against VTune' \
+        "$qualifying_count qualifying loops; median difference ${median_difference}pp; maximum ${maximum_difference}pp; accepted median at most ${max_median_difference}pp; marker data: $MARKER_PHASE_JSON"
+}
+
 main() {
     parse_arguments "$@"
 
@@ -395,9 +465,16 @@ main() {
     run_step 'Load BuboL loop configuration' load_configuration
     run_step 'Find latest complete BuboL Divine output' find_latest_bubol_output
     run_step 'Validate BuboL loop inputs' validate_inputs
+
+    report_check \
+        bubol \
+        'BuboL marker phase data verified' \
+        "$MARKER_PHASE_JSON"
+
     run_step 'Produce BuboL CFG input' run_cfg_benchmark
     run_step 'Produce VTune block slowdown input' run_slowdown_test
     run_step 'Compare BuboL loop measurements with VTune' analyse_loop_accuracy
+    record_loop_accuracy_report
 
     INDENT_LEVEL=$((INDENT_LEVEL - 1))
     export INDENT_LEVEL

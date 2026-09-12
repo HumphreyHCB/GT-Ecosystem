@@ -8,8 +8,8 @@ TESTS_DIR=$(cd -- "$SCRIPT_DIR/.." && pwd)
 # shellcheck source=../lib/common.sh
 source "$TESTS_DIR/lib/common.sh"
 
-if (( ${GT_COMMON_VERSION:-0} < 2 )); then
-    die "Tests/lib/common.sh is out of date; version 2 or later is required"
+if (( ${GT_COMMON_VERSION:-0} < 3 )); then
+    die "Tests/lib/common.sh is out of date; version 3 or later is required"
 fi
 
 # shellcheck source=Graal-Options.sh
@@ -24,6 +24,9 @@ GRAAL_BUILDER_JDK=''
 GRAAL_VM_HOME=''
 
 OUTPUT_DIRECTORY="$TESTS_DIR/Output"
+
+declare -A BUBO_MODE_RESULTS=()
+declare -A MARKER_MODE_RESULTS=()
 
 readonly BENCHMARK_ITERATIONS=100
 readonly BOUNCE_SIZE=10000
@@ -221,6 +224,7 @@ run_command_with_log() {
 
 validate_bubo_output() {
     local output_file=$1
+    local benchmark=$2
     local encoding_count
     local loop_count
     local total_cycles
@@ -278,10 +282,12 @@ validate_bubo_output() {
     fi
 
     pass "BuboL data: $encoding_count encodings, $loop_count loops, $total_cycles total loop cycles"
+    BUBO_MODE_RESULTS["$benchmark"]="$encoding_count encodings, $loop_count loops, $total_cycles cycles"
 }
 
 validate_debug_markers() {
     local profile_file=$1
+    local benchmark=$2
     local marker_stacks
     local marker_frames
     local hottest_marker_percentage
@@ -406,6 +412,7 @@ validate_debug_markers() {
     pass "Highest marker: $hottest_marker at $hottest_marker_percentage%"
 
     task "Async-profiler output: $profile_file"
+    MARKER_MODE_RESULTS["$benchmark"]="$marker_frames marker frames, hottest $hottest_marker at $hottest_marker_percentage%"
 }
 
 run_awfy_benchmark() {
@@ -456,7 +463,8 @@ run_awfy_benchmark() {
         run_step \
             "$mode: validate $benchmark BuboL output" \
             validate_bubo_output \
-            "$output_file"
+            "$output_file" \
+            "$benchmark"
     else
         run_step \
             "$mode: $benchmark, $iterations iterations, size $size" \
@@ -473,7 +481,8 @@ run_awfy_benchmark() {
         run_step \
             "$mode: validate $benchmark compiler markers" \
             validate_debug_markers \
-            "$profile_file"
+            "$profile_file" \
+            "$benchmark"
     fi
 }
 
@@ -510,6 +519,27 @@ run_mode() {
     export INDENT_LEVEL
 
     pass "$mode mode passed"
+
+    case "$validation" in
+        bubo)
+            report_check \
+                graal \
+                'BuboL compiler tests passed' \
+                "Bounce: ${BUBO_MODE_RESULTS[Bounce]}; Sieve: ${BUBO_MODE_RESULTS[Sieve]}"
+            ;;
+        marker-debug)
+            report_check \
+                graal \
+                'GT compiler marker tests passed' \
+                "Bounce: ${MARKER_MODE_RESULTS[Bounce]}; Sieve: ${MARKER_MODE_RESULTS[Sieve]}"
+            ;;
+        none)
+            report_check \
+                graal \
+                "$mode benchmark tests passed" \
+                'Bounce and Sieve completed 100 iterations with size 10000'
+            ;;
+    esac
 }
 
 verify_graal_configurations() {
@@ -572,6 +602,18 @@ main() {
     run_step \
         'Verify the generated GraalVM image' \
         verify_graalvm_image
+
+    if [[ "$TEST_ONLY" == true ]]; then
+        report_check \
+            graal \
+            'Existing Graal compiler image verified' \
+            "$GRAAL_VM_HOME"
+    else
+        report_check \
+            graal \
+            'Graal compiler image built' \
+            "$GRAAL_VM_HOME"
+    fi
 
     verify_graal_configurations
 

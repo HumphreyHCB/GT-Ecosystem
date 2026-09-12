@@ -8,8 +8,8 @@ TESTS_DIR=$(cd -- "$SCRIPT_DIR/.." && pwd)
 # shellcheck source=../lib/common.sh
 source "$TESTS_DIR/lib/common.sh"
 
-if (( ${GT_COMMON_VERSION:-0} < 2 )); then
-    die "Tests/lib/common.sh is out of date; version 2 or later is required"
+if (( ${GT_COMMON_VERSION:-0} < 3 )); then
+    die "Tests/lib/common.sh is out of date; version 3 or later is required"
 fi
 
 # shellcheck source=Graal-Options.sh
@@ -30,6 +30,9 @@ BENCHMARKS_JAR=''
 
 NORMAL_AVERAGE=''
 SLOWDOWN_AVERAGE=''
+OBSERVED_SLOWDOWN_RATIO=''
+MINIMUM_SLOWDOWN_RATIO=''
+MAXIMUM_SLOWDOWN_RATIO=''
 
 readonly BENCHMARK=Mandelbrot
 readonly ITERATIONS=300
@@ -285,25 +288,21 @@ run_slowdown_replay() {
 }
 
 verify_slowdown_ratio() {
-    local minimum_ratio
-    local maximum_ratio
-    local observed_ratio
-
-    minimum_ratio=$(
+    MINIMUM_SLOWDOWN_RATIO=$(
         awk \
             -v expected="$EXPECTED_SLOWDOWN" \
             -v tolerance="$SLOWDOWN_TOLERANCE_PERCENT" \
             'BEGIN { printf "%.6f", expected * (1 - tolerance / 100) }'
     )
 
-    maximum_ratio=$(
+    MAXIMUM_SLOWDOWN_RATIO=$(
         awk \
             -v expected="$EXPECTED_SLOWDOWN" \
             -v tolerance="$SLOWDOWN_TOLERANCE_PERCENT" \
             'BEGIN { printf "%.6f", expected * (1 + tolerance / 100) }'
     )
 
-    observed_ratio=$(
+    OBSERVED_SLOWDOWN_RATIO=$(
         awk \
             -v normal="$NORMAL_AVERAGE" \
             -v slowdown="$SLOWDOWN_AVERAGE" \
@@ -311,19 +310,19 @@ verify_slowdown_ratio() {
     )
 
     if ! awk \
-        -v observed="$observed_ratio" \
-        -v minimum="$minimum_ratio" \
-        -v maximum="$maximum_ratio" \
+        -v observed="$OBSERVED_SLOWDOWN_RATIO" \
+        -v minimum="$MINIMUM_SLOWDOWN_RATIO" \
+        -v maximum="$MAXIMUM_SLOWDOWN_RATIO" \
         'BEGIN { exit !(observed >= minimum && observed <= maximum) }'; then
 
-        fail "Slowdown ratio was ${observed_ratio}x"
-        fail "Expected between ${minimum_ratio}x and ${maximum_ratio}x"
+        fail "Slowdown ratio was ${OBSERVED_SLOWDOWN_RATIO}x"
+        fail "Expected between ${MINIMUM_SLOWDOWN_RATIO}x and ${MAXIMUM_SLOWDOWN_RATIO}x"
 
         return 1
     fi
 
-    pass "Observed slowdown: ${observed_ratio}x"
-    pass "Accepted range: ${minimum_ratio}x to ${maximum_ratio}x"
+    pass "Observed slowdown: ${OBSERVED_SLOWDOWN_RATIO}x"
+    pass "Accepted range: ${MINIMUM_SLOWDOWN_RATIO}x to ${MAXIMUM_SLOWDOWN_RATIO}x"
 }
 
 main() {
@@ -344,6 +343,11 @@ main() {
         'Validate Divine verification inputs' \
         validate_inputs
 
+    report_check \
+        divine \
+        'Divine slowdown output verified' \
+        "Slowdown file: $SLOWDOWN_JSON; compiler replay: $COMPILER_REPLAY_DIRECTORY"
+
     run_step \
         'Run normal compiler replay' \
         run_normal_replay
@@ -355,6 +359,11 @@ main() {
     run_step \
         'Verify slowdown ratio' \
         verify_slowdown_ratio
+
+    report_check \
+        divine \
+        'Requested slowdown verified' \
+        "Observed ${OBSERVED_SLOWDOWN_RATIO}x from ${NORMAL_AVERAGE}us to ${SLOWDOWN_AVERAGE}us; accepted ${MINIMUM_SLOWDOWN_RATIO}x to ${MAXIMUM_SLOWDOWN_RATIO}x"
 
     INDENT_LEVEL=$((INDENT_LEVEL - 1))
     export INDENT_LEVEL

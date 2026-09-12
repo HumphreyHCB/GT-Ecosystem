@@ -8,6 +8,10 @@ TESTS_DIR=$(cd -- "$SCRIPT_DIR/.." && pwd)
 # shellcheck source=../lib/common.sh
 source "$TESTS_DIR/lib/common.sh"
 
+if (( ${GT_COMMON_VERSION:-0} < 3 )); then
+    die "Tests/lib/common.sh is out of date; version 3 or later is required"
+fi
+
 CONFIG_FILE=${GT_ECOSYSTEM_CONFIG:-"$TESTS_DIR/config.config"}
 OPENJDK_CONF=''
 JOBS=''
@@ -92,6 +96,16 @@ verify_openjdk_build() {
     "$jdk_directory/bin/java" -version
     "$jdk_directory/bin/javac" -version
     "$graal_builder_directory/bin/java" -version
+
+    report_check \
+        openjdk \
+        'OpenJDK image built' \
+        "$jdk_directory"
+
+    report_check \
+        openjdk \
+        'Graal builder JDK image built' \
+        "$graal_builder_directory"
 }
 
 main() {
