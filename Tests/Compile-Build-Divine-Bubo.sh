@@ -15,8 +15,8 @@ TESTS_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 # shellcheck source=lib/common.sh
 source "$TESTS_DIR/lib/common.sh"
 
-if (( ${GT_COMMON_VERSION:-0} < 2 )); then
-    die "Tests/lib/common.sh is out of date; version 2 or later is required"
+if (( ${GT_COMMON_VERSION:-0} < 3 )); then
+    die "Tests/lib/common.sh is out of date; version 3 or later is required"
 fi
 
 FULL_REBUILD=false
@@ -24,6 +24,7 @@ TEST_ONLY=false
 SKIP_DIVINING=false
 SKIP_BUBOL_DIVINING=false
 REFRESH_BUBOL_LOOP_INPUTS=false
+VERBOSE=false
 
 STAGE_LIST=''
 START_STAGE=''
@@ -37,11 +38,22 @@ PIPELINE_STAGES=(
 
 SELECTED_STAGES=()
 
+REPORT_DIRECTORY=''
+REPORT_RUN_ID=''
+REPORT_JSON=''
+REPORT_STARTED_AT=''
+REPORT_STARTED_EPOCH=0
+CURRENT_STAGE=''
+CURRENT_STAGE_STARTED_EPOCH=0
+
 show_usage() {
     cat <<EOF
 Usage: $(basename "$0") [OPTIONS]
 
 Options:
+    -v, --verbose
+        Show the existing detailed output while the pipeline runs
+
     -f, --full-rebuild
         Clean every selected build before rebuilding it
 
@@ -82,6 +94,7 @@ Examples:
 
     $(basename "$0") --stages openjdk,graal
     $(basename "$0") --from graal
+    $(basename "$0") --verbose --from graal
 
     $(basename "$0") --full-rebuild --stages graal
     $(basename "$0") --stages graal --test-only
@@ -95,6 +108,10 @@ EOF
 parse_arguments() {
     while (( $# > 0 )); do
         case "$1" in
+            -v|--verbose)
+                VERBOSE=true
+                ;;
+
             -f|--full-rebuild)
                 FULL_REBUILD=true
                 ;;
@@ -165,6 +182,98 @@ parse_arguments() {
 
         shift
     done
+}
+
+initialise_reporting() {
+    local timestamp
+
+    timestamp=$(date '+%Y_%m_%d_%H_%M_%S')
+    REPORT_RUN_ID="GT-Ecosystem_${timestamp}_$$"
+    REPORT_DIRECTORY=${GT_REPORT_DIRECTORY:-"$TESTS_DIR/Output/Reports"}
+    REPORT_JSON="$REPORT_DIRECTORY/$REPORT_RUN_ID.json"
+    GT_DETAILED_LOG="$REPORT_DIRECTORY/$REPORT_RUN_ID.log"
+    GT_REPORT_EVENTS="$REPORT_DIRECTORY/.$REPORT_RUN_ID.events"
+    REPORT_STARTED_AT=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
+    REPORT_STARTED_EPOCH=$(date +%s)
+
+    GT_VERBOSE=$VERBOSE
+
+    mkdir -p "$REPORT_DIRECTORY"
+    : > "$GT_DETAILED_LOG"
+    : > "$GT_REPORT_EVENTS"
+
+    export GT_VERBOSE GT_DETAILED_LOG GT_REPORT_EVENTS
+
+    printf 'GT Ecosystem pipeline started. Detailed output: %s\n' \
+        "$GT_DETAILED_LOG" \
+        >> "$GT_DETAILED_LOG"
+
+    if [[ "$VERBOSE" == false ]]; then
+        printf 'Running GT ecosystem stages: %s\n' "${SELECTED_STAGES[*]}"
+    fi
+}
+
+finalise_reporting() {
+    local exit_code=$1
+    local finished_at
+    local finished_epoch
+    local duration_seconds
+    local pipeline_status=passed
+    local -a report_arguments=()
+    local stage
+
+    trap - EXIT
+    set +e
+
+    finished_epoch=$(date +%s)
+    finished_at=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
+    duration_seconds=$((finished_epoch - REPORT_STARTED_EPOCH))
+
+    if (( exit_code != 0 )); then
+        pipeline_status=failed
+
+        if [[ -n "$CURRENT_STAGE" ]]; then
+            report_stage \
+                "$CURRENT_STAGE" \
+                failed \
+                "$((finished_epoch - CURRENT_STAGE_STARTED_EPOCH))" \
+                "Stage exited with code $exit_code"
+        fi
+    fi
+
+    for stage in "${SELECTED_STAGES[@]}"; do
+        report_arguments+=(--stage "$stage")
+    done
+
+    if [[ "$VERBOSE" == true ]]; then
+        report_arguments+=(--verbose)
+    fi
+
+    if command -v python3 >/dev/null 2>&1; then
+        python3 "$TESTS_DIR/lib/render-report.py" \
+            --events "$GT_REPORT_EVENTS" \
+            --output "$REPORT_JSON" \
+            --started-at "$REPORT_STARTED_AT" \
+            --finished-at "$finished_at" \
+            --duration-seconds "$duration_seconds" \
+            --status "$pipeline_status" \
+            --detailed-log "$GT_DETAILED_LOG" \
+            "${report_arguments[@]}"
+    else
+        printf '\n%s GT ecosystem pipeline %s\n' \
+            "$([[ "$pipeline_status" == passed ]] && printf '✔' || printf '✘')" \
+            "$pipeline_status"
+        printf 'Detailed log: %s\n' "$GT_DETAILED_LOG"
+        printf 'JSON report was not written because python3 is unavailable.\n' >&2
+    fi
+
+    if (( exit_code != 0 )) && [[ "$VERBOSE" == false ]]; then
+        printf '\nLast 20 lines from the failed run:\n' >&2
+        tail -n 20 "$GT_DETAILED_LOG" | sed 's/^/  /' >&2
+    fi
+
+    rm -f -- "$GT_REPORT_EVENTS"
+    exit "$exit_code"
 }
 
 stage_exists() {
@@ -362,8 +471,12 @@ run_bubol() {
 
 run_selected_stages() {
     local stage
+    local stage_finished_epoch
 
     for stage in "${SELECTED_STAGES[@]}"; do
+        CURRENT_STAGE=$stage
+        CURRENT_STAGE_STARTED_EPOCH=$(date +%s)
+
         case "$stage" in
             openjdk)
                 compile_openjdk
@@ -381,6 +494,13 @@ run_selected_stages() {
                 run_bubol
                 ;;
         esac
+
+        stage_finished_epoch=$(date +%s)
+        report_stage \
+            "$stage" \
+            passed \
+            "$((stage_finished_epoch - CURRENT_STAGE_STARTED_EPOCH))"
+        CURRENT_STAGE=''
     done
 }
 
@@ -388,6 +508,8 @@ main() {
     parse_arguments "$@"
     select_stages
     validate_arguments
+    initialise_reporting
+    trap 'finalise_reporting $?' EXIT
 
     task "Start GT ecosystem stages: ${SELECTED_STAGES[*]}"
 

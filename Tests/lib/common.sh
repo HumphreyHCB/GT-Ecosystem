@@ -1,24 +1,51 @@
 #!/usr/bin/env bash
 
-# Shared output, configuration, and validation helpers for all ecosystem tests.
+# Shared output, configuration, reporting, and validation helpers.
 
-GT_COMMON_VERSION=2
+GT_COMMON_VERSION=3
 export INDENT_LEVEL=${INDENT_LEVEL:-0}
+export GT_VERBOSE=${GT_VERBOSE:-false}
 
 indent() {
     printf '%*s' $((INDENT_LEVEL * 4)) ''
 }
 
 task() {
-    printf '%s→ %s\n' "$(indent)" "$*"
+    local message
+
+    message="$(indent)→ $*"
+    write_status_message stdout "$message"
 }
 
 pass() {
-    printf '%s✔ %s\n' "$(indent)" "$*"
+    local message
+
+    message="$(indent)✔ $*"
+    write_status_message stdout "$message"
 }
 
 fail() {
-    printf '%s✘ %s\n' "$(indent)" "$*" >&2
+    local message
+
+    message="$(indent)✘ $*"
+    write_status_message stderr "$message"
+}
+
+write_status_message() {
+    local destination=$1
+    local message=$2
+
+    if [[ -n ${GT_DETAILED_LOG:-} ]]; then
+        printf '%s\n' "$message" >> "$GT_DETAILED_LOG"
+    fi
+
+    if [[ "$GT_VERBOSE" == true || -z ${GT_DETAILED_LOG:-} ]]; then
+        if [[ "$destination" == stderr ]]; then
+            printf '%s\n' "$message" >&2
+        else
+            printf '%s\n' "$message"
+        fi
+    fi
 }
 
 die() {
@@ -28,23 +55,77 @@ die() {
 
 run_step() {
     local description=$1
+    local exit_code
     shift
 
     task "$description"
     INDENT_LEVEL=$((INDENT_LEVEL + 1))
     export INDENT_LEVEL
 
-    if "$@"; then
+    if [[ "$GT_VERBOSE" == true || -z ${GT_DETAILED_LOG:-} ]]; then
+        if "$@"; then
+            exit_code=0
+        else
+            exit_code=$?
+        fi
+    else
+        if "$@" >> "$GT_DETAILED_LOG" 2>&1; then
+            exit_code=0
+        else
+            exit_code=$?
+        fi
+    fi
+
+    if (( exit_code == 0 )); then
         INDENT_LEVEL=$((INDENT_LEVEL - 1))
         export INDENT_LEVEL
         pass "$description"
     else
-        local exit_code=$?
         INDENT_LEVEL=$((INDENT_LEVEL - 1))
         export INDENT_LEVEL
         fail "$description failed with exit code $exit_code"
         return "$exit_code"
     fi
+}
+
+report_field() {
+    local value=$1
+
+    value=${value//$'\t'/ }
+    value=${value//$'\r'/ }
+    value=${value//$'\n'/ }
+
+    printf '%s' "$value"
+}
+
+report_check() {
+    local stage=$1
+    local label=$2
+    local detail=${3:-}
+
+    [[ -n ${GT_REPORT_EVENTS:-} ]] || return 0
+
+    printf 'check\t%s\tpassed\t%s\t%s\n' \
+        "$(report_field "$stage")" \
+        "$(report_field "$label")" \
+        "$(report_field "$detail")" \
+        >> "$GT_REPORT_EVENTS"
+}
+
+report_stage() {
+    local stage=$1
+    local status=$2
+    local duration_seconds=$3
+    local detail=${4:-}
+
+    [[ -n ${GT_REPORT_EVENTS:-} ]] || return 0
+
+    printf 'stage\t%s\t%s\t%s\t%s\n' \
+        "$(report_field "$stage")" \
+        "$(report_field "$status")" \
+        "$(report_field "$duration_seconds")" \
+        "$(report_field "$detail")" \
+        >> "$GT_REPORT_EVENTS"
 }
 
 config_get() {
