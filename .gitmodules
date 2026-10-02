@@ -1,0 +1,20 @@
+[submodule "repos/labs-openjdk-jvmci-25.1-b13"]
+	path = repos/labs-openjdk-jvmci-25.1-b13
+	url = https://github.com/HumphreyHCB/labs-openjdk-jvmci-25.1-b13.git
+	branch = main
+[submodule "repos/graal-instrumentation"]
+	path = repos/graal-instrumentation
+	url = https://github.com/HumphreyHCB/graal-instrumentation.git
+	branch = BuboOnLIR
+[submodule "repos/GTSlowdownSchedular"]
+	path = repos/GTSlowdownSchedular
+	url = https://github.com/HumphreyHCB/GTSlowdownSchedular.git
+	branch = OOPSLA-Version
+[submodule "repos/BuboExperiments"]
+	path = repos/BuboExperiments
+	url = https://github.com/HumphreyHCB/BuboExperiments.git
+	branch = main
+[submodule "repos/are-we-fast-yet"]
+	path = repos/are-we-fast-yet
+	url = https://github.com/HumphreyHCB/are-we-fast-yet.git
+	branch = MK1
