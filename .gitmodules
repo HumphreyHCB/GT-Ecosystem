@@ -5,11 +5,11 @@
 [submodule "repos/graal-instrumentation"]
 	path = repos/graal-instrumentation
 	url = https://github.com/HumphreyHCB/graal-instrumentation.git
-	branch = Bubo
+	branch = BuboOnLIR
 [submodule "repos/GTSlowdownSchedular"]
 	path = repos/GTSlowdownSchedular
 	url = https://github.com/HumphreyHCB/GTSlowdownSchedular.git
-	branch = main
+	branch = OOPSLA-Version
 [submodule "repos/BuboExperiments"]
 	path = repos/BuboExperiments
 	url = https://github.com/HumphreyHCB/BuboExperiments.git
@@ -17,4 +17,4 @@
 [submodule "repos/are-we-fast-yet"]
 	path = repos/are-we-fast-yet
 	url = https://github.com/HumphreyHCB/are-we-fast-yet.git
-	branch = master
+	branch = MK1
