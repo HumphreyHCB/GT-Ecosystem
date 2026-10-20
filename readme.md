@@ -9,12 +9,40 @@ git clone --recurse-submodules \
     https://github.com/HumphreyHCB/GT-Ecosystem.git
 ```
 
-For an existing clone, initialise the component repositories with:
+For an existing clone, initialise the top-level component repositories with:
 
 ```bash
-git submodule update --init --recursive
+git submodule update --init
 ```
+
+Do not add `--recursive`: BuboExperiments has an unused Capstone gitlink that
+is not part of this ecosystem build.
 
 Each submodule is pinned to a tested commit. The branch recorded in
 `.gitmodules` identifies the upstream branch used when deliberately updating
 that component; normal checkout continues to use the pinned commit.
+
+## Clean Rocky Linux machine
+
+Run the one-time bootstrap from any directory:
+
+```bash
+./Tests/Install-Dependencies.sh
+```
+
+It installs the Rocky build packages and Intel VTune, downloads the pinned
+boot JDK and `mx`, initializes the top-level submodules, builds the AWFY
+benchmark JAR and its JNI library, and verifies the result.
+
+Then run the complete pipeline:
+
+```bash
+./Tests/Compile-Build-Divine-Bubo.sh
+```
+
+All paths in `Tests/config.config` are relative to that file, so the checkout
+can live anywhere. To inspect a machine without changing it, run:
+
+```bash
+./Tests/Verify-Dependencies.sh
+```

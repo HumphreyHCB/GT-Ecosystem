@@ -18,3 +18,7 @@
 	path = repos/are-we-fast-yet
 	url = https://github.com/HumphreyHCB/are-we-fast-yet.git
 	branch = MK1
+[submodule "repos/Bubo-Agent"]
+	path = repos/Bubo-Agent
+	url = https://github.com/HumphreyHCB/Bubo-Agent.git
+	branch = main

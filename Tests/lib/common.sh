@@ -6,6 +6,26 @@ GT_COMMON_VERSION=3
 export INDENT_LEVEL=${INDENT_LEVEL:-0}
 export GT_VERBOSE=${GT_VERBOSE:-false}
 
+GT_COMMON_DIRECTORY=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+GT_TESTS_DIRECTORY=$(cd -- "$GT_COMMON_DIRECTORY/.." && pwd)
+
+prepend_path_if_directory() {
+    local directory=$1
+
+    [[ -d "$directory" ]] || return 0
+
+    case ":$PATH:" in
+        *":$directory:"*) ;;
+        *) PATH="$directory:$PATH" ;;
+    esac
+}
+
+# Tools installed by Tests/Install-Dependencies.sh and Intel's stable
+# version-independent VTune path are available to every stage.
+prepend_path_if_directory "$GT_TESTS_DIRECTORY/Tools/mx"
+prepend_path_if_directory '/opt/intel/oneapi/vtune/latest/bin64'
+export PATH
+
 indent() {
     printf '%*s' $((INDENT_LEVEL * 4)) ''
 }
@@ -176,6 +196,11 @@ require_config_value() {
 
     value=$(config_get "$config_file" "$section" "$key")
     [[ -n "$value" ]] || die "Missing [$section] $key in $config_file"
+
+    if [[ "$section" == Dir && "$value" != /* ]]; then
+        value=$(realpath -m -- "$(dirname -- "$config_file")/$value")
+    fi
+
     printf -v "$destination_variable" '%s' "$value"
 }
 
@@ -195,6 +220,33 @@ require_executable() {
     local path=$1
     local description=$2
     [[ -x "$path" ]] || die "$description is missing or is not executable: $path"
+}
+
+configure_scheduler_environment() {
+    local config_file=$1
+    local scheduler_repository
+    local graal_repository
+    local awfy_jar
+    local awfy_source
+    local vtune_command
+
+    require_config_value \
+        scheduler_repository \
+        "$config_file" \
+        Dir \
+        GTSlowdownSchedular
+    require_config_value graal_repository "$config_file" Dir Graal
+    require_config_value awfy_jar "$config_file" Dir AWFYBenchmarksJar
+    require_config_value awfy_source "$config_file" Dir AWFYSource
+
+    vtune_command=$(command -v vtune 2>/dev/null || true)
+    [[ -n "$vtune_command" ]] || die 'VTune is not available on PATH'
+
+    export GT_SCHEDULER_ROOT=$scheduler_repository
+    export GT_GRAAL_JAVA="$graal_repository/vm/latest_graalvm_home/bin/java"
+    export GT_AWFY_JAR=$awfy_jar
+    export GT_AWFY_SOURCE_DIR=$awfy_source
+    export GT_VTUNE_COMMAND=$vtune_command
 }
 
 resolve_openjdk_configuration() {

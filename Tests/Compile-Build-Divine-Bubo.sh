@@ -516,6 +516,11 @@ main() {
     INDENT_LEVEL=$((INDENT_LEVEL + 1))
     export INDENT_LEVEL
 
+    run_step \
+        'Verify machine dependencies' \
+        "$TESTS_DIR/Verify-Dependencies.sh" \
+        --pipeline
+
     run_selected_stages
 
     INDENT_LEVEL=$((INDENT_LEVEL - 1))

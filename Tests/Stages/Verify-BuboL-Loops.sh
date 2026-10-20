@@ -36,6 +36,7 @@ SCHEDULER_REPOSITORY=''
 JAVA_HOME_DIRECTORY=''
 BENCHMARKS_JAR=''
 BUBO_AGENT_JAR=''
+BUBO_AGENT_REPOSITORY=''
 SCHEDULER_CLASSPATH=''
 SCHEDULER_BUILD_DIRECTORY="$TESTS_DIR/Build/GTSlowdownSchedular-LoopVerification"
 
@@ -95,8 +96,10 @@ load_configuration() {
         Dir \
         FallbackJavaBuild
     require_config_value BENCHMARKS_JAR "$CONFIG_FILE" Dir AWFYBenchmarksJar
+    require_config_value BUBO_AGENT_REPOSITORY "$CONFIG_FILE" Dir BuboAgent
 
     GRAAL_VM_HOME="$GRAAL_REPOSITORY/vm/latest_graalvm_home"
+    configure_scheduler_environment "$CONFIG_FILE"
     load_graal_options
 }
 
@@ -182,7 +185,7 @@ find_bubo_agent() {
     while IFS= read -r candidate; do
         candidates+=("$candidate")
     done < <(
-        find "$GRAAL_REPOSITORY/Bubo-Agent/target" \
+        find "$BUBO_AGENT_REPOSITORY/target" \
             -maxdepth 1 \
             -type f \
             -name '*-jar-with-dependencies.jar' \
@@ -190,7 +193,7 @@ find_bubo_agent() {
     )
 
     if (( ${#candidates[@]} != 1 )); then
-        die "Expected one Bubo agent jar in $GRAAL_REPOSITORY/Bubo-Agent/target, found ${#candidates[@]}"
+        die "Expected one Bubo agent jar in $BUBO_AGENT_REPOSITORY/target, found ${#candidates[@]}"
     fi
 
     BUBO_AGENT_JAR=${candidates[0]}
