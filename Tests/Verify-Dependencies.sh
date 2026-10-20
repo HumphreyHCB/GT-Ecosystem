@@ -11,6 +11,7 @@ ECOSYSTEM_ROOT=$(cd -- "$TESTS_DIR/.." && pwd)
 source "$TESTS_DIR/lib/common.sh"
 
 readonly EXPECTED_MX_VERSION=7.68.9
+readonly EXPECTED_VTUNE_VERSION=2025.0
 readonly CONFIG_FILE=${GT_ECOSYSTEM_CONFIG:-"$TESTS_DIR/config.config"}
 
 PIPELINE_MODE=false
@@ -133,6 +134,16 @@ check_platform() {
     else
         check_fail 'Cannot read kernel.perf_event_paranoid'
     fi
+
+    if command -v perf >/dev/null 2>&1; then
+        if perf stat -e cycles,instructions -- \
+            python3 -c 'sum(i*i for i in range(1000000))' \
+            >/dev/null 2>&1; then
+            check_pass 'Hardware cycles and instructions counters are readable'
+        else
+            check_fail 'Linux perf cannot read hardware cycles and instructions counters'
+        fi
+    fi
 }
 
 check_capacity() {
@@ -170,7 +181,7 @@ check_commands() {
     local command_name
     local -a commands=(
         autoconf awk bash cmake curl df file find gcc g++ git grep ldd make mvn
-        ninja nproc pkg-config python3 realpath sed sha256sum sort tar unzip
+        ninja nproc perf pkg-config python3 realpath sed sha256sum sort tar unzip
         which xargs zip
     )
 
@@ -239,12 +250,18 @@ check_jdk_and_mx() {
 
 check_vtune() {
     local vtune_command=''
+    local vtune_version=''
 
     vtune_command=$(command -v vtune 2>/dev/null || true)
     if [[ -n "$vtune_command" ]]; then
         check_pass "VTune command available: $vtune_command"
-        if vtune -version >/dev/null 2>&1; then
-            check_pass 'VTune starts successfully'
+        if vtune_version=$(vtune -version 2>&1); then
+            if grep -Fq "VTune(TM) Profiler $EXPECTED_VTUNE_VERSION" \
+                <<< "$vtune_version"; then
+                check_pass "VTune $EXPECTED_VTUNE_VERSION starts successfully"
+            else
+                check_fail "VTune $EXPECTED_VTUNE_VERSION is required; found: $(head -1 <<< "$vtune_version")"
+            fi
         else
             check_fail 'VTune is installed but does not start successfully'
         fi

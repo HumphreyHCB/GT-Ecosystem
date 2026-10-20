@@ -12,6 +12,7 @@ source "$TESTS_DIR/lib/common.sh"
 
 readonly MX_VERSION=7.68.9
 readonly JDK_FEATURE_VERSION=25
+readonly VTUNE_PACKAGE_VERSION=2025.0.0-1129
 readonly TOOLS_DIRECTORY="$TESTS_DIR/Tools"
 readonly BOOT_JDK="$TOOLS_DIRECTORY/jdk-$JDK_FEATURE_VERSION"
 readonly MX_DIRECTORY="$TOOLS_DIRECTORY/mx"
@@ -30,7 +31,7 @@ Rocky Linux. Run this once from any directory; it is safe to run again.
 
 Options:
     --skip-system-packages    Do not use dnf or change system settings
-    --skip-vtune-self-check   Skip Intel's VTune hardware self-check
+    --skip-vtune-self-check   Skip the VTune hardware Hotspots check
     -h, --help                Show this help
 EOF
 }
@@ -91,6 +92,7 @@ validate_platform() {
 }
 
 install_system_packages() {
+    local installed_vtune_version=''
     local repository_file=/etc/yum.repos.d/oneAPI.repo
     local repository_contents
 
@@ -139,7 +141,25 @@ install_system_packages() {
             "${ROOT_COMMAND[@]}" tee "$repository_file" >/dev/null
     fi
 
-    "${ROOT_COMMAND[@]}" dnf -y install intel-oneapi-vtune
+    # VTune 2026.4 does not recognize the Kaby Lake processor used by the
+    # experiment machine.  The checked-in successful experiment logs use
+    # VTune 2025.0 for hardware Hotspots collection, so keep the setup
+    # reproducible instead of silently installing the newest release.
+    installed_vtune_version=$(rpm -q --qf '%{VERSION}-%{RELEASE}\n' \
+        intel-oneapi-vtune 2>/dev/null || true)
+    if [[ "$installed_vtune_version" == "$VTUNE_PACKAGE_VERSION" ]]; then
+        task "VTune package $VTUNE_PACKAGE_VERSION is already installed"
+    elif [[ -n "$installed_vtune_version" ]]; then
+        "${ROOT_COMMAND[@]}" dnf -y downgrade \
+            "intel-oneapi-vtune-$VTUNE_PACKAGE_VERSION"
+    else
+        "${ROOT_COMMAND[@]}" dnf -y install \
+            "intel-oneapi-vtune-$VTUNE_PACKAGE_VERSION"
+    fi
+
+    rpm -q --qf '%{VERSION}-%{RELEASE}\n' intel-oneapi-vtune | \
+        grep -Fxq "$VTUNE_PACKAGE_VERSION" || \
+        die "VTune package $VTUNE_PACKAGE_VERSION was not installed"
 
     printf '%s\n' 'kernel.perf_event_paranoid = 0' | \
         "${ROOT_COMMAND[@]}" tee \
@@ -287,10 +307,33 @@ build_benchmarks_jar() {
 }
 
 run_vtune_self_check() {
-    local checker=/opt/intel/oneapi/vtune/latest/bin64/vtune-self-checker.sh
+    local result_directory
+    local temporary_directory
+    local vtune_command=/opt/intel/oneapi/vtune/latest/bin64/vtune
 
-    require_executable "$checker" 'VTune self-checker'
-    "$checker"
+    require_executable "$vtune_command" 'VTune command'
+    require_command perf
+
+    # Confirm the Linux perf subsystem can read the counters VTune needs.
+    perf stat -e cycles,instructions -- \
+        python3 -c 'sum(i*i for i in range(5000000))' >/dev/null
+
+    temporary_directory=$(mktemp -d "$TOOLS_DIRECTORY/.vtune-check.XXXXXX")
+    result_directory="$temporary_directory/result"
+    trap 'rm -rf -- "$temporary_directory"' RETURN
+
+    # Intel's general self-checker also tests GPU, uncore, and newer CPU
+    # analyses that this pipeline never uses.  Test the exact collection mode
+    # used by GTSlowdownSchedular instead.
+    "$vtune_command" \
+        -collect hotspots \
+        -knob sampling-mode=hw \
+        -knob enable-stack-collection=false \
+        -result-dir "$result_directory" \
+        -- python3 -c 'sum(i*i for i in range(15000000))'
+
+    rm -rf -- "$temporary_directory"
+    trap - RETURN
 }
 
 main() {
@@ -316,7 +359,7 @@ main() {
         build_benchmarks_jar
 
     if [[ "$SKIP_VTUNE_SELF_CHECK" == false ]]; then
-        run_step 'Run the Intel VTune self-checker' run_vtune_self_check
+        run_step 'Verify VTune hardware Hotspots collection' run_vtune_self_check
     fi
 
     run_step 'Verify the complete machine setup' \

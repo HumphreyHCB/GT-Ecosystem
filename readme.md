@@ -30,9 +30,10 @@ Run the one-time bootstrap from any directory:
 ./Tests/Install-Dependencies.sh
 ```
 
-It installs the Rocky build packages and Intel VTune, downloads the pinned
-boot JDK and `mx`, initializes the top-level submodules, builds the AWFY
-benchmark JAR and its JNI library, and verifies the result.
+It installs the Rocky build packages and the known-working Intel VTune 2025.0,
+downloads the pinned boot JDK and `mx`, initializes the top-level submodules,
+builds the AWFY benchmark JAR and its JNI library, and verifies hardware
+Hotspots collection and the rest of the setup.
 
 Then run the complete pipeline:
 
