@@ -124,10 +124,12 @@ Run any individual command under the same controls with:
 ./Tests/Setup-Denoise.sh run -- ./my-benchmark --arguments
 ```
 
-The setup and main pipeline ask for `sudo` once and refresh that authenticated
-session every 30 seconds until the run ends. This covers long compiler builds
-without installing a passwordless or permanent no-timeout sudo rule. On a
-cgroup v2 host, ReBench's current `cpuset` integration may not
+The setup asks for `sudo` before changing CPU controls. It does not run a
+periodic sudo refresher, because even a small background process is undesirable
+during performance measurements. Configure a suitably long sudo
+`timestamp_timeout` for the experiment account before a long run rather than
+installing a passwordless rule. On a cgroup v2 host, ReBench's current `cpuset`
+integration may not
 support shielding; the script reports that and safely continues with Turbo,
 governor, and priority controls. Use `--without-denoise` on the main pipeline
 for an intentionally untuned run.

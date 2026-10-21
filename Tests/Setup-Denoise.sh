@@ -37,7 +37,6 @@ PERF_PATHS=(
 INITIAL_PERF_VALUES=()
 SHIELDING_ATTEMPTED=false
 SHIELDING_ENABLED=false
-KEEPALIVE_PID=''
 CLEANED_UP=false
 
 show_usage() {
@@ -311,14 +310,6 @@ restore_cpu_state() {
     fi
 }
 
-stop_sudo_keepalive() {
-    if [[ -n "$KEEPALIVE_PID" ]]; then
-        kill "$KEEPALIVE_PID" >/dev/null 2>&1 || true
-        wait "$KEEPALIVE_PID" >/dev/null 2>&1 || true
-        KEEPALIVE_PID=''
-    fi
-}
-
 cleanup() {
     local cleanup_status=0
 
@@ -327,7 +318,6 @@ cleanup() {
     set +e
     restore_cpu_state
     cleanup_status=$?
-    stop_sudo_keepalive
     set -e
     return "$cleanup_status"
 }
@@ -338,23 +328,9 @@ handle_signal() {
 }
 
 start_privileged_session() {
-    local owner_pid=$$
-
     select_privilege_command
     if (( EUID != 0 )); then
-        if [[ -n "$KEEPALIVE_PID" ]] && \
-            kill -0 "$KEEPALIVE_PID" >/dev/null 2>&1; then
-
-            return 0
-        fi
         sudo -v
-        (
-            while kill -0 "$owner_pid" >/dev/null 2>&1; do
-                sudo -n -v >/dev/null 2>&1 || exit
-                sleep 30
-            done
-        ) &
-        KEEPALIVE_PID=$!
     fi
 }
 
@@ -505,7 +481,6 @@ main() {
             validate_host
             select_privilege_command
             start_privileged_session
-            trap stop_sudo_keepalive EXIT
             task 'Install ReBench Denoise'
             INDENT_LEVEL=$((INDENT_LEVEL + 1)); export INDENT_LEVEL
             if [[ "$SKIP_SYSTEM_PACKAGES" == false ]]; then
@@ -516,8 +491,6 @@ main() {
                 run_step 'Verify Denoise and CPU-state restoration' verify_denoise
             fi
             INDENT_LEVEL=$((INDENT_LEVEL - 1)); export INDENT_LEVEL
-            stop_sudo_keepalive
-            trap - EXIT
             pass 'ReBench Denoise setup complete'
             ;;
         verify)
