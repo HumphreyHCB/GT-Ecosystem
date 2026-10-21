@@ -452,7 +452,20 @@ run_awfy_benchmark() {
     if [[ "$validation" == marker-debug ]]; then
         profile_file="$OUTPUT_DIRECTORY/${mode// /-}-$benchmark.txt"
 
-        rm -f -- "$profile_file"
+        # async-profiler opens this path from inside the target JVM.  Create and
+        # truncate it before entering the privileged Denoise wrapper so it keeps
+        # the pipeline user's ownership and the output directory's SELinux
+        # context.  This also turns an unwritable result path into an immediate,
+        # useful pipeline error rather than async-profiler's generic message.
+        if ! : > "$profile_file"; then
+            fail "Cannot create async-profiler output: $profile_file"
+            return 1
+        fi
+
+        if [[ ! -w "$profile_file" ]]; then
+            fail "Async-profiler output is not writable: $profile_file"
+            return 1
+        fi
 
         agent_option="-agentpath:$ASYNC_PROFILER_LIBRARY=start,event=cpu,interval=10us,file=$profile_file"
 
