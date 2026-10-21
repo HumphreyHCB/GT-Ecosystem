@@ -130,7 +130,7 @@ rebench_is_usable() {
     "$REBENCH_ENVIRONMENT/bin/python" -c '
 from importlib.metadata import version
 version("ReBench")
-' || return 1
+' >/dev/null 2>&1 || return 1
     denoise_help=$("$DENOISE_COMMAND" --help 2>&1) || return 1
     cset_help=$("$CSET_COMMAND" --help 2>&1) || return 1
     grep -Fq -- '--num-cores' <<< "$denoise_help" || return 1
