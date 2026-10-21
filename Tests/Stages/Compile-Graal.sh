@@ -165,29 +165,28 @@ validate_inputs() {
 }
 
 find_graal_compiler_jar() {
-    local candidate
-    local -a candidates=()
+    GRAAL_COMPILER_JAR=$(
+        cd "$GRAAL_REPOSITORY/vm"
 
-    while IFS= read -r candidate; do
-        if "$GRAAL_VM_HOME/bin/jar" tf "$candidate" 2>/dev/null |
-            grep -F 'jdk/graal/compiler/hotspot/meta/Bubo/BuboCache.class' \
-                >/dev/null; then
-            candidates+=("$candidate")
-        fi
-    done < <(
-        find "$GRAAL_REPOSITORY/compiler/mxbuild/dists" \
-            -maxdepth 1 \
-            -type f \
-            -name '*.jar' \
-            -print 2>/dev/null |
-            sort
-    )
+        mx \
+            --java-home "$GRAAL_BUILDER_JDK" \
+            --env libgraal \
+            paths GRAAL
+    ) || die "Could not resolve Graal compiler JAR"
 
-    if (( ${#candidates[@]} != 1 )); then
-        die "Expected one Graal compiler JAR containing BuboCache, found ${#candidates[@]}"
+    require_file \
+        "$GRAAL_COMPILER_JAR" \
+        'Graal compiler JAR'
+
+    if ! "$GRAAL_VM_HOME/bin/jar" tf "$GRAAL_COMPILER_JAR" |
+        grep -Fx \
+            'jdk/graal/compiler/hotspot/meta/Bubo/BuboCache.class' \
+            >/dev/null; then
+
+        die "BuboCache.class missing from $GRAAL_COMPILER_JAR"
     fi
 
-    GRAAL_COMPILER_JAR=${candidates[0]}
+    pass "Found Graal compiler JAR: $GRAAL_COMPILER_JAR"
 }
 
 build_bubo_agent() {
@@ -243,7 +242,7 @@ build_graal() {
         nohup mx \
             --java-home "$GRAAL_BUILDER_JDK" \
             --env libgraal \
-            build \
+            build --dependencies=GRAALVM \
             > "$log_file" 2>&1 < /dev/null &
 
         build_pid=$!
@@ -307,43 +306,33 @@ validate_bubo_output() {
     local encoding_count
     local loop_count
     local total_cycles
+    local summary
 
-    read -r \
-        encoding_count \
-        loop_count \
-        total_cycles < <(
-            awk '
-                /Found Encoding[[:space:]]*:/ {
-                    encodings++
-                }
+    # Use single-line AWK function calls for compatibility with POSIX awk.
+    # Capture the exit status explicitly: failures inside process substitution
+    # would otherwise be hidden and mistakenly reported as "no encodings".
+    if ! summary=$(awk '
+        /Found Encoding[[:space:]]*:/ {
+            encodings++
+        }
 
-                /^[[:space:]]*loop [0-9]+ Cycles:[[:space:]]*[0-9]+/ {
-                    loops++
+        /^[[:space:]]*loop[[:space:]]+[0-9]+[[:space:]]+Cycles:[[:space:]]*[0-9]+/ {
+            loops++
+            cycle_text = $0
+            sub(/^.*Cycles:[[:space:]]*/, "", cycle_text)
+            split(cycle_text, fields, /[[:space:]]+/)
+            total += fields[1] + 0
+        }
 
-                    cycle_text = $0
-                    sub(
-                        /^.*Cycles:[[:space:]]*/,
-                        "",
-                        cycle_text
-                    )
+        END {
+            printf "%d %d %.0f\n", encodings, loops, total
+        }
+    ' "$output_file"); then
+        fail "Could not parse BuboL output with awk: $output_file"
+        return 1
+    fi
 
-                    split(
-                        cycle_text,
-                        fields,
-                        /[[:space:]]+/
-                    )
-
-                    total += fields[1]
-                }
-
-                END {
-                    printf "%d %d %.0f\n",
-                        encodings,
-                        loops,
-                        total
-                }
-            ' "$output_file"
-        )
+    read -r encoding_count loop_count total_cycles <<< "$summary"
 
     if (( encoding_count <= 0 )); then
         fail "No BuboL encodings were found in $output_file"
@@ -371,6 +360,7 @@ validate_debug_markers() {
     local marker_frames
     local hottest_marker_percentage
     local hottest_marker
+    local summary
 
     require_file \
         "$profile_file" \
@@ -381,94 +371,62 @@ validate_debug_markers() {
         return 1
     fi
 
-    read -r \
-        marker_stacks \
-        marker_frames \
-        hottest_marker_percentage \
-        hottest_marker < <(
-            awk '
-                function finish_trace(
-                    marker,
-                    found_marker
-                ) {
-                    if (!trace_started) {
-                        return
-                    }
+    # Likewise avoid newlines between AWK function names and their arguments.
+    if ! summary=$(awk '
+        function finish_trace(marker, found_marker) {
+            if (!trace_started) {
+                return
+            }
 
-                    found_marker = 0
+            found_marker = 0
+            for (marker in trace_markers) {
+                marker_percentage[marker] += trace_percentage
+                delete trace_markers[marker]
+                found_marker = 1
+            }
+            if (found_marker) {
+                stacks++
+            }
+        }
 
-                    for (marker in trace_markers) {
-                        marker_percentage[marker] += trace_percentage
-                        delete trace_markers[marker]
-                        found_marker = 1
-                    }
+        /^--- .*\([0-9]+([.][0-9]+)?%\)/ {
+            finish_trace()
+            percentage_text = $0
+            sub(/^.*\(/, "", percentage_text)
+            sub(/%.*/, "", percentage_text)
+            trace_percentage = percentage_text + 0
+            trace_started = 1
+            next
+        }
 
-                    if (found_marker) {
-                        stacks++
-                    }
+        {
+            remaining = $0
+            while (match(remaining, /my[.]custom[.]BuboAgentCompilerMarkers[.](Marker[0-9]+|MarkerDelimiter)/)) {
+                marker_name = substr(remaining, RSTART, RLENGTH)
+                frames++
+                trace_markers[marker_name] = 1
+                remaining = substr(remaining, RSTART + RLENGTH)
+            }
+        }
+
+        END {
+            finish_trace()
+            hottest_percentage = 0
+            hottest_marker = "none"
+            for (marker in marker_percentage) {
+                if (marker_percentage[marker] > hottest_percentage) {
+                    hottest_percentage = marker_percentage[marker]
+                    hottest_marker = marker
                 }
+            }
+            printf "%d %d %.6f %s\n", stacks, frames, hottest_percentage, hottest_marker
+        }
+    ' "$profile_file"); then
+        fail "Could not parse async-profiler output with awk: $profile_file"
+        return 1
+    fi
 
-                /^--- .*\([0-9]+([.][0-9]+)?%\)/ {
-                    finish_trace()
-
-                    percentage_text = $0
-                    sub(/^.*\(/, "", percentage_text)
-                    sub(/%.*/, "", percentage_text)
-
-                    trace_percentage = percentage_text + 0
-                    trace_started = 1
-                    next
-                }
-
-                {
-                    remaining = $0
-
-                    while (
-                        match(
-                            remaining,
-                            /my[.]custom[.]BuboAgentCompilerMarkers[.](Marker[0-9]+|MarkerDelimiter)/
-                        )
-                    ) {
-                        marker_name = substr(
-                            remaining,
-                            RSTART,
-                            RLENGTH
-                        )
-
-                        frames++
-                        trace_markers[marker_name] = 1
-
-                        remaining = substr(
-                            remaining,
-                            RSTART + RLENGTH
-                        )
-                    }
-                }
-
-                END {
-                    finish_trace()
-
-                    hottest_percentage = 0
-                    hottest_marker = "none"
-
-                    for (marker in marker_percentage) {
-                        if (
-                            marker_percentage[marker] >
-                            hottest_percentage
-                        ) {
-                            hottest_percentage = marker_percentage[marker]
-                            hottest_marker = marker
-                        }
-                    }
-
-                    printf "%d %d %.6f %s\n",
-                        stacks,
-                        frames,
-                        hottest_percentage,
-                        hottest_marker
-                }
-            ' "$profile_file"
-        )
+    read -r marker_stacks marker_frames hottest_marker_percentage hottest_marker <<< "$summary"
 
     if (( marker_frames < 2 )); then
         fail "Fewer than two compiler-marker occurrences were found in $profile_file"
@@ -477,13 +435,10 @@ validate_debug_markers() {
 
     if ! awk \
         -v percentage="$hottest_marker_percentage" \
-        'BEGIN {
-            exit !(percentage >= 2.0)
-        }'; then
+        'BEGIN { exit !(percentage >= 2.0) }'; then
 
         fail "No compiler marker accounted for at least 2% of the async-profiler report"
         fail "Highest marker: $hottest_marker at $hottest_marker_percentage%"
-
         return 1
     fi
 
@@ -682,19 +637,19 @@ main() {
         'Verify the generated GraalVM image' \
         verify_graalvm_image
 
-    if [[ "$TEST_ONLY" == true ]]; then
-        run_step \
-            'Verify the existing Bubo agent' \
-            find_bubo_agent_jar
-    else
-        run_step \
-            'Build the Bubo Java agent' \
-            build_bubo_agent
+    # if [[ "$TEST_ONLY" == true ]]; then
+    #     run_step \
+    #         'Verify the existing Bubo agent' \
+    #         #find_bubo_agent_jar
+    # else
+    #     # run_step \
+    #     #     'Build the Bubo Java agent' \
+    #     #     build_bubo_agent
 
-        run_step \
-            'Verify the Bubo Java agent' \
-            find_bubo_agent_jar
-    fi
+    #     # run_step \
+    #     #     'Verify the Bubo Java agent' \
+    #     #     find_bubo_agent_jar
+    # fi
 
     if [[ "$TEST_ONLY" == true ]]; then
         report_check \

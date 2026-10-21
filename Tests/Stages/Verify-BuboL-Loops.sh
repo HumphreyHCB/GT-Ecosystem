@@ -35,8 +35,6 @@ GRAAL_VM_HOME=''
 SCHEDULER_REPOSITORY=''
 JAVA_HOME_DIRECTORY=''
 BENCHMARKS_JAR=''
-BUBO_AGENT_JAR=''
-BUBO_AGENT_REPOSITORY=''
 SCHEDULER_CLASSPATH=''
 SCHEDULER_BUILD_DIRECTORY="$TESTS_DIR/Build/GTSlowdownSchedular-LoopVerification"
 
@@ -96,7 +94,6 @@ load_configuration() {
         Dir \
         FallbackJavaBuild
     require_config_value BENCHMARKS_JAR "$CONFIG_FILE" Dir AWFYBenchmarksJar
-    require_config_value BUBO_AGENT_REPOSITORY "$CONFIG_FILE" Dir BuboAgent
 
     GRAAL_VM_HOME="$GRAAL_REPOSITORY/vm/latest_graalvm_home"
     configure_scheduler_environment "$CONFIG_FILE"
@@ -178,27 +175,6 @@ find_latest_bubol_output() {
     task "Using BuboL Divine output: $BUBOL_OUTPUT"
 }
 
-find_bubo_agent() {
-    local candidate
-    local -a candidates=()
-
-    while IFS= read -r candidate; do
-        candidates+=("$candidate")
-    done < <(
-        find "$BUBO_AGENT_REPOSITORY/target" \
-            -maxdepth 1 \
-            -type f \
-            -name '*-jar-with-dependencies.jar' \
-            -print 2>/dev/null | sort
-    )
-
-    if (( ${#candidates[@]} != 1 )); then
-        die "Expected one Bubo agent jar in $BUBO_AGENT_REPOSITORY/target, found ${#candidates[@]}"
-    fi
-
-    BUBO_AGENT_JAR=${candidates[0]}
-}
-
 validate_inputs() {
     local need_cfg_input=false
     local need_vtune_input=false
@@ -230,7 +206,6 @@ validate_inputs() {
     if [[ "$need_cfg_input" == true ]]; then
         require_executable "$GRAAL_VM_HOME/bin/java" 'Latest GraalVM java'
         require_file "$BENCHMARKS_JAR" 'Are We Fast Yet benchmarks JAR'
-        find_bubo_agent
     fi
 
     if [[ "$need_vtune_input" == true ]]; then
@@ -259,10 +234,21 @@ run_command_with_log() {
     return "${pipeline_status[1]}"
 }
 
+cfg_contains_phase_sections() {
+    [[ -s "$CFG_LOG" ]] &&
+        grep -q '^=== HumphreysDebugDataPhase ===' "$CFG_LOG"
+}
+
 run_cfg_benchmark() {
-    if [[ "$REFRESH_INPUTS" == false && -s "$CFG_LOG" ]]; then
-        task "Reuse CFG input: $CFG_LOG"
+    # A nonempty log is not necessarily valid: old runs can contain only
+    # benchmark text, warnings, or an agent startup failure.
+    if [[ "$REFRESH_INPUTS" == false ]] && cfg_contains_phase_sections; then
+        task "Reuse verified CFG input: $CFG_LOG"
         return 0
+    fi
+
+    if [[ -e "$CFG_LOG" ]]; then
+        task "CFG input missing phase sections; rerunning CFG only: $CFG_LOG"
     fi
 
     run_command_with_log \
@@ -272,15 +258,17 @@ run_cfg_benchmark() {
         "${BUBOL_REPLAY_OPTIONS[@]}" \
         -Djdk.graal.HumphreysDebugData=true \
         "${BUBOL_NORMAL_OPTIONS[@]}" \
-        "-javaagent:$BUBO_AGENT_JAR" \
         -cp "$BENCHMARKS_JAR" \
         Harness \
         "$BENCHMARK" \
         "$ITERATIONS" \
         "$EXTRA_ARGUMENT" || return 1
 
-    grep -q '^=== HumphreysDebugDataPhase ===' "$CFG_LOG" || \
-        die "CFG run produced no HumphreysDebugDataPhase sections: $CFG_LOG"
+    if ! cfg_contains_phase_sections; then
+        fail "CFG run produced no HumphreysDebugDataPhase sections: $CFG_LOG"
+        fail 'Check that the custom Graal compiler phase runs with HumphreysDebugData=true'
+        return 1
+    fi
 }
 
 build_scheduler_classpath() {
