@@ -31,7 +31,8 @@ Run the one-time bootstrap from any directory:
 ```
 
 It installs the Rocky build packages and the known-working Intel VTune 2025.0,
-downloads the pinned boot JDK and `mx`, installs ReBench Denoise, initializes
+downloads the pinned boot JDK and `mx`, installs ReBench Denoise from its
+development source, initializes
 the top-level submodules, builds the AWFY benchmark JAR and its JNI library,
 and verifies hardware Hotspots collection and the rest of the setup.
 
@@ -102,8 +103,9 @@ VTune's expected slowdown with BuboL's achieved measurement.
 
 ## Stable CPU measurements
 
-`Compile-Build-Divine-Bubo.sh` automatically wraps each Divine measurement
-stage with ReBench Denoise. Builds and report generation are not wrapped.
+`Compile-Build-Divine-Bubo.sh` automatically wraps every benchmark with
+ReBench Denoise except the first clean-GraalVM smoke test. OpenJDK and Graal
+builds, validation steps, and report generation are not wrapped.
 During a measurement, Denoise disables Turbo Boost, selects the performance
 governor, raises process priority, and uses CPU shielding where the machine's
 cgroup mode supports it. The wrapper does not change perf sampling controls,

@@ -432,10 +432,18 @@ run_awfy_benchmark() {
     shift 5
 
     local -a java_options=("$@")
+    local -a denoise_prefix=()
 
     local output_file=''
     local profile_file=''
     local agent_option=''
+
+    # The clean mode is a fast smoke test that proves the image starts.  Every
+    # other invocation is a benchmark and therefore uses the same machine-noise
+    # controls as the Divine stages unless the caller explicitly disabled them.
+    if [[ "${GT_USE_DENOISE:-true}" == true && "$mode" != 'Clean GraalVM' ]]; then
+        denoise_prefix=("$TESTS_DIR/Setup-Denoise.sh" run --)
+    fi
 
     if [[ "$validation" == bubo ]]; then
         output_file="$OUTPUT_DIRECTORY/${mode// /-}-$benchmark.log"
@@ -459,6 +467,7 @@ run_awfy_benchmark() {
             "$mode: $benchmark, $iterations iterations, size $size" \
             run_command_with_log \
             "$output_file" \
+            "${denoise_prefix[@]}" \
             "$GRAAL_VM_HOME/bin/java" \
             "${java_options[@]}" \
             -cp "$BENCHMARKS_JAR" \
@@ -475,6 +484,7 @@ run_awfy_benchmark() {
     else
         run_step \
             "$mode: $benchmark, $iterations iterations, size $size" \
+            "${denoise_prefix[@]}" \
             "$GRAAL_VM_HOME/bin/java" \
             "${java_options[@]}" \
             -cp "$BENCHMARKS_JAR" \

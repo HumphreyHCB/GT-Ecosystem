@@ -13,6 +13,7 @@ FULL_REBUILD=false
 TEST_ONLY=false
 VERBOSE=false
 USE_DENOISE=''
+DENOISE_REQUIRED=false
 STAGE_LIST=''
 START_STAGE=''
 PIPELINE_STAGES=(openjdk graal divine bubol)
@@ -101,7 +102,7 @@ select_stages() {
 }
 
 validate_arguments() {
-    local configured_denoise
+    local configured_denoise stage
 
     [[ "$TEST_ONLY" != true || "$FULL_REBUILD" != true ]] || die '--test-only cannot be combined with --full-rebuild'
     if [[ "$TEST_ONLY" == true ]]; then
@@ -116,6 +117,18 @@ validate_arguments() {
             false|no|0) USE_DENOISE=false ;;
             *) die '[Run] Denoise must be true or false' ;;
         esac
+    fi
+
+    DENOISE_REQUIRED=false
+    if [[ "$USE_DENOISE" == true ]]; then
+        for stage in "${SELECTED_STAGES[@]}"; do
+            case "$stage" in
+                graal|divine|bubol)
+                    DENOISE_REQUIRED=true
+                    break
+                    ;;
+            esac
+        done
     fi
 }
 
@@ -133,6 +146,7 @@ initialise_run() {
     GT_REPORT_EVENTS="$GT_PIPELINE_ROOT/report.events"
     GT_ECOSYSTEM_CONFIG=$CONFIG_FILE
     GT_VERBOSE=$VERBOSE
+    GT_USE_DENOISE=$USE_DENOISE
 
     mkdir -p "$GT_PIPELINE_ROOT/logs" "$GT_PIPELINE_ROOT/stages" "$GT_PIPELINE_ROOT/build" "$GT_RESULTS_ROOT"
     : > "$GT_DETAILED_LOG"
@@ -140,7 +154,7 @@ initialise_run() {
     REPORT_STARTED_AT=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
     REPORT_STARTED_EPOCH=$(date +%s)
     export GT_RUN_ROOT GT_PIPELINE_ROOT GT_RESULTS_ROOT GT_DETAILED_LOG
-    export GT_REPORT_EVENTS GT_ECOSYSTEM_CONFIG GT_VERBOSE
+    export GT_REPORT_EVENTS GT_ECOSYSTEM_CONFIG GT_VERBOSE GT_USE_DENOISE
 
     printf 'GT Ecosystem run: %s\nConfiguration: %s\nBenchmarks: %s\nDenoise: %s\n' \
         "$GT_RUN_ROOT" "$CONFIG_FILE" "${BENCHMARKS[*]}" "$USE_DENOISE" >> "$GT_DETAILED_LOG"
@@ -239,7 +253,7 @@ main() {
     trap 'finalise_run $?' EXIT
     task "Run GT ecosystem stages: ${SELECTED_STAGES[*]}"
     INDENT_LEVEL=$((INDENT_LEVEL + 1)); export INDENT_LEVEL
-    if [[ "$USE_DENOISE" == true ]]; then
+    if [[ "$DENOISE_REQUIRED" == true ]]; then
         run_step 'Verify machine dependencies' "$TESTS_DIR/Verify-Dependencies.sh" --pipeline
     else
         run_step 'Verify machine dependencies' \

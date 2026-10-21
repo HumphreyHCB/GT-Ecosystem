@@ -16,7 +16,6 @@ fi
 
 readonly EXPECTED_MX_VERSION=7.68.9
 readonly EXPECTED_VTUNE_VERSION=2025.0
-readonly EXPECTED_REBENCH_VERSION=1.4.0
 readonly CONFIG_FILE=${GT_ECOSYSTEM_CONFIG:-"$TESTS_DIR/config.config"}
 
 PIPELINE_MODE=false
@@ -315,20 +314,52 @@ check_vtune() {
 check_denoise() {
     local cset_command="$TESTS_DIR/Tools/rebench/bin/cset"
     local denoise_command="$TESTS_DIR/Tools/rebench/bin/rebench-denoise"
+    local rebench_python="$TESTS_DIR/Tools/rebench/bin/python"
     local denoise_version=''
+    local denoise_help=''
+    local cset_help=''
     local governor=''
     local no_turbo=''
 
     check_executable "$denoise_command" 'ReBench Denoise command'
     check_executable "$cset_command" 'ReBench cpuset command'
 
-    if [[ -x "$denoise_command" ]]; then
-        denoise_version=$("$denoise_command" --version 2>&1 || true)
-        if grep -Fq "$EXPECTED_REBENCH_VERSION" <<< "$denoise_version"; then
-            check_pass "ReBench Denoise version is $EXPECTED_REBENCH_VERSION"
+    if [[ -x "$rebench_python" ]]; then
+        denoise_version=$("$rebench_python" -c \
+            'from importlib.metadata import version; print(version("ReBench"))' \
+            2>/dev/null || true)
+        if [[ -n "$denoise_version" ]]; then
+            check_pass "ReBench package is installed (reported version: $denoise_version)"
         else
-            check_fail "ReBench Denoise must be $EXPECTED_REBENCH_VERSION; found: $denoise_version"
+            check_fail 'The ReBench Python package metadata cannot be read'
         fi
+    else
+        check_fail "ReBench Python environment is missing: $rebench_python"
+    fi
+
+    if [[ -x "$denoise_command" ]] && \
+        denoise_help=$("$denoise_command" --help 2>&1); then
+
+        if grep -Fq -- '--num-cores' <<< "$denoise_help" && \
+            grep -Fq -- '--cset-path' <<< "$denoise_help" && \
+            grep -Fq -- '--without-shielding' <<< "$denoise_help" && \
+            grep -Eq '(^|[|`[:space:]])exec([|`[:space:]]|$)' <<< "$denoise_help"; then
+
+            check_pass 'ReBench Denoise provides the required command interface'
+        else
+            check_fail 'ReBench Denoise is missing a required command or option'
+        fi
+    elif [[ -x "$denoise_command" ]]; then
+        check_fail 'ReBench Denoise command does not start successfully'
+    fi
+    if [[ -x "$cset_command" ]] && cset_help=$("$cset_command" --help 2>&1); then
+        if grep -Fq 'shield' <<< "$cset_help"; then
+            check_pass 'ReBench cpuset provides CPU shielding'
+        else
+            check_fail 'ReBench cpuset is missing its shield command'
+        fi
+    elif [[ -x "$cset_command" ]]; then
+        check_fail 'ReBench cpuset command does not start successfully'
     fi
 
     if [[ -r /sys/devices/system/cpu/intel_pstate/no_turbo ]]; then

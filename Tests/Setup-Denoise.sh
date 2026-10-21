@@ -10,7 +10,7 @@ ECOSYSTEM_ROOT=$(cd -- "$TESTS_DIR/.." && pwd)
 # shellcheck source=lib/common.sh
 source "$TESTS_DIR/lib/common.sh"
 
-readonly REBENCH_VERSION=1.4.0
+readonly REBENCH_INSTALL_SPEC='git+https://github.com/smarr/ReBench.git@master'
 readonly CPUSET_COMMIT=db68d6daae07d12c38d7cf7375cf843ced0f6792
 readonly TOOLS_DIRECTORY="$TESTS_DIR/Tools"
 readonly REBENCH_ENVIRONMENT="$TOOLS_DIRECTORY/rebench"
@@ -24,8 +24,16 @@ ROOT_COMMAND=()
 RUN_COMMAND=()
 DENOISE_ARGUMENTS=()
 CPU_COUNT=0
+SHIELDED_CORE_SET=''
 INITIAL_NO_TURBO=''
-INITIAL_GOVERNOR=''
+GOVERNOR_PATHS=()
+INITIAL_GOVERNORS=()
+PERF_PATHS=(
+    /proc/sys/kernel/perf_event_paranoid
+    /proc/sys/kernel/perf_cpu_time_max_percent
+    /proc/sys/kernel/perf_event_max_sample_rate
+)
+INITIAL_PERF_VALUES=()
 SHIELDING_ATTEMPTED=false
 SHIELDING_ENABLED=false
 KEEPALIVE_PID=''
@@ -38,7 +46,7 @@ Usage: $(basename "$0") [install] [OPTIONS]
        $(basename "$0") run -- COMMAND [ARGUMENT ...]
 
 Commands:
-    install                 Install pinned ReBench and cpuset, then verify them
+    install                 Install ReBench development source and cpuset
     verify                  Test Denoise and restore the original CPU settings
     run -- COMMAND          Run COMMAND with reduced benchmark noise
 
@@ -115,8 +123,41 @@ validate_host() {
 }
 
 rebench_is_usable() {
+    local cset_help denoise_help
+
     [[ -x "$DENOISE_COMMAND" && -x "$CSET_COMMAND" ]] || return 1
-    "$DENOISE_COMMAND" --version 2>&1 | grep -Fq "$REBENCH_VERSION"
+    "$REBENCH_ENVIRONMENT/bin/python" -c '
+from importlib.metadata import version
+version("ReBench")
+' || return 1
+    denoise_help=$("$DENOISE_COMMAND" --help 2>&1) || return 1
+    cset_help=$("$CSET_COMMAND" --help 2>&1) || return 1
+    grep -Fq -- '--num-cores' <<< "$denoise_help" || return 1
+    grep -Fq -- '--cset-path' <<< "$denoise_help" || return 1
+    grep -Fq -- '--without-shielding' <<< "$denoise_help" || return 1
+    grep -Eq '(^|[|`[:space:]])exec([|`[:space:]]|$)' <<< "$denoise_help" || return 1
+    grep -Fq 'shield' <<< "$cset_help" || return 1
+}
+
+rebench_is_development_install() {
+    "$REBENCH_ENVIRONMENT/bin/python" -c '
+from importlib.metadata import distribution
+import json
+import sys
+
+metadata = distribution("ReBench").read_text("direct_url.json")
+if not metadata:
+    sys.exit(1)
+url = json.loads(metadata).get("url", "").rstrip("/")
+if url.endswith(".git"):
+    url = url[:-4]
+sys.exit(0 if url == "https://github.com/smarr/ReBench" else 1)
+'
+}
+
+installed_rebench_version() {
+    "$REBENCH_ENVIRONMENT/bin/python" -c \
+        'from importlib.metadata import version; print(version("ReBench"))'
 }
 
 install_system_packages() {
@@ -135,8 +176,8 @@ install_system_packages() {
 install_rebench() {
     local temporary_directory
 
-    if rebench_is_usable; then
-        task "ReBench $REBENCH_VERSION and cpuset are already installed"
+    if rebench_is_usable && rebench_is_development_install; then
+        task "ReBench development source ($(installed_rebench_version)) and cpuset are already installed"
         return
     fi
 
@@ -147,7 +188,7 @@ install_rebench() {
     python3 -m venv "$temporary_directory/rebench"
     "$temporary_directory/rebench/bin/python" -m pip install --upgrade pip
     "$temporary_directory/rebench/bin/python" -m pip install \
-        "ReBench==$REBENCH_VERSION" \
+        "$REBENCH_INSTALL_SPEC" \
         "git+https://github.com/SUSE/cpuset.git@$CPUSET_COMMIT"
 
     [[ -x "$temporary_directory/rebench/bin/rebench-denoise" ]] || \
@@ -157,7 +198,8 @@ install_rebench() {
 
     rm -rf -- "$REBENCH_ENVIRONMENT"
     mv -- "$temporary_directory/rebench" "$REBENCH_ENVIRONMENT"
-    rebench_is_usable || die "ReBench $REBENCH_VERSION did not validate"
+    rebench_is_usable || die 'The ReBench package or Denoise commands did not validate'
+    rebench_is_development_install || die 'ReBench was not installed from the development repository'
 
     rm -rf -- "$temporary_directory"
     trap - RETURN
@@ -165,70 +207,105 @@ install_rebench() {
 
 read_cpu_state() {
     local no_turbo_file=/sys/devices/system/cpu/intel_pstate/no_turbo
-    local governor_file=/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    local path
 
     INITIAL_NO_TURBO=''
-    INITIAL_GOVERNOR=''
+    GOVERNOR_PATHS=()
+    INITIAL_GOVERNORS=()
+    INITIAL_PERF_VALUES=()
     [[ ! -r "$no_turbo_file" ]] || INITIAL_NO_TURBO=$(< "$no_turbo_file")
-    [[ ! -r "$governor_file" ]] || INITIAL_GOVERNOR=$(< "$governor_file")
+
+    while IFS= read -r path; do
+        GOVERNOR_PATHS+=("$path")
+        INITIAL_GOVERNORS+=("$(< "$path")")
+    done < <(
+        find /sys/devices/system/cpu -path '*/cpu[0-9]*/cpufreq/scaling_governor' \
+            -type f -print | sort -V
+    )
+
+    for path in "${PERF_PATHS[@]}"; do
+        if [[ -r "$path" ]]; then
+            INITIAL_PERF_VALUES+=("$(< "$path")")
+        else
+            INITIAL_PERF_VALUES+=('')
+        fi
+    done
 }
 
 denoise_base_arguments() {
     DENOISE_ARGUMENTS=(
         --num-cores "$CPU_COUNT"
         --cset-path "$CSET_COMMAND"
-        --without-min-perf-sampling
     )
 }
 
-restore_cpu_state() {
-    local current_governor=''
-    local current_no_turbo=''
-    local restore_failed=false
-    local -a restore_arguments
+write_privileged_file() {
+    local path=$1
+    local value=$2
 
-    denoise_base_arguments
+    printf '%s\n' "$value" | "${ROOT_COMMAND[@]}" tee "$path" >/dev/null
+}
+
+set_measurement_cpu_state() {
+    local path
+
+    [[ -n "$INITIAL_NO_TURBO" ]] || \
+        die 'Intel Turbo control is unavailable; refusing an incompletely controlled measurement'
+    (( ${#GOVERNOR_PATHS[@]} > 0 )) || \
+        die 'CPU frequency governors are unavailable'
+
+    write_privileged_file /sys/devices/system/cpu/intel_pstate/no_turbo 1
+    for path in "${GOVERNOR_PATHS[@]}"; do
+        write_privileged_file "$path" performance
+    done
+}
+
+restore_cpu_state() {
+    local current_value=''
+    local current_no_turbo=''
+    local index path
+    local restore_failed=false
+
     if [[ "$SHIELDING_ATTEMPTED" == true ]]; then
-        if ! "${ROOT_COMMAND[@]}" "$DENOISE_COMMAND" \
-            "${DENOISE_ARGUMENTS[@]}" \
-            --without-no-turbo \
-            --without-scaling-governor \
-            --without-nice \
-            restore >/dev/null 2>&1; then
+        if ! "${ROOT_COMMAND[@]}" "$CSET_COMMAND" shield -r \
+            >/dev/null 2>&1; then
             [[ "$SHIELDING_ENABLED" != true ]] || restore_failed=true
         fi
     fi
 
-    restore_arguments=(
-        "${DENOISE_ARGUMENTS[@]}"
-        --without-shielding
-        --without-nice
-    )
-    case "$INITIAL_NO_TURBO" in
-        0) restore_arguments+=(--no-turbo false) ;;
-        1) restore_arguments+=(--no-turbo true) ;;
-        *) restore_arguments+=(--without-no-turbo) ;;
-    esac
-    case "$INITIAL_GOVERNOR" in
-        performance|powersave) restore_arguments+=(--governor "$INITIAL_GOVERNOR") ;;
-        *) restore_arguments+=(--without-scaling-governor) ;;
-    esac
+    [[ -z "$INITIAL_NO_TURBO" ]] || \
+        write_privileged_file \
+            /sys/devices/system/cpu/intel_pstate/no_turbo \
+            "$INITIAL_NO_TURBO" || restore_failed=true
 
-    if ! "${ROOT_COMMAND[@]}" "$DENOISE_COMMAND" \
-        "${restore_arguments[@]}" minimize >/dev/null 2>&1; then
-        restore_failed=true
-    fi
+    for index in "${!GOVERNOR_PATHS[@]}"; do
+        write_privileged_file \
+            "${GOVERNOR_PATHS[$index]}" \
+            "${INITIAL_GOVERNORS[$index]}" || restore_failed=true
+    done
+    for index in "${!PERF_PATHS[@]}"; do
+        [[ -z "${INITIAL_PERF_VALUES[$index]}" ]] || \
+            write_privileged_file \
+                "${PERF_PATHS[$index]}" \
+                "${INITIAL_PERF_VALUES[$index]}" || restore_failed=true
+    done
 
     if [[ -r /sys/devices/system/cpu/intel_pstate/no_turbo ]]; then
         current_no_turbo=$(< /sys/devices/system/cpu/intel_pstate/no_turbo)
         [[ -z "$INITIAL_NO_TURBO" || "$current_no_turbo" == "$INITIAL_NO_TURBO" ]] || \
             restore_failed=true
     fi
-    if [[ -r /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ]]; then
-        current_governor=$(< /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
-        [[ -z "$INITIAL_GOVERNOR" || "$current_governor" == "$INITIAL_GOVERNOR" ]] || \
-            restore_failed=true
-    fi
+    for index in "${!GOVERNOR_PATHS[@]}"; do
+        path=${GOVERNOR_PATHS[$index]}
+        current_value=$(< "$path")
+        [[ "$current_value" == "${INITIAL_GOVERNORS[$index]}" ]] || restore_failed=true
+    done
+    for index in "${!PERF_PATHS[@]}"; do
+        path=${PERF_PATHS[$index]}
+        [[ -z "${INITIAL_PERF_VALUES[$index]}" ]] && continue
+        current_value=$(< "$path")
+        [[ "$current_value" == "${INITIAL_PERF_VALUES[$index]}" ]] || restore_failed=true
+    done
 
     if [[ "$restore_failed" == true ]]; then
         fail 'Could not restore every original CPU setting'
@@ -276,16 +353,13 @@ start_privileged_session() {
     fi
 }
 
-minimize_noise() {
+prepare_denoised_state() {
     local output
 
-    denoise_base_arguments
+    set_measurement_cpu_state
     SHIELDING_ATTEMPTED=true
-    if output=$("${ROOT_COMMAND[@]}" "$DENOISE_COMMAND" \
-        "${DENOISE_ARGUMENTS[@]}" \
-        --no-turbo true \
-        --governor performance \
-        minimize 2>&1); then
+    if output=$("${ROOT_COMMAND[@]}" "$CSET_COMMAND" \
+        shield -c "$SHIELDED_CORE_SET" -k on 2>&1); then
         SHIELDING_ENABLED=true
         pass "Denoise active: Turbo off, performance governor, priority and CPU shielding"
         return
@@ -293,12 +367,6 @@ minimize_noise() {
 
     printf '%s\n' "$output" >> "${GT_DETAILED_LOG:-/dev/null}"
     task 'CPU shielding is unavailable; continuing with the other Denoise controls'
-    "${ROOT_COMMAND[@]}" "$DENOISE_COMMAND" \
-        "${DENOISE_ARGUMENTS[@]}" \
-        --without-shielding \
-        --no-turbo true \
-        --governor performance \
-        minimize
     SHIELDING_ENABLED=false
     pass 'Denoise active: Turbo off, performance governor and raised priority'
 }
@@ -330,7 +398,8 @@ execute_denoised_command() {
     for variable_name in \
         LANG LC_ALL \
         GT_RUN_ROOT GT_PIPELINE_ROOT GT_RESULTS_ROOT GT_DETAILED_LOG \
-        GT_REPORT_EVENTS GT_ECOSYSTEM_CONFIG GT_VERBOSE INDENT_LEVEL; do
+        GT_REPORT_EVENTS GT_ECOSYSTEM_CONFIG GT_VERBOSE GT_USE_DENOISE \
+        INDENT_LEVEL; do
         append_environment_variable "$variable_name" environment_arguments
     done
 
@@ -365,6 +434,12 @@ run_denoised() {
     rebench_is_usable || \
         die "ReBench Denoise is missing; run $TESTS_DIR/Setup-Denoise.sh install"
     validate_host
+    SHIELDED_CORE_SET=$("$REBENCH_ENVIRONMENT/bin/python" -c '
+from math import floor, log
+import sys
+cores = int(sys.argv[1])
+print(f"{floor(log(cores))}-{cores - 1}")
+' "$CPU_COUNT")
     read_cpu_state
     start_privileged_session
 
@@ -372,7 +447,7 @@ run_denoised() {
     trap 'handle_signal 2' INT
     trap 'handle_signal 15' TERM
 
-    minimize_noise
+    prepare_denoised_state
     if execute_denoised_command; then
         status=0
     else
@@ -404,7 +479,7 @@ verify_denoise() {
     fi
     swap_used_kib=$(awk '/^SwapTotal:/ {total=$2} /^SwapFree:/ {free=$2} END {print total-free}' /proc/meminfo)
 
-    task "ReBench $REBENCH_VERSION functional test"
+    task "ReBench development build $(installed_rebench_version) functional test"
     task "CPU count: $CPU_COUNT; cgroup mode: $cgroup_mode"
     if [[ "$cgroup_mode" == v2 ]]; then
         task 'ReBench cpuset shielding may be unavailable; automatic fallback will be used'
@@ -429,7 +504,7 @@ main() {
             if [[ "$SKIP_SYSTEM_PACKAGES" == false ]]; then
                 run_step 'Install Python packaging dependencies' install_system_packages
             fi
-            run_step "Install ReBench $REBENCH_VERSION and cpuset" install_rebench
+            run_step 'Install ReBench development source and cpuset' install_rebench
             if [[ "$SKIP_VERIFY" == false ]]; then
                 run_step 'Verify Denoise and CPU-state restoration' verify_denoise
             fi
