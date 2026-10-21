@@ -212,13 +212,22 @@ read_cpu_state() {
     INITIAL_PERF_VALUES=()
     [[ ! -r "$no_turbo_file" ]] || INITIAL_NO_TURBO=$(< "$no_turbo_file")
 
-    while IFS= read -r path; do
+    # cpuN/cpufreq is normally a symlink to cpufreq/policyN.  `find` does not
+    # follow those links by default, so inspect the real policy files first.
+    for path in /sys/devices/system/cpu/cpufreq/policy*/scaling_governor; do
+        [[ -r "$path" ]] || continue
         GOVERNOR_PATHS+=("$path")
         INITIAL_GOVERNORS+=("$(< "$path")")
-    done < <(
-        find /sys/devices/system/cpu -path '*/cpu[0-9]*/cpufreq/scaling_governor' \
-            -type f -print | sort -V
-    )
+    done
+
+    # Older kernels may expose only the per-CPU symlink layout.
+    if (( ${#GOVERNOR_PATHS[@]} == 0 )); then
+        for path in /sys/devices/system/cpu/cpu[0-9]*/cpufreq/scaling_governor; do
+            [[ -r "$path" ]] || continue
+            GOVERNOR_PATHS+=("$path")
+            INITIAL_GOVERNORS+=("$(< "$path")")
+        done
+    fi
 
     for path in "${PERF_PATHS[@]}"; do
         if [[ -r "$path" ]]; then
