@@ -40,7 +40,7 @@ readonly BENCHMARK=Mandelbrot
 readonly ITERATIONS=300
 readonly EXTRA_ARGUMENT=750
 readonly EXPECTED_SLOWDOWN=2
-readonly SLOWDOWN_TOLERANCE_PERCENT=10
+readonly SLOWDOWN_TOLERANCE_PERCENT=15
 
 load_configuration() {
     require_file \

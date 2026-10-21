@@ -22,6 +22,7 @@ TEST_ONLY=false
 OPENJDK_CONF=''
 GRAAL_BUILDER_JDK=''
 GRAAL_VM_HOME=''
+GRAAL_COMPILER_JAR=''
 
 OUTPUT_DIRECTORY="$TESTS_DIR/Output"
 
@@ -144,6 +145,31 @@ validate_inputs() {
     fi
 }
 
+find_graal_compiler_jar() {
+    GRAAL_COMPILER_JAR=$(
+        cd "$GRAAL_REPOSITORY/vm"
+
+        mx \
+            --java-home "$GRAAL_BUILDER_JDK" \
+            --env libgraal \
+            paths GRAAL
+    ) || die "Could not resolve Graal compiler JAR"
+
+    require_file \
+        "$GRAAL_COMPILER_JAR" \
+        'Graal compiler JAR'
+
+    if ! "$GRAAL_VM_HOME/bin/jar" tf "$GRAAL_COMPILER_JAR" |
+        grep -Fx \
+            'jdk/graal/compiler/hotspot/meta/Bubo/BuboCache.class' \
+            >/dev/null; then
+
+        die "BuboCache.class missing from $GRAAL_COMPILER_JAR"
+    fi
+
+    pass "Found Graal compiler JAR: $GRAAL_COMPILER_JAR"
+}
+
 prepare_output_directory() {
     mkdir -p "$OUTPUT_DIRECTORY"
 }
@@ -164,7 +190,7 @@ build_graal() {
         nohup mx \
             --java-home "$GRAAL_BUILDER_JDK" \
             --env libgraal \
-            build \
+            build --dependencies=GRAALVM \
             > "$log_file" 2>&1 < /dev/null &
 
         build_pid=$!
@@ -198,6 +224,27 @@ build_graal() {
     )
 }
 
+repair_graalvm_link() {
+    local expected_target='../sdk/latest_graalvm_home'
+    local sdk_home="$GRAAL_REPOSITORY/sdk/latest_graalvm_home"
+
+    require_directory \
+        "$sdk_home" \
+        'Generated GraalVM SDK home'
+
+    if [[ -e "$GRAAL_VM_HOME" && ! -L "$GRAAL_VM_HOME" ]]; then
+        die "Cannot replace non-symlink GraalVM path: $GRAAL_VM_HOME"
+    fi
+
+    ln -sfn -- "$expected_target" "$GRAAL_VM_HOME"
+
+    if [[ $(readlink -- "$GRAAL_VM_HOME") != "$expected_target" ]]; then
+        die "GraalVM link does not point to $expected_target: $GRAAL_VM_HOME"
+    fi
+
+    pass "GraalVM link ready: $GRAAL_VM_HOME -> $expected_target"
+}
+
 verify_graalvm_image() {
     require_directory \
         "$GRAAL_VM_HOME" \
@@ -228,43 +275,33 @@ validate_bubo_output() {
     local encoding_count
     local loop_count
     local total_cycles
+    local summary
 
-    read -r \
-        encoding_count \
-        loop_count \
-        total_cycles < <(
-            awk '
-                /Found Encoding[[:space:]]*:/ {
-                    encodings++
-                }
+    # Use single-line AWK function calls for compatibility with POSIX awk.
+    # Capture the exit status explicitly: failures inside process substitution
+    # would otherwise be hidden and mistakenly reported as "no encodings".
+    if ! summary=$(awk '
+        /Found Encoding[[:space:]]*:/ {
+            encodings++
+        }
 
-                /^[[:space:]]*loop [0-9]+ Cycles:[[:space:]]*[0-9]+/ {
-                    loops++
+        /^[[:space:]]*loop[[:space:]]+[0-9]+[[:space:]]+Cycles:[[:space:]]*[0-9]+/ {
+            loops++
+            cycle_text = $0
+            sub(/^.*Cycles:[[:space:]]*/, "", cycle_text)
+            split(cycle_text, fields, /[[:space:]]+/)
+            total += fields[1] + 0
+        }
 
-                    cycle_text = $0
-                    sub(
-                        /^.*Cycles:[[:space:]]*/,
-                        "",
-                        cycle_text
-                    )
+        END {
+            printf "%d %d %.0f\n", encodings, loops, total
+        }
+    ' "$output_file"); then
+        fail "Could not parse BuboL output with awk: $output_file"
+        return 1
+    fi
 
-                    split(
-                        cycle_text,
-                        fields,
-                        /[[:space:]]+/
-                    )
-
-                    total += fields[1]
-                }
-
-                END {
-                    printf "%d %d %.0f\n",
-                        encodings,
-                        loops,
-                        total
-                }
-            ' "$output_file"
-        )
+    read -r encoding_count loop_count total_cycles <<< "$summary"
 
     if (( encoding_count <= 0 )); then
         fail "No BuboL encodings were found in $output_file"
@@ -292,6 +329,7 @@ validate_debug_markers() {
     local marker_frames
     local hottest_marker_percentage
     local hottest_marker
+    local summary
 
     require_file \
         "$profile_file" \
@@ -302,94 +340,62 @@ validate_debug_markers() {
         return 1
     fi
 
-    read -r \
-        marker_stacks \
-        marker_frames \
-        hottest_marker_percentage \
-        hottest_marker < <(
-            awk '
-                function finish_trace(
-                    marker,
-                    found_marker
-                ) {
-                    if (!trace_started) {
-                        return
-                    }
+    # Likewise avoid newlines between AWK function names and their arguments.
+    if ! summary=$(awk '
+        function finish_trace(marker, found_marker) {
+            if (!trace_started) {
+                return
+            }
 
-                    found_marker = 0
+            found_marker = 0
+            for (marker in trace_markers) {
+                marker_percentage[marker] += trace_percentage
+                delete trace_markers[marker]
+                found_marker = 1
+            }
+            if (found_marker) {
+                stacks++
+            }
+        }
 
-                    for (marker in trace_markers) {
-                        marker_percentage[marker] += trace_percentage
-                        delete trace_markers[marker]
-                        found_marker = 1
-                    }
+        /^--- .*\([0-9]+([.][0-9]+)?%\)/ {
+            finish_trace()
+            percentage_text = $0
+            sub(/^.*\(/, "", percentage_text)
+            sub(/%.*/, "", percentage_text)
+            trace_percentage = percentage_text + 0
+            trace_started = 1
+            next
+        }
 
-                    if (found_marker) {
-                        stacks++
-                    }
+        {
+            remaining = $0
+            while (match(remaining, /my[.]custom[.]BuboAgentCompilerMarkers[.](Marker[0-9]+|MarkerDelimiter)/)) {
+                marker_name = substr(remaining, RSTART, RLENGTH)
+                frames++
+                trace_markers[marker_name] = 1
+                remaining = substr(remaining, RSTART + RLENGTH)
+            }
+        }
+
+        END {
+            finish_trace()
+            hottest_percentage = 0
+            hottest_marker = "none"
+            for (marker in marker_percentage) {
+                if (marker_percentage[marker] > hottest_percentage) {
+                    hottest_percentage = marker_percentage[marker]
+                    hottest_marker = marker
                 }
+            }
+            printf "%d %d %.6f %s\n", stacks, frames, hottest_percentage, hottest_marker
+        }
+    ' "$profile_file"); then
+        fail "Could not parse async-profiler output with awk: $profile_file"
+        return 1
+    fi
 
-                /^--- .*\([0-9]+([.][0-9]+)?%\)/ {
-                    finish_trace()
-
-                    percentage_text = $0
-                    sub(/^.*\(/, "", percentage_text)
-                    sub(/%.*/, "", percentage_text)
-
-                    trace_percentage = percentage_text + 0
-                    trace_started = 1
-                    next
-                }
-
-                {
-                    remaining = $0
-
-                    while (
-                        match(
-                            remaining,
-                            /my[.]custom[.]BuboAgentCompilerMarkers[.](Marker[0-9]+|MarkerDelimiter)/
-                        )
-                    ) {
-                        marker_name = substr(
-                            remaining,
-                            RSTART,
-                            RLENGTH
-                        )
-
-                        frames++
-                        trace_markers[marker_name] = 1
-
-                        remaining = substr(
-                            remaining,
-                            RSTART + RLENGTH
-                        )
-                    }
-                }
-
-                END {
-                    finish_trace()
-
-                    hottest_percentage = 0
-                    hottest_marker = "none"
-
-                    for (marker in marker_percentage) {
-                        if (
-                            marker_percentage[marker] >
-                            hottest_percentage
-                        ) {
-                            hottest_percentage = marker_percentage[marker]
-                            hottest_marker = marker
-                        }
-                    }
-
-                    printf "%d %d %.6f %s\n",
-                        stacks,
-                        frames,
-                        hottest_percentage,
-                        hottest_marker
-                }
-            ' "$profile_file"
-        )
+    read -r marker_stacks marker_frames hottest_marker_percentage hottest_marker <<< "$summary"
 
     if (( marker_frames < 2 )); then
         fail "Fewer than two compiler-marker occurrences were found in $profile_file"
@@ -398,13 +404,10 @@ validate_debug_markers() {
 
     if ! awk \
         -v percentage="$hottest_marker_percentage" \
-        'BEGIN {
-            exit !(percentage >= 2.0)
-        }'; then
+        'BEGIN { exit !(percentage >= 2.0) }'; then
 
         fail "No compiler marker accounted for at least 2% of the async-profiler report"
         fail "Highest marker: $hottest_marker at $hottest_marker_percentage%"
-
         return 1
     fi
 
@@ -600,8 +603,18 @@ main() {
     fi
 
     run_step \
+        'Repair the generated GraalVM link' \
+        repair_graalvm_link
+
+    run_step \
         'Verify the generated GraalVM image' \
         verify_graalvm_image
+
+    if [[ "$TEST_ONLY" == false ]]; then
+        run_step \
+            'Verify the Bubo compiler class' \
+            find_graal_compiler_jar
+    fi
 
     if [[ "$TEST_ONLY" == true ]]; then
         report_check \

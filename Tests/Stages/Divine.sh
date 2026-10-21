@@ -81,6 +81,8 @@ load_configuration() {
         "$CONFIG_FILE" \
         Dir \
         FallbackJavaBuild
+
+    configure_scheduler_environment "$CONFIG_FILE"
 }
 
 validate_inputs() {
