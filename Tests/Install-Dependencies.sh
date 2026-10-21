@@ -101,9 +101,12 @@ install_system_packages() {
         alsa-lib-devel \
         autoconf \
         bison \
+        binutils \
         cmake \
         cups-devel \
         curl \
+        diffutils \
+        elfutils-libelf-devel \
         file \
         flex \
         fontconfig-devel \
@@ -121,7 +124,6 @@ install_system_packages() {
         libXt-devel \
         libXtst-devel \
         make \
-        maven \
         ninja-build \
         perf \
         pkgconf-pkg-config \
@@ -129,9 +131,11 @@ install_system_packages() {
         python3 \
         tar \
         unzip \
+        wget \
         which \
         xz \
-        zip
+        zip \
+        zlib-devel
 
     repository_contents=$'[oneAPI]\nname=Intel oneAPI repository\nbaseurl=https://yum.repos.intel.com/oneapi\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB'
 
@@ -161,7 +165,9 @@ install_system_packages() {
         grep -Fxq "$VTUNE_PACKAGE_VERSION" || \
         die "VTune package $VTUNE_PACKAGE_VERSION was not installed"
 
-    printf '%s\n' 'kernel.perf_event_paranoid = 0' | \
+    printf '%s\n' \
+        'kernel.perf_event_paranoid = 1' \
+        'kernel.kptr_restrict = 0' | \
         "${ROOT_COMMAND[@]}" tee \
             /etc/sysctl.d/99-gt-ecosystem-vtune.conf >/dev/null
     "${ROOT_COMMAND[@]}" sysctl --system
@@ -347,7 +353,7 @@ main() {
     if [[ "$SKIP_SYSTEM_PACKAGES" == false ]]; then
         run_step 'Validate the Rocky Linux host' validate_platform
         run_step 'Select root privileges' select_privilege_command
-        run_step 'Install compiler, build, Maven, and VTune packages' \
+        run_step 'Install compiler, build, and VTune packages' \
             install_system_packages
     fi
 

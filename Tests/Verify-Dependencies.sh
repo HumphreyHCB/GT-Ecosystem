@@ -23,7 +23,6 @@ BOOT_JDK=''
 LABS_OPENJDK=''
 SCHEDULER_REPOSITORY=''
 BUBO_EXPERIMENTS=''
-BUBO_AGENT=''
 GRAAL_REPOSITORY=''
 AWFY_SOURCE=''
 BENCHMARKS_JAR=''
@@ -95,7 +94,6 @@ load_configuration() {
     require_config_value LABS_OPENJDK "$CONFIG_FILE" Dir LabsOpenJDK
     require_config_value SCHEDULER_REPOSITORY "$CONFIG_FILE" Dir GTSlowdownSchedular
     require_config_value BUBO_EXPERIMENTS "$CONFIG_FILE" Dir BuboExperiments
-    require_config_value BUBO_AGENT "$CONFIG_FILE" Dir BuboAgent
     require_config_value GRAAL_REPOSITORY "$CONFIG_FILE" Dir Graal
     require_config_value AWFY_SOURCE "$CONFIG_FILE" Dir AWFYSource
     require_config_value BENCHMARKS_JAR "$CONFIG_FILE" Dir AWFYBenchmarksJar
@@ -106,6 +104,7 @@ load_configuration() {
 check_platform() {
     local architecture
     local cpu_vendor='unknown'
+    local kptr_restrict=''
     local paranoid=''
 
     architecture=$(uname -m)
@@ -126,13 +125,24 @@ check_platform() {
 
     if [[ -r /proc/sys/kernel/perf_event_paranoid ]]; then
         paranoid=$(< /proc/sys/kernel/perf_event_paranoid)
-        if [[ "$paranoid" =~ ^-?[0-9]+$ ]] && (( paranoid <= 0 )); then
+        if [[ "$paranoid" =~ ^-?[0-9]+$ ]] && (( paranoid <= 1 )); then
             check_pass "VTune perf access is enabled (perf_event_paranoid=$paranoid)"
         else
-            check_fail "kernel.perf_event_paranoid must be 0 or lower; found ${paranoid:-unknown}"
+            check_fail "kernel.perf_event_paranoid must be 1 or lower; found ${paranoid:-unknown}"
         fi
     else
         check_fail 'Cannot read kernel.perf_event_paranoid'
+    fi
+
+    if [[ -r /proc/sys/kernel/kptr_restrict ]]; then
+        kptr_restrict=$(< /proc/sys/kernel/kptr_restrict)
+        if [[ "$kptr_restrict" == 0 ]]; then
+            check_pass 'Kernel symbols are available to VTune (kptr_restrict=0)'
+        else
+            check_fail "kernel.kptr_restrict must be 0; found ${kptr_restrict:-unknown}"
+        fi
+    else
+        check_fail 'Cannot read kernel.kptr_restrict'
     fi
 
     if command -v perf >/dev/null 2>&1; then
@@ -154,12 +164,12 @@ check_capacity() {
     local minimum_memory_gib=${GT_MIN_MEMORY_GIB:-16}
 
     available_memory_kib=$(awk '/^MemTotal:/ {print $2; exit}' /proc/meminfo)
-    # if [[ "$available_memory_kib" =~ ^[0-9]+$ ]] && \
-    #     (( available_memory_kib >= minimum_memory_gib * 1024 * 1024 )); then
-    #     check_pass "At least ${minimum_memory_gib} GiB RAM available"
-    # else
-    #     check_fail "At least ${minimum_memory_gib} GiB RAM is required by the 12 GiB benchmark heap"
-    # fi
+    if [[ "$available_memory_kib" =~ ^[0-9]+$ ]] && \
+        (( available_memory_kib >= minimum_memory_gib * 1024 * 1024 )); then
+        check_pass "At least ${minimum_memory_gib} GiB RAM available"
+    else
+        check_warn "Less than ${minimum_memory_gib} GiB RAM available; the 12 GiB benchmark heap may cause swapping"
+    fi
 
     available_disk_kib=$(df -Pk "$ECOSYSTEM_ROOT" | awk 'NR == 2 {print $4}')
     if [[ "$available_disk_kib" =~ ^[0-9]+$ ]] && \
@@ -180,9 +190,9 @@ check_capacity() {
 check_commands() {
     local command_name
     local -a commands=(
-        autoconf awk bash cmake curl df file find gcc g++ git grep ldd make mvn
-        ninja nproc perf pkg-config python3 realpath sed sha256sum sort tar unzip
-        which xargs zip
+        autoconf awk bash cmake curl df diff file find gcc g++ git grep ldd make
+        ninja nproc perf pkg-config python3 readelf realpath sed sha256sum sort
+        tar unzip wget which xargs zip
     )
 
     for command_name in "${commands[@]}"; do
@@ -213,7 +223,6 @@ check_repositories() {
     check_repository "$LABS_OPENJDK" 'Labs OpenJDK submodule'
     check_repository "$SCHEDULER_REPOSITORY" 'GTSlowdownSchedular submodule'
     check_repository "$BUBO_EXPERIMENTS" 'BuboExperiments submodule'
-    check_repository "$BUBO_AGENT" 'Bubo-Agent submodule'
     check_repository "$GRAAL_REPOSITORY" 'graal-instrumentation submodule'
     check_repository "$(dirname "$(dirname "$(dirname "$AWFY_SOURCE")")")" \
         'are-we-fast-yet submodule'
@@ -275,7 +284,6 @@ check_generated_files() {
     local missing_libraries=''
 
     check_file "$AWFY_SOURCE/Run.java" 'AWFY benchmark sources'
-    check_file "$BUBO_AGENT/pom.xml" 'Bubo-Agent Maven project'
     check_file "$ASYNC_PROFILER_LIBRARY" 'Async-profiler native library'
     check_file "$BENCHMARKS_JAR" 'Generated AWFY benchmark JAR'
 

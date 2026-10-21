@@ -22,8 +22,6 @@ TEST_ONLY=false
 OPENJDK_CONF=''
 GRAAL_BUILDER_JDK=''
 GRAAL_VM_HOME=''
-BUBO_AGENT_REPOSITORY=''
-BUBO_AGENT_JAR=''
 GRAAL_COMPILER_JAR=''
 
 OUTPUT_DIRECTORY="$TESTS_DIR/Output"
@@ -97,12 +95,6 @@ load_configuration() {
         Dir \
         AsyncProfilerLibrary
 
-    require_config_value \
-        BUBO_AGENT_REPOSITORY \
-        "$CONFIG_FILE" \
-        Dir \
-        BuboAgent
-
     GRAAL_VM_HOME="$GRAAL_REPOSITORY/vm/latest_graalvm_home"
 
     if [[ "$TEST_ONLY" == false ]]; then
@@ -143,14 +135,6 @@ validate_inputs() {
         "$ASYNC_PROFILER_LIBRARY" \
         'Async-profiler native library'
 
-    require_directory \
-        "$BUBO_AGENT_REPOSITORY" \
-        'Bubo agent repository'
-
-    require_file \
-        "$BUBO_AGENT_REPOSITORY/pom.xml" \
-        'Bubo agent Maven project'
-
     if [[ "$TEST_ONLY" == false ]]; then
         require_executable \
             "$GRAAL_BUILDER_JDK/bin/java" \
@@ -158,9 +142,6 @@ validate_inputs() {
 
         command -v mx >/dev/null 2>&1 || \
             die 'mx is not available on PATH'
-
-        command -v mvn >/dev/null 2>&1 || \
-            die 'Maven is not available on PATH'
     fi
 }
 
@@ -187,39 +168,6 @@ find_graal_compiler_jar() {
     fi
 
     pass "Found Graal compiler JAR: $GRAAL_COMPILER_JAR"
-}
-
-build_bubo_agent() {
-    find_graal_compiler_jar
-
-    mvn \
-        --batch-mode \
-        --file "$BUBO_AGENT_REPOSITORY/pom.xml" \
-        "-Dgraal.jar=$GRAAL_COMPILER_JAR" \
-        clean \
-        package
-}
-
-find_bubo_agent_jar() {
-    local candidate
-    local -a candidates=()
-
-    while IFS= read -r candidate; do
-        candidates+=("$candidate")
-    done < <(
-        find "$BUBO_AGENT_REPOSITORY/target" \
-            -maxdepth 1 \
-            -type f \
-            -name '*-jar-with-dependencies.jar' \
-            -print 2>/dev/null |
-            sort
-    )
-
-    if (( ${#candidates[@]} != 1 )); then
-        die "Expected one built Bubo agent JAR, found ${#candidates[@]}"
-    fi
-
-    BUBO_AGENT_JAR=${candidates[0]}
 }
 
 prepare_output_directory() {
@@ -274,6 +222,27 @@ build_graal() {
 
         return "$build_status"
     )
+}
+
+repair_graalvm_link() {
+    local expected_target='../sdk/latest_graalvm_home'
+    local sdk_home="$GRAAL_REPOSITORY/sdk/latest_graalvm_home"
+
+    require_directory \
+        "$sdk_home" \
+        'Generated GraalVM SDK home'
+
+    if [[ -e "$GRAAL_VM_HOME" && ! -L "$GRAAL_VM_HOME" ]]; then
+        die "Cannot replace non-symlink GraalVM path: $GRAAL_VM_HOME"
+    fi
+
+    ln -sfn -- "$expected_target" "$GRAAL_VM_HOME"
+
+    if [[ $(readlink -- "$GRAAL_VM_HOME") != "$expected_target" ]]; then
+        die "GraalVM link does not point to $expected_target: $GRAAL_VM_HOME"
+    fi
+
+    pass "GraalVM link ready: $GRAAL_VM_HOME -> $expected_target"
 }
 
 verify_graalvm_image() {
@@ -634,22 +603,18 @@ main() {
     fi
 
     run_step \
+        'Repair the generated GraalVM link' \
+        repair_graalvm_link
+
+    run_step \
         'Verify the generated GraalVM image' \
         verify_graalvm_image
 
-    # if [[ "$TEST_ONLY" == true ]]; then
-    #     run_step \
-    #         'Verify the existing Bubo agent' \
-    #         #find_bubo_agent_jar
-    # else
-    #     # run_step \
-    #     #     'Build the Bubo Java agent' \
-    #     #     build_bubo_agent
-
-    #     # run_step \
-    #     #     'Verify the Bubo Java agent' \
-    #     #     find_bubo_agent_jar
-    # fi
+    if [[ "$TEST_ONLY" == false ]]; then
+        run_step \
+            'Verify the Bubo compiler class' \
+            find_graal_compiler_jar
+    fi
 
     if [[ "$TEST_ONLY" == true ]]; then
         report_check \

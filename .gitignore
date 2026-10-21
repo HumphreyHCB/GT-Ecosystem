@@ -1,10 +1,6 @@
 Notes.tx
 __pycache__/
-Tests/Output/Reports/
 Tests/Tools/
-Tests/Output/Divine/
-Tests/Output/BuboL/
 Tests/Output/
+Tests/Build/
 *.class
-#Tests/Build/GTSlowdownSchedular-LoopVerification/Phases/Common/*.class
-#Tests/Output/*
