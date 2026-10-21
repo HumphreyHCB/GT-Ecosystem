@@ -23,6 +23,7 @@ REPORT_STARTED_AT=''
 REPORT_STARTED_EPOCH=0
 CURRENT_STAGE=''
 CURRENT_STAGE_STARTED_EPOCH=0
+PIPELINE_SUDO_KEEPALIVE_PID=''
 
 show_usage() {
     cat <<EOF
@@ -162,11 +163,39 @@ initialise_run() {
         "$GT_RUN_ROOT" "${BENCHMARKS[*]}" "$USE_DENOISE"
 }
 
+start_pipeline_sudo_keepalive() {
+    local pipeline_pid=$$
+
+    [[ "$DENOISE_REQUIRED" == true ]] || return 0
+    (( EUID != 0 )) || return 0
+    command -v sudo >/dev/null 2>&1 || \
+        die 'Denoise requires root or sudo access'
+
+    task 'Authenticate sudo once for the complete benchmark pipeline'
+    sudo -v
+    (
+        while kill -0 "$pipeline_pid" >/dev/null 2>&1; do
+            sudo -n -v >/dev/null 2>&1 || exit
+            sleep 30
+        done
+    ) &
+    PIPELINE_SUDO_KEEPALIVE_PID=$!
+}
+
+stop_pipeline_sudo_keepalive() {
+    if [[ -n "$PIPELINE_SUDO_KEEPALIVE_PID" ]]; then
+        kill "$PIPELINE_SUDO_KEEPALIVE_PID" >/dev/null 2>&1 || true
+        wait "$PIPELINE_SUDO_KEEPALIVE_PID" >/dev/null 2>&1 || true
+        PIPELINE_SUDO_KEEPALIVE_PID=''
+    fi
+}
+
 finalise_run() {
     local exit_code=$1 finished_at finished_epoch duration status=passed render_status stage
     local -a args=()
     trap - EXIT
     set +e
+    stop_pipeline_sudo_keepalive
     finished_epoch=$(date +%s)
     finished_at=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
     duration=$((finished_epoch - REPORT_STARTED_EPOCH))
@@ -253,6 +282,7 @@ main() {
     trap 'finalise_run $?' EXIT
     task "Run GT ecosystem stages: ${SELECTED_STAGES[*]}"
     INDENT_LEVEL=$((INDENT_LEVEL + 1)); export INDENT_LEVEL
+    start_pipeline_sudo_keepalive
     if [[ "$DENOISE_REQUIRED" == true ]]; then
         run_step 'Verify machine dependencies' "$TESTS_DIR/Verify-Dependencies.sh" --pipeline
     else

@@ -338,13 +338,20 @@ handle_signal() {
 }
 
 start_privileged_session() {
+    local owner_pid=$$
+
     select_privilege_command
     if (( EUID != 0 )); then
+        if [[ -n "$KEEPALIVE_PID" ]] && \
+            kill -0 "$KEEPALIVE_PID" >/dev/null 2>&1; then
+
+            return 0
+        fi
         sudo -v
         (
-            while true; do
-                sudo -n true >/dev/null 2>&1 || exit
-                sleep 45
+            while kill -0 "$owner_pid" >/dev/null 2>&1; do
+                sudo -n -v >/dev/null 2>&1 || exit
+                sleep 30
             done
         ) &
         KEEPALIVE_PID=$!
@@ -497,6 +504,8 @@ main() {
         install)
             validate_host
             select_privilege_command
+            start_privileged_session
+            trap stop_sudo_keepalive EXIT
             task 'Install ReBench Denoise'
             INDENT_LEVEL=$((INDENT_LEVEL + 1)); export INDENT_LEVEL
             if [[ "$SKIP_SYSTEM_PACKAGES" == false ]]; then
@@ -507,6 +516,8 @@ main() {
                 run_step 'Verify Denoise and CPU-state restoration' verify_denoise
             fi
             INDENT_LEVEL=$((INDENT_LEVEL - 1)); export INDENT_LEVEL
+            stop_sudo_keepalive
+            trap - EXIT
             pass 'ReBench Denoise setup complete'
             ;;
         verify)
