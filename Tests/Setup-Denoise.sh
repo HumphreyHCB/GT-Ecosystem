@@ -16,6 +16,7 @@ readonly TOOLS_DIRECTORY="$TESTS_DIR/Tools"
 readonly REBENCH_ENVIRONMENT="$TOOLS_DIRECTORY/rebench"
 readonly DENOISE_COMMAND="$REBENCH_ENVIRONMENT/bin/rebench-denoise"
 readonly CSET_COMMAND="$REBENCH_ENVIRONMENT/bin/cset"
+readonly SYSTEM_PYTHON=/usr/bin/python3
 
 ACTION=install
 SKIP_SYSTEM_PACKAGES=false
@@ -174,35 +175,32 @@ install_system_packages() {
 }
 
 install_rebench() {
-    local temporary_directory
-
     if rebench_is_usable && rebench_is_development_install; then
         task "ReBench development source ($(installed_rebench_version)) and cpuset are already installed"
         return
     fi
 
+    require_executable "$SYSTEM_PYTHON" 'System Python'
     mkdir -p "$TOOLS_DIRECTORY"
-    temporary_directory=$(mktemp -d "$TOOLS_DIRECTORY/.rebench-install.XXXXXX")
-    trap 'rm -rf -- "$temporary_directory"' RETURN
 
-    python3 -m venv "$temporary_directory/rebench"
-    "$temporary_directory/rebench/bin/python" -m pip install --upgrade pip
-    "$temporary_directory/rebench/bin/python" -m pip install \
+    # Virtual environments contain absolute interpreter paths in their command
+    # launchers and cannot safely be moved after installation.  Also avoid the
+    # old ReBench environment that common.sh adds to PATH: using it to create
+    # its replacement can produce a self-referential python symlink.
+    rm -rf -- "$REBENCH_ENVIRONMENT"
+    "$SYSTEM_PYTHON" -m venv "$REBENCH_ENVIRONMENT"
+    "$REBENCH_ENVIRONMENT/bin/python" -m pip install --upgrade pip
+    "$REBENCH_ENVIRONMENT/bin/python" -m pip install \
         "$REBENCH_INSTALL_SPEC" \
         "git+https://github.com/SUSE/cpuset.git@$CPUSET_COMMIT"
 
-    [[ -x "$temporary_directory/rebench/bin/rebench-denoise" ]] || \
+    [[ -x "$DENOISE_COMMAND" ]] || \
         die 'The ReBench installation did not provide rebench-denoise'
-    [[ -x "$temporary_directory/rebench/bin/cset" ]] || \
+    [[ -x "$CSET_COMMAND" ]] || \
         die 'The cpuset installation did not provide cset'
 
-    rm -rf -- "$REBENCH_ENVIRONMENT"
-    mv -- "$temporary_directory/rebench" "$REBENCH_ENVIRONMENT"
     rebench_is_usable || die 'The ReBench package or Denoise commands did not validate'
     rebench_is_development_install || die 'ReBench was not installed from the development repository'
-
-    rm -rf -- "$temporary_directory"
-    trap - RETURN
 }
 
 read_cpu_state() {
