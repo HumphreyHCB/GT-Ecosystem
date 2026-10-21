@@ -8,8 +8,8 @@ TESTS_DIR=$(cd -- "$SCRIPT_DIR/.." && pwd)
 # shellcheck source=../lib/common.sh
 source "$TESTS_DIR/lib/common.sh"
 
-if (( ${GT_COMMON_VERSION:-0} < 3 )); then
-    die "Tests/lib/common.sh is out of date; version 3 or later is required"
+if (( ${GT_COMMON_VERSION:-0} < 4 )); then
+    die "Tests/lib/common.sh is out of date; version 4 or later is required"
 fi
 
 # shellcheck source=Graal-Options.sh
@@ -24,7 +24,7 @@ GRAAL_BUILDER_JDK=''
 GRAAL_VM_HOME=''
 GRAAL_COMPILER_JAR=''
 
-OUTPUT_DIRECTORY="$TESTS_DIR/Output"
+OUTPUT_DIRECTORY=''
 
 declare -A BUBO_MODE_RESULTS=()
 declare -A MARKER_MODE_RESULTS=()
@@ -67,6 +67,8 @@ parse_arguments() {
 }
 
 load_configuration() {
+    require_run_context
+
     require_file \
         "$CONFIG_FILE" \
         'Ecosystem configuration'
@@ -96,6 +98,7 @@ load_configuration() {
         AsyncProfilerLibrary
 
     GRAAL_VM_HOME="$GRAAL_REPOSITORY/vm/latest_graalvm_home"
+    OUTPUT_DIRECTORY="$GT_PIPELINE_ROOT/stages/graal/smoke-tests"
 
     if [[ "$TEST_ONLY" == false ]]; then
         require_config_value \
@@ -179,10 +182,11 @@ build_graal() {
         local build_pid
         local tail_pid
         local build_status
-        local log_file=/tmp/gt-ecosystem-graal-build.log
+        local log_file="$GT_PIPELINE_ROOT/stages/graal/build.log"
 
         cd "$GRAAL_REPOSITORY/vm"
 
+        mkdir -p "$(dirname -- "$log_file")"
         : > "$log_file"
 
         task "Graal build log: $log_file"

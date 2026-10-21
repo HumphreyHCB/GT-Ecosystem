@@ -10,6 +10,10 @@ ECOSYSTEM_ROOT=$(cd -- "$TESTS_DIR/.." && pwd)
 # shellcheck source=lib/common.sh
 source "$TESTS_DIR/lib/common.sh"
 
+if (( ${GT_COMMON_VERSION:-0} < 4 )); then
+    die 'Tests/lib/common.sh is out of date; version 4 or later is required'
+fi
+
 readonly EXPECTED_MX_VERSION=7.68.9
 readonly EXPECTED_VTUNE_VERSION=2025.0
 readonly CONFIG_FILE=${GT_ECOSYSTEM_CONFIG:-"$TESTS_DIR/config.config"}
@@ -27,6 +31,8 @@ GRAAL_REPOSITORY=''
 AWFY_SOURCE=''
 BENCHMARKS_JAR=''
 ASYNC_PROFILER_LIBRARY=''
+RUN_ROOT=''
+BENCHMARKS=()
 
 show_usage() {
     cat <<EOF
@@ -98,6 +104,22 @@ load_configuration() {
     require_config_value AWFY_SOURCE "$CONFIG_FILE" Dir AWFYSource
     require_config_value BENCHMARKS_JAR "$CONFIG_FILE" Dir AWFYBenchmarksJar
     require_config_value ASYNC_PROFILER_LIBRARY "$CONFIG_FILE" Dir AsyncProfilerLibrary
+    require_config_value RUN_ROOT "$CONFIG_FILE" Dir RunRoot
+    load_configured_benchmarks BENCHMARKS "$CONFIG_FILE"
+
+    local benchmark iterations extra slowdown tolerance
+    for benchmark in "${BENCHMARKS[@]}"; do
+        load_benchmark_configuration "$CONFIG_FILE" "$benchmark" \
+            iterations extra slowdown tolerance
+    done
+
+    local min_share max_difference
+    min_share=$(config_get "$CONFIG_FILE" Run BuboLMinRuntimeSharePercent)
+    max_difference=$(config_get "$CONFIG_FILE" Run BuboLMaxMedianDifferencePoints)
+    [[ "$min_share" =~ ^[0-9]+([.][0-9]+)?$ ]] || \
+        die '[Run] BuboLMinRuntimeSharePercent must be numeric'
+    [[ "$max_difference" =~ ^[0-9]+([.][0-9]+)?$ ]] || \
+        die '[Run] BuboLMaxMedianDifferencePoints must be numeric'
     check_pass 'Configuration loaded'
 }
 
@@ -220,12 +242,12 @@ check_repository() {
 }
 
 check_repositories() {
-    check_repository "$LABS_OPENJDK" 'Labs OpenJDK submodule'
-    check_repository "$SCHEDULER_REPOSITORY" 'GTSlowdownSchedular submodule'
-    check_repository "$BUBO_EXPERIMENTS" 'BuboExperiments submodule'
-    check_repository "$GRAAL_REPOSITORY" 'graal-instrumentation submodule'
+    check_repository "$LABS_OPENJDK" 'Labs OpenJDK repository'
+    check_repository "$SCHEDULER_REPOSITORY" 'GTSlowdownSchedular repository'
+    check_repository "$BUBO_EXPERIMENTS" 'BuboExperiments repository'
+    check_repository "$GRAAL_REPOSITORY" 'graal-instrumentation repository'
     check_repository "$(dirname "$(dirname "$(dirname "$AWFY_SOURCE")")")" \
-        'are-we-fast-yet submodule'
+        'are-we-fast-yet repository'
 }
 
 check_jdk_and_mx() {

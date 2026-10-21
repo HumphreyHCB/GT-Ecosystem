@@ -41,8 +41,66 @@ Then run the complete pipeline:
 ./Tests/Compile-Build-Divine-Bubo.sh
 ```
 
-All paths in `Tests/config.config` are relative to that file, so the checkout
-can live anywhere. To inspect a machine without changing it, run:
+Each invocation creates one isolated directory under `Tests/Runs/`:
+
+```text
+Runs/<start-time>_<pid>/
+├── pipeline/                 private inputs, build files and full logs
+└── results/                  stable, user-facing copies and reports
+    ├── summary.txt
+    ├── summary.json
+    ├── pipeline.log
+    ├── data/
+    │   ├── divine-slowdown.csv
+    │   └── bubol-loop-slowdown.csv
+    ├── plots/
+    │   ├── divine-slowdown.svg
+    │   └── bubol-loop-slowdown.svg
+    └── stages/               selected diagnostics by stage and benchmark
+```
+
+The scripts only consume files in `pipeline/`. Everything in `results/` is a
+copy or a derived report, so it is safe to move, inspect or delete.
+
+## Configuration
+
+All paths in `Tests/config.config` are relative to that file. They may point
+to the checked-out submodules or to repositories and generated files anywhere
+else on the machine. For example:
+
+```ini
+[Dir]
+Graal=/work/my-graal-instrumentation
+GTSlowdownSchedular=/work/my-scheduler
+RunRoot=/data/gt-runs
+```
+
+The benchmark list and each benchmark's arguments are also configured there:
+
+```ini
+[Run]
+Benchmarks=Mandelbrot,Bounce
+
+[Benchmark.Mandelbrot]
+Iterations=300
+ExtraArgument=750
+ExpectedSlowdownRatio=2
+SlowdownTolerancePercent=15
+```
+
+Add another name to `Benchmarks` and add a matching `[Benchmark.NAME]`
+section to run it through both Divine modes and include it in the reports.
+Use a different configuration without changing the checkout with:
+
+```bash
+./Tests/Compile-Build-Divine-Bubo.sh --config /path/to/config.config
+```
+
+The pure-Divine chart compares requested and achieved slowdown for every
+benchmark. The BuboL chart shows every qualifying loop separately, comparing
+VTune's expected slowdown with BuboL's achieved measurement.
+
+To inspect a machine without changing it, run:
 
 ```bash
 ./Tests/Verify-Dependencies.sh

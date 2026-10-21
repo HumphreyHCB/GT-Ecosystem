@@ -1,33 +1,27 @@
 #!/usr/bin/env bash
 
 set -Eeuo pipefail
-
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 TESTS_DIR=$(cd -- "$SCRIPT_DIR/.." && pwd)
-
 # shellcheck source=../lib/common.sh
 source "$TESTS_DIR/lib/common.sh"
-
-if (( ${GT_COMMON_VERSION:-0} < 3 )); then
-    die "Tests/lib/common.sh is out of date; version 3 or later is required"
-fi
-
+(( ${GT_COMMON_VERSION:-0} >= 4 )) || die 'common.sh version 4 or later is required'
 # shellcheck source=Graal-Options.sh
 source "$SCRIPT_DIR/Graal-Options.sh"
 
 CONFIG_FILE=${GT_ECOSYSTEM_CONFIG:-"$TESTS_DIR/config.config"}
-
-BUBOL_OUTPUT_ROOT="$TESTS_DIR/Output/BuboL"
-BUBOL_OUTPUT=''
-COMPILER_REPLAY_DIRECTORY=''
-SLOWDOWN_JSON=''
-VERIFICATION_OUTPUT=''
-
+BENCHMARK=''
+ITERATIONS=''
+EXTRA_ARGUMENT=''
+EXPECTED_SLOWDOWN=''
+SLOWDOWN_TOLERANCE_PERCENT=''
 GRAAL_REPOSITORY=''
 GRAAL_VM_HOME=''
-GT_SLOWDOWN_SCHEDULER=''
 BENCHMARKS_JAR=''
-
+GENERATION_OUTPUT=''
+VERIFICATION_OUTPUT=''
+COMPILER_REPLAY_DIRECTORY=''
+SLOWDOWN_JSON=''
 NORMAL_AVERAGE=''
 SLOWDOWN_AVERAGE=''
 NORMAL_BUBOL_DATA=''
@@ -36,416 +30,136 @@ OBSERVED_SLOWDOWN_RATIO=''
 MINIMUM_SLOWDOWN_RATIO=''
 MAXIMUM_SLOWDOWN_RATIO=''
 
-readonly BENCHMARK=Mandelbrot
-readonly ITERATIONS=300
-readonly EXTRA_ARGUMENT=750
-readonly EXPECTED_SLOWDOWN=2
-readonly SLOWDOWN_TOLERANCE_PERCENT=15
+show_usage() { printf 'Usage: %s --benchmark NAME\n' "$(basename "$0")"; }
+parse_arguments() {
+    while (( $# > 0 )); do
+        case "$1" in
+            --benchmark) (( $# >= 2 )) || die '--benchmark requires a name'; BENCHMARK=$2; shift ;;
+            --benchmark=*) BENCHMARK=${1#*=} ;;
+            -h|--help) show_usage; exit 0 ;;
+            *) fail "Unknown argument: $1"; show_usage >&2; exit 2 ;;
+        esac
+        shift
+    done
+    [[ -n "$BENCHMARK" ]] || die '--benchmark is required'
+}
 
 load_configuration() {
-    require_file \
-        "$CONFIG_FILE" \
-        'Ecosystem configuration'
-
-    require_config_value \
-        GRAAL_REPOSITORY \
-        "$CONFIG_FILE" \
-        Dir \
-        Graal
-
-    require_config_value \
-        GT_SLOWDOWN_SCHEDULER \
-        "$CONFIG_FILE" \
-        Dir \
-        GTSlowdownSchedular
-
-    require_config_value \
-        BENCHMARKS_JAR \
-        "$CONFIG_FILE" \
-        Dir \
-        AWFYBenchmarksJar
-
+    require_run_context
+    require_file "$CONFIG_FILE" 'Ecosystem configuration'
+    require_config_value GRAAL_REPOSITORY "$CONFIG_FILE" Dir Graal
+    require_config_value BENCHMARKS_JAR "$CONFIG_FILE" Dir AWFYBenchmarksJar
+    load_benchmark_configuration "$CONFIG_FILE" "$BENCHMARK" ITERATIONS EXTRA_ARGUMENT \
+        EXPECTED_SLOWDOWN SLOWDOWN_TOLERANCE_PERCENT
     GRAAL_VM_HOME="$GRAAL_REPOSITORY/vm/latest_graalvm_home"
-
+    GENERATION_OUTPUT="$GT_PIPELINE_ROOT/stages/bubol/$BENCHMARK/generation"
+    VERIFICATION_OUTPUT="$GT_PIPELINE_ROOT/stages/bubol/$BENCHMARK/verification"
+    COMPILER_REPLAY_DIRECTORY="$GENERATION_OUTPUT/CompilerReplay"
+    SLOWDOWN_JSON="$GENERATION_OUTPUT/Final_$BENCHMARK.json"
     load_graal_options
-}
-
-is_complete_bubol_output() {
-    local candidate=$1
-    local replay_file
-
-    [[ -d "$candidate" ]] || return 1
-    [[ -s "$candidate/Final_$BENCHMARK.json" ]] || return 1
-    [[ -d "$candidate/CompilerReplay" ]] || return 1
-
-    replay_file=$(
-        find "$candidate/CompilerReplay" \
-            -type f \
-            -print \
-            -quit
-    )
-
-    [[ -n "$replay_file" ]]
-}
-
-find_latest_bubol_output() {
-    local candidate
-    local candidate_name
-    local candidate_timestamp
-    local latest_result="$BUBOL_OUTPUT_ROOT/Latest-$BENCHMARK"
-
-    require_directory \
-        "$BUBOL_OUTPUT_ROOT" \
-        'BuboL output root'
-
-    # Prefer the stable link written after a successful Divine run.
-    if [[ -e "$latest_result" ]]; then
-        candidate=$(
-            readlink -f -- "$latest_result" 2>/dev/null ||
-                true
-        )
-
-        if [[ -n "$candidate" ]] &&
-            is_complete_bubol_output "$candidate"; then
-            BUBOL_OUTPUT=$candidate
-        fi
-    fi
-
-    # Fall back to scanning completed results.
-    #
-    # The second filename pattern supports results created before the explicit
-    # BuboL prefix was added.
-    if [[ -z "$BUBOL_OUTPUT" ]]; then
-        while IFS= read -r candidate; do
-            if is_complete_bubol_output "$candidate"; then
-                BUBOL_OUTPUT=$candidate
-                break
-            fi
-        done < <(
-            while IFS= read -r candidate; do
-                candidate_name=${candidate##*/}
-                candidate_timestamp=${candidate_name: -19}
-
-                if [[ "$candidate_timestamp" =~ ^[0-9]{4}(_[0-9]{2}){5}$ ]]; then
-                    printf \
-                        '%s\t%s\n' \
-                        "$candidate_timestamp" \
-                        "$candidate"
-                fi
-            done < <(
-                find "$BUBOL_OUTPUT_ROOT" \
-                    -mindepth 1 \
-                    -maxdepth 1 \
-                    -type d \
-                    \( \
-                        -name "BuboL_${BENCHMARK}_*" -o \
-                        -name "${BENCHMARK}_*" \
-                    \) \
-                    -print
-            ) |
-                sort -r |
-                cut -f2-
-        )
-    fi
-
-    if [[ -z "$BUBOL_OUTPUT" ]]; then
-        die "No complete $BENCHMARK BuboL Divine output was found in $BUBOL_OUTPUT_ROOT"
-    fi
-
-    # Create or repair the stable link, including when a legacy result was
-    # found by scanning.
-    ln -sfn \
-        "$(basename -- "$BUBOL_OUTPUT")" \
-        "$latest_result"
-
-    COMPILER_REPLAY_DIRECTORY="$BUBOL_OUTPUT/CompilerReplay"
-    SLOWDOWN_JSON="$BUBOL_OUTPUT/Final_$BENCHMARK.json"
-    VERIFICATION_OUTPUT="$BUBOL_OUTPUT/Verification"
-
-    task "Using BuboL Divine output: $BUBOL_OUTPUT"
 }
 
 validate_inputs() {
     local replay_file
-
-    require_executable \
-        "$GRAAL_VM_HOME/bin/java" \
-        'Latest GraalVM java'
-
-    require_file \
-        "$BENCHMARKS_JAR" \
-        'Are We Fast Yet benchmarks JAR'
-
-    require_directory \
-        "$COMPILER_REPLAY_DIRECTORY" \
-        'BuboL CompilerReplay input'
-
-    require_file \
-        "$SLOWDOWN_JSON" \
-        'Final BuboL slowdown JSON'
-
-    if [[ ! -s "$SLOWDOWN_JSON" ]]; then
-        die "Final BuboL slowdown JSON is empty: $SLOWDOWN_JSON"
-    fi
-
-    replay_file=$(
-        find "$COMPILER_REPLAY_DIRECTORY" \
-            -type f \
-            -print \
-            -quit
-    )
-
-    if [[ -z "$replay_file" ]]; then
-        die "BuboL CompilerReplay directory contains no files: $COMPILER_REPLAY_DIRECTORY"
-    fi
-
+    require_executable "$GRAAL_VM_HOME/bin/java" 'Latest GraalVM java'
+    require_file "$BENCHMARKS_JAR" 'Are We Fast Yet benchmarks JAR'
+    require_directory "$COMPILER_REPLAY_DIRECTORY" 'BuboL CompilerReplay input'
+    require_file "$SLOWDOWN_JSON" 'Final BuboL slowdown JSON'
+    require_file "$GENERATION_OUTPUT/MarkerPhase_BuboIncluded.json" 'BuboL marker phase JSON'
+    replay_file=$(find "$COMPILER_REPLAY_DIRECTORY" -type f -print -quit)
+    [[ -n "$replay_file" ]] || die "CompilerReplay is empty: $COMPILER_REPLAY_DIRECTORY"
     mkdir -p "$VERIFICATION_OUTPUT"
-
-    load_bubol_verification_options \
-        "$COMPILER_REPLAY_DIRECTORY" \
-        "$SLOWDOWN_JSON"
+    load_bubol_verification_options "$COMPILER_REPLAY_DIRECTORY" "$SLOWDOWN_JSON"
 }
 
-run_command_with_log() {
-    local output_file=$1
-    local command_status
-
-    shift
-
-    "$@" 2>&1 | tee "$output_file"
-    command_status=${PIPESTATUS[0]}
-
-    return "$command_status"
-}
-
+run_command_with_log() { local output=$1 status; shift; "$@" 2>&1 | tee "$output"; status=${PIPESTATUS[0]}; return "$status"; }
 run_benchmark() {
-    local mode=$1
-    local output_file=$2
-
-    shift 2
-
-    local -a java_options=("$@")
-
-    task "$mode"
-
-    run_command_with_log \
-        "$output_file" \
-        "$GRAAL_VM_HOME/bin/java" \
-        "${java_options[@]}" \
-        -cp "$BENCHMARKS_JAR" \
-        Harness \
-        "$BENCHMARK" \
-        "$ITERATIONS" \
-        "$EXTRA_ARGUMENT"
+    local output=$1; shift
+    run_command_with_log "$output" "$GRAAL_VM_HOME/bin/java" "$@" -cp "$BENCHMARKS_JAR" \
+        Harness "$BENCHMARK" "$ITERATIONS" "$EXTRA_ARGUMENT"
 }
-
 extract_average_runtime() {
-    local output_file=$1
-
-    awk \
-        -v benchmark="$BENCHMARK" \
-        -v iterations="$ITERATIONS" '
-            $1 == benchmark ":" && $2 == "iterations=" iterations && $3 == "average:" && $4 ~ /^[0-9]+us$/ {
-                value = $4
-                sub(/us$/, "", value)
-                matches++
-            }
-
-            END {
-                if (matches != 1 || value <= 0) {
-                    exit 1
-                }
-
-                print value
-            }
-        ' "$output_file"
+    awk -v benchmark="$BENCHMARK" -v iterations="$ITERATIONS" '
+        $1 == benchmark ":" && $2 == "iterations=" iterations && $3 == "average:" && $4 ~ /^[0-9]+us$/ {
+            value=$4; sub(/us$/, "", value); matches++
+        }
+        END {if (matches != 1 || value <= 0) exit 1; print value}
+    ' "$1"
 }
 
 validate_bubol_output() {
-    local output_file=$1
-    local run_kind=$2
-    local encoding_count
-    local loop_count
-    local total_cycles
-
-    read -r \
-        encoding_count \
-        loop_count \
-        total_cycles < <(
-            awk '
-                /Found Encoding[[:space:]]*:/ {
-                    encodings++
-                }
-
-                /^[[:space:]]*loop [0-9]+ Cycles:[[:space:]]*[0-9]+/ {
-                    loops++
-                    cycle_text = $0
-                    sub(/^.*Cycles:[[:space:]]*/, "", cycle_text)
-                    split(cycle_text, fields, /[[:space:]]+/)
-                    total += fields[1]
-                }
-
-                END {
-                    printf "%d %d %.0f\n", encodings, loops, total
-                }
-            ' "$output_file"
-        )
-
-    if (( encoding_count <= 0 )); then
-        fail "No BuboL encodings were found in $output_file"
-        return 1
-    fi
-
-    if (( loop_count <= 0 )); then
-        fail "No BuboL loops were found in $output_file"
-        return 1
-    fi
-
-    if (( total_cycles <= 0 )); then
-        fail "BuboL recorded zero total loop cycles in $output_file"
-        return 1
-    fi
-
-    pass "BuboL data: $encoding_count encodings, $loop_count loops, $total_cycles total loop cycles"
-
-    if [[ "$run_kind" == normal ]]; then
+    local output=$1 kind=$2 encoding_count loop_count total_cycles
+    read -r encoding_count loop_count total_cycles < <(awk '
+        /Found Encoding[[:space:]]*:/ {encodings++}
+        /^[[:space:]]*loop[[:space:]]+[0-9]+[[:space:]]+Cycles:[[:space:]]*[0-9]+/ {
+            loops++; text=$0; sub(/^.*Cycles:[[:space:]]*/, "", text); split(text, fields, /[[:space:]]+/); total += fields[1]
+        }
+        END {printf "%d %d %.0f\n", encodings, loops, total}
+    ' "$output")
+    (( encoding_count > 0 && loop_count > 0 && total_cycles > 0 )) || {
+        fail "Missing usable BuboL data in $output"; return 1;
+    }
+    if [[ "$kind" == normal ]]; then
         NORMAL_BUBOL_DATA="$encoding_count encodings, $loop_count loops, $total_cycles cycles"
     else
         SLOWDOWN_BUBOL_DATA="$encoding_count encodings, $loop_count loops, $total_cycles cycles"
     fi
 }
 
-run_normal_bubol_replay() {
-    local output_file="$VERIFICATION_OUTPUT/Normal-BuboL.log"
-
-    run_benchmark \
-        'Normal BuboL compiler replay' \
-        "$output_file" \
-        "${GT_GRAAL_OPTIONS[@]}" \
-        "${BUBOL_REPLAY_OPTIONS[@]}" \
-        "${BUBOL_NORMAL_OPTIONS[@]}" ||
-        return 1
-
-    validate_bubol_output "$output_file" normal ||
-        return 1
-
-    NORMAL_AVERAGE=$(extract_average_runtime "$output_file") || {
-        fail "Could not extract one valid $BENCHMARK average runtime from $output_file"
-        return 1
-    }
-
-    pass "Normal BuboL average: ${NORMAL_AVERAGE}us"
+run_normal() {
+    local log="$VERIFICATION_OUTPUT/Normal-BuboL.log"
+    run_benchmark "$log" "${GT_GRAAL_OPTIONS[@]}" "${BUBOL_REPLAY_OPTIONS[@]}" \
+        "${BUBOL_NORMAL_OPTIONS[@]}" || return 1
+    validate_bubol_output "$log" normal || return 1
+    NORMAL_AVERAGE=$(extract_average_runtime "$log") || { fail "Cannot read average runtime from $log"; return 1; }
 }
 
-run_slowdown_bubol_replay() {
-    local output_file="$VERIFICATION_OUTPUT/Slowdown-BuboL.log"
-
-    run_benchmark \
-        'Slowdown BuboL compiler replay' \
-        "$output_file" \
-        "${GT_GRAAL_OPTIONS[@]}" \
-        "${BUBOL_REPLAY_OPTIONS[@]}" \
-        "${BUBOL_SLOWDOWN_OPTIONS[@]}" ||
-        return 1
-
-    validate_bubol_output "$output_file" slowdown ||
-        return 1
-
-    SLOWDOWN_AVERAGE=$(extract_average_runtime "$output_file") || {
-        fail "Could not extract one valid $BENCHMARK average runtime from $output_file"
-        return 1
-    }
-
-    pass "Slowdown BuboL average: ${SLOWDOWN_AVERAGE}us"
+run_slowdown() {
+    local log="$VERIFICATION_OUTPUT/Slowdown-BuboL.log"
+    run_benchmark "$log" "${GT_GRAAL_OPTIONS[@]}" "${BUBOL_REPLAY_OPTIONS[@]}" \
+        "${BUBOL_SLOWDOWN_OPTIONS[@]}" || return 1
+    validate_bubol_output "$log" slowdown || return 1
+    SLOWDOWN_AVERAGE=$(extract_average_runtime "$log") || { fail "Cannot read average runtime from $log"; return 1; }
 }
 
-verify_slowdown_ratio() {
-    MINIMUM_SLOWDOWN_RATIO=$(
-        awk \
-            -v expected="$EXPECTED_SLOWDOWN" \
-            -v tolerance="$SLOWDOWN_TOLERANCE_PERCENT" \
-            'BEGIN { printf "%.6f", expected * (1 - tolerance / 100) }'
-    )
+verify_ratio() {
+    MINIMUM_SLOWDOWN_RATIO=$(awk -v e="$EXPECTED_SLOWDOWN" -v t="$SLOWDOWN_TOLERANCE_PERCENT" 'BEGIN {printf "%.6f", e*(1-t/100)}')
+    MAXIMUM_SLOWDOWN_RATIO=$(awk -v e="$EXPECTED_SLOWDOWN" -v t="$SLOWDOWN_TOLERANCE_PERCENT" 'BEGIN {printf "%.6f", e*(1+t/100)}')
+    OBSERVED_SLOWDOWN_RATIO=$(awk -v n="$NORMAL_AVERAGE" -v s="$SLOWDOWN_AVERAGE" 'BEGIN {printf "%.6f", s/n}')
+    write_summary || return 1
+    awk -v o="$OBSERVED_SLOWDOWN_RATIO" -v min="$MINIMUM_SLOWDOWN_RATIO" -v max="$MAXIMUM_SLOWDOWN_RATIO" \
+        'BEGIN {exit !(o >= min && o <= max)}' || {
+        fail "Observed ${OBSERVED_SLOWDOWN_RATIO}x; expected ${MINIMUM_SLOWDOWN_RATIO}x to ${MAXIMUM_SLOWDOWN_RATIO}x"; return 1;
+    }
+}
 
-    MAXIMUM_SLOWDOWN_RATIO=$(
-        awk \
-            -v expected="$EXPECTED_SLOWDOWN" \
-            -v tolerance="$SLOWDOWN_TOLERANCE_PERCENT" \
-            'BEGIN { printf "%.6f", expected * (1 + tolerance / 100) }'
-    )
-
-    OBSERVED_SLOWDOWN_RATIO=$(
-        awk \
-            -v normal="$NORMAL_AVERAGE" \
-            -v slowdown="$SLOWDOWN_AVERAGE" \
-            'BEGIN { printf "%.6f", slowdown / normal }'
-    )
-
-    if ! awk \
-        -v observed="$OBSERVED_SLOWDOWN_RATIO" \
-        -v minimum="$MINIMUM_SLOWDOWN_RATIO" \
-        -v maximum="$MAXIMUM_SLOWDOWN_RATIO" \
-        'BEGIN { exit !(observed >= minimum && observed <= maximum) }'; then
-
-        fail "BuboL slowdown ratio was ${OBSERVED_SLOWDOWN_RATIO}x"
-        fail "Expected between ${MINIMUM_SLOWDOWN_RATIO}x and ${MAXIMUM_SLOWDOWN_RATIO}x"
-
-        return 1
-    fi
-
-    pass "Observed BuboL slowdown: ${OBSERVED_SLOWDOWN_RATIO}x"
-    pass "Accepted range: ${MINIMUM_SLOWDOWN_RATIO}x to ${MAXIMUM_SLOWDOWN_RATIO}x"
+write_summary() {
+    python3 - "$VERIFICATION_OUTPUT/summary.json" "$BENCHMARK" "$EXPECTED_SLOWDOWN" \
+        "$OBSERVED_SLOWDOWN_RATIO" "$NORMAL_AVERAGE" "$SLOWDOWN_AVERAGE" \
+        "$MINIMUM_SLOWDOWN_RATIO" "$MAXIMUM_SLOWDOWN_RATIO" "$NORMAL_BUBOL_DATA" "$SLOWDOWN_BUBOL_DATA" <<'PY'
+import json, pathlib, sys
+path, benchmark, expected, achieved, normal, slowdown, minimum, maximum, normal_data, slowdown_data = sys.argv[1:]
+data = {"benchmark": benchmark, "expected_slowdown_ratio": float(expected),
+        "achieved_slowdown_ratio": float(achieved), "normal_average_us": int(normal),
+        "slowdown_average_us": int(slowdown), "accepted_minimum_ratio": float(minimum),
+        "accepted_maximum_ratio": float(maximum), "normal_bubol_data": normal_data,
+        "slowdown_bubol_data": slowdown_data}
+pathlib.Path(path).write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+PY
 }
 
 main() {
-    task "Verify BuboL Divine slowdown for $BENCHMARK"
-
-    INDENT_LEVEL=$((INDENT_LEVEL + 1))
-    export INDENT_LEVEL
-
-    run_step \
-        'Load BuboL verification configuration' \
-        load_configuration
-
-    run_step \
-        'Find latest BuboL Divine output' \
-        find_latest_bubol_output
-
-    run_step \
-        'Validate BuboL verification inputs' \
-        validate_inputs
-
-    report_check \
-        bubol \
-        'BuboL Divine output verified' \
-        "Slowdown file: $SLOWDOWN_JSON; compiler replay: $COMPILER_REPLAY_DIRECTORY"
-
-    run_step \
-        'Run normal BuboL compiler replay' \
-        run_normal_bubol_replay
-
-    run_step \
-        'Run slowdown BuboL compiler replay' \
-        run_slowdown_bubol_replay
-
-    report_check \
-        bubol \
-        'BuboL loop data verified' \
-        "Normal: $NORMAL_BUBOL_DATA; slowdown: $SLOWDOWN_BUBOL_DATA"
-
-    run_step \
-        'Verify BuboL slowdown ratio' \
-        verify_slowdown_ratio
-
-    report_check \
-        bubol \
-        'Requested BuboL slowdown verified' \
-        "Observed ${OBSERVED_SLOWDOWN_RATIO}x from ${NORMAL_AVERAGE}us to ${SLOWDOWN_AVERAGE}us; accepted ${MINIMUM_SLOWDOWN_RATIO}x to ${MAXIMUM_SLOWDOWN_RATIO}x"
-
-    INDENT_LEVEL=$((INDENT_LEVEL - 1))
-    export INDENT_LEVEL
-
-    pass "BuboL stage passed: $BUBOL_OUTPUT"
+    parse_arguments "$@"
+    task "Verify BuboL slowdown for $BENCHMARK"
+    INDENT_LEVEL=$((INDENT_LEVEL + 1)); export INDENT_LEVEL
+    run_step 'Load BuboL verification configuration' load_configuration
+    run_step 'Validate BuboL verification inputs' validate_inputs
+    run_step 'Run normal BuboL compiler replay' run_normal
+    run_step 'Run slowdown BuboL compiler replay' run_slowdown
+    run_step 'Verify BuboL slowdown ratio' verify_ratio
+    report_check bubol "$BENCHMARK slowdown verified" \
+        "Expected ${EXPECTED_SLOWDOWN}x; achieved ${OBSERVED_SLOWDOWN_RATIO}x; $SLOWDOWN_BUBOL_DATA"
+    INDENT_LEVEL=$((INDENT_LEVEL - 1)); export INDENT_LEVEL
+    pass "BuboL verification passed for $BENCHMARK"
 }
-
 main "$@"
