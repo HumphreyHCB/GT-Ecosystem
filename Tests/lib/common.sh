@@ -23,6 +23,7 @@ prepend_path_if_directory() {
 # Tools installed by Tests/Install-Dependencies.sh and Intel's stable
 # version-independent VTune path are available to every stage.
 prepend_path_if_directory "$GT_TESTS_DIRECTORY/Tools/mx"
+prepend_path_if_directory "$GT_TESTS_DIRECTORY/Tools/rebench/bin"
 prepend_path_if_directory '/opt/intel/oneapi/vtune/latest/bin64'
 export PATH
 

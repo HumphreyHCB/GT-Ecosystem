@@ -31,9 +31,9 @@ Run the one-time bootstrap from any directory:
 ```
 
 It installs the Rocky build packages and the known-working Intel VTune 2025.0,
-downloads the pinned boot JDK and `mx`, initializes the top-level submodules,
-builds the AWFY benchmark JAR and its JNI library, and verifies hardware
-Hotspots collection and the rest of the setup.
+downloads the pinned boot JDK and `mx`, installs ReBench Denoise, initializes
+the top-level submodules, builds the AWFY benchmark JAR and its JNI library,
+and verifies hardware Hotspots collection and the rest of the setup.
 
 Then run the complete pipeline:
 
@@ -99,6 +99,35 @@ Use a different configuration without changing the checkout with:
 The pure-Divine chart compares requested and achieved slowdown for every
 benchmark. The BuboL chart shows every qualifying loop separately, comparing
 VTune's expected slowdown with BuboL's achieved measurement.
+
+## Stable CPU measurements
+
+`Compile-Build-Divine-Bubo.sh` automatically wraps each Divine measurement
+stage with ReBench Denoise. Builds and report generation are not wrapped.
+During a measurement, Denoise disables Turbo Boost, selects the performance
+governor, raises process priority, and uses CPU shielding where the machine's
+cgroup mode supports it. The wrapper does not change perf sampling controls,
+because VTune needs them, and it restores the original Turbo and governor
+settings even when the measurement fails.
+
+The standalone setup and functional test is:
+
+```bash
+./Tests/Setup-Denoise.sh install
+```
+
+Run any individual command under the same controls with:
+
+```bash
+./Tests/Setup-Denoise.sh run -- ./my-benchmark --arguments
+```
+
+The script asks for `sudo` once and keeps that authenticated session alive
+until CPU settings have been restored. It does not install a passwordless
+sudo rule. On a cgroup v2 host, ReBench's current `cpuset` integration may not
+support shielding; the script reports that and safely continues with Turbo,
+governor, and priority controls. Use `--without-denoise` on the main pipeline
+for an intentionally untuned run.
 
 To inspect a machine without changing it, run:
 

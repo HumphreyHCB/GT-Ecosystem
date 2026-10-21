@@ -12,6 +12,7 @@ CONFIG_FILE="$TESTS_DIR/config.config"
 FULL_REBUILD=false
 TEST_ONLY=false
 VERBOSE=false
+USE_DENOISE=''
 STAGE_LIST=''
 START_STAGE=''
 PIPELINE_STAGES=(openjdk graal divine bubol)
@@ -31,6 +32,7 @@ Options:
     -v, --verbose           Stream detailed command output
     -f, --full-rebuild      Clean selected compiler builds first
         --test-only         Test an existing GraalVM; requires --stages graal
+        --without-denoise   Do not tune the CPU around measurement stages
     -s, --stages LIST       Run a comma-separated subset in pipeline order
         --from STAGE        Run STAGE and every later stage
     -h, --help              Show this help
@@ -50,6 +52,7 @@ parse_arguments() {
             -v|--verbose) VERBOSE=true ;;
             -f|--full-rebuild) FULL_REBUILD=true ;;
             --test-only) TEST_ONLY=true ;;
+            --without-denoise) USE_DENOISE=false ;;
             -s|--stages) (( $# >= 2 )) || die "$1 requires a stage list"; STAGE_LIST=$2; shift ;;
             --stages=*) STAGE_LIST=${1#*=} ;;
             --from) (( $# >= 2 )) || die "$1 requires a stage"; START_STAGE=$2; shift ;;
@@ -98,10 +101,21 @@ select_stages() {
 }
 
 validate_arguments() {
+    local configured_denoise
+
     [[ "$TEST_ONLY" != true || "$FULL_REBUILD" != true ]] || die '--test-only cannot be combined with --full-rebuild'
     if [[ "$TEST_ONLY" == true ]]; then
         (( ${#SELECTED_STAGES[@]} == 1 )) && [[ "${SELECTED_STAGES[0]}" == graal ]] || \
             die '--test-only requires --stages graal'
+    fi
+
+    if [[ -z "$USE_DENOISE" ]]; then
+        configured_denoise=$(config_get "$CONFIG_FILE" Run Denoise)
+        case "${configured_denoise,,}" in
+            true|yes|1) USE_DENOISE=true ;;
+            false|no|0) USE_DENOISE=false ;;
+            *) die '[Run] Denoise must be true or false' ;;
+        esac
     fi
 }
 
@@ -128,9 +142,10 @@ initialise_run() {
     export GT_RUN_ROOT GT_PIPELINE_ROOT GT_RESULTS_ROOT GT_DETAILED_LOG
     export GT_REPORT_EVENTS GT_ECOSYSTEM_CONFIG GT_VERBOSE
 
-    printf 'GT Ecosystem run: %s\nConfiguration: %s\nBenchmarks: %s\n' \
-        "$GT_RUN_ROOT" "$CONFIG_FILE" "${BENCHMARKS[*]}" >> "$GT_DETAILED_LOG"
-    printf 'Run directory: %s\nBenchmarks: %s\n' "$GT_RUN_ROOT" "${BENCHMARKS[*]}"
+    printf 'GT Ecosystem run: %s\nConfiguration: %s\nBenchmarks: %s\nDenoise: %s\n' \
+        "$GT_RUN_ROOT" "$CONFIG_FILE" "${BENCHMARKS[*]}" "$USE_DENOISE" >> "$GT_DETAILED_LOG"
+    printf 'Run directory: %s\nBenchmarks: %s\nDenoise: %s\n' \
+        "$GT_RUN_ROOT" "${BENCHMARKS[*]}" "$USE_DENOISE"
 }
 
 finalise_run() {
@@ -178,16 +193,22 @@ compile_graal() {
 
 run_divine() {
     local benchmark
+    local -a denoise_prefix=()
+    [[ "$USE_DENOISE" != true ]] || denoise_prefix=("$TESTS_DIR/Setup-Denoise.sh" run --)
     for benchmark in "${BENCHMARKS[@]}"; do
-        run_step "Divine $benchmark" "$TESTS_DIR/Stages/Divine.sh" --benchmark "$benchmark"
+        run_step "Divine $benchmark" "${denoise_prefix[@]}" \
+            "$TESTS_DIR/Stages/Divine.sh" --benchmark "$benchmark"
         run_step "Verify Divine slowdown for $benchmark" "$TESTS_DIR/Stages/Verify-Divine.sh" --benchmark "$benchmark"
     done
 }
 
 run_bubol() {
     local benchmark
+    local -a denoise_prefix=()
+    [[ "$USE_DENOISE" != true ]] || denoise_prefix=("$TESTS_DIR/Setup-Denoise.sh" run --)
     for benchmark in "${BENCHMARKS[@]}"; do
-        run_step "Divine $benchmark with BuboL" "$TESTS_DIR/Stages/Divine.sh" --bubol --benchmark "$benchmark"
+        run_step "Divine $benchmark with BuboL" "${denoise_prefix[@]}" \
+            "$TESTS_DIR/Stages/Divine.sh" --bubol --benchmark "$benchmark"
         run_step "Verify BuboL slowdown for $benchmark" "$TESTS_DIR/Stages/Verify-BuboL.sh" --benchmark "$benchmark"
         run_step "Verify every BuboL loop for $benchmark" "$TESTS_DIR/Stages/Verify-BuboL-Loops.sh" --benchmark "$benchmark"
     done
@@ -218,7 +239,12 @@ main() {
     trap 'finalise_run $?' EXIT
     task "Run GT ecosystem stages: ${SELECTED_STAGES[*]}"
     INDENT_LEVEL=$((INDENT_LEVEL + 1)); export INDENT_LEVEL
-    run_step 'Verify machine dependencies' "$TESTS_DIR/Verify-Dependencies.sh" --pipeline
+    if [[ "$USE_DENOISE" == true ]]; then
+        run_step 'Verify machine dependencies' "$TESTS_DIR/Verify-Dependencies.sh" --pipeline
+    else
+        run_step 'Verify machine dependencies' \
+            "$TESTS_DIR/Verify-Dependencies.sh" --pipeline --without-denoise
+    fi
     run_selected_stages
     INDENT_LEVEL=$((INDENT_LEVEL - 1)); export INDENT_LEVEL
     pass "Selected stages passed: ${SELECTED_STAGES[*]}"

@@ -129,6 +129,9 @@ install_system_packages() {
         pkgconf-pkg-config \
         procps-ng \
         python3 \
+        python3-pip \
+        python3-setuptools \
+        python3-wheel \
         tar \
         unzip \
         wget \
@@ -361,6 +364,8 @@ main() {
         initialise_repositories
     run_step "Install Temurin JDK $JDK_FEATURE_VERSION" install_boot_jdk
     run_step "Install mx $MX_VERSION" install_mx
+    run_step 'Install and verify ReBench Denoise' \
+        "$TESTS_DIR/Setup-Denoise.sh" install --skip-system-packages
     run_step 'Build the AWFY benchmark JAR and TSC JNI library' \
         build_benchmarks_jar
 

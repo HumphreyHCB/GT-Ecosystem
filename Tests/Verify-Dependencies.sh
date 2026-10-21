@@ -16,9 +16,11 @@ fi
 
 readonly EXPECTED_MX_VERSION=7.68.9
 readonly EXPECTED_VTUNE_VERSION=2025.0
+readonly EXPECTED_REBENCH_VERSION=1.4.0
 readonly CONFIG_FILE=${GT_ECOSYSTEM_CONFIG:-"$TESTS_DIR/config.config"}
 
 PIPELINE_MODE=false
+CHECK_DENOISE=true
 CHECKS_PASSED=0
 CHECKS_FAILED=0
 CHECKS_WARNED=0
@@ -36,10 +38,11 @@ BENCHMARKS=()
 
 show_usage() {
     cat <<EOF
-Usage: $(basename "$0") [--pipeline]
+Usage: $(basename "$0") [--pipeline] [--without-denoise]
 
 Check the host, repositories, tools, generated benchmark JAR, and VTune
 configuration without changing anything. --pipeline uses compact output.
+--without-denoise skips ReBench checks for an explicitly untuned run.
 EOF
 }
 
@@ -184,6 +187,7 @@ check_capacity() {
     local cpu_count
     local minimum_disk_gib=${GT_MIN_DISK_GIB:-30}
     local minimum_memory_gib=${GT_MIN_MEMORY_GIB:-16}
+    local swap_used_kib=0
 
     available_memory_kib=$(awk '/^MemTotal:/ {print $2; exit}' /proc/meminfo)
     if [[ "$available_memory_kib" =~ ^[0-9]+$ ]] && \
@@ -207,14 +211,21 @@ check_capacity() {
     else
         check_warn "Only $cpu_count build CPU(s) detected; compilation will be slow"
     fi
+
+    swap_used_kib=$(awk '/^SwapTotal:/ {total=$2} /^SwapFree:/ {free=$2} END {print total-free}' /proc/meminfo)
+    if (( swap_used_kib > 0 )); then
+        check_warn "Swap is in use ($((swap_used_kib / 1024)) MiB); memory pressure can add benchmark noise"
+    else
+        check_pass 'Swap is not currently in use'
+    fi
 }
 
 check_commands() {
     local command_name
     local -a commands=(
-        autoconf awk bash cmake curl df diff file find gcc g++ git grep ldd make
+        autoconf awk bash cmake curl df diff file find gcc g++ getent git grep ldd make
         ninja nproc perf pkg-config python3 readelf realpath sed sha256sum sort
-        tar unzip wget which xargs zip
+        sudo tar unzip wget which xargs zip
     )
 
     for command_name in "${commands[@]}"; do
@@ -301,6 +312,46 @@ check_vtune() {
     fi
 }
 
+check_denoise() {
+    local cset_command="$TESTS_DIR/Tools/rebench/bin/cset"
+    local denoise_command="$TESTS_DIR/Tools/rebench/bin/rebench-denoise"
+    local denoise_version=''
+    local governor=''
+    local no_turbo=''
+
+    check_executable "$denoise_command" 'ReBench Denoise command'
+    check_executable "$cset_command" 'ReBench cpuset command'
+
+    if [[ -x "$denoise_command" ]]; then
+        denoise_version=$("$denoise_command" --version 2>&1 || true)
+        if grep -Fq "$EXPECTED_REBENCH_VERSION" <<< "$denoise_version"; then
+            check_pass "ReBench Denoise version is $EXPECTED_REBENCH_VERSION"
+        else
+            check_fail "ReBench Denoise must be $EXPECTED_REBENCH_VERSION; found: $denoise_version"
+        fi
+    fi
+
+    if [[ -r /sys/devices/system/cpu/intel_pstate/no_turbo ]]; then
+        no_turbo=$(< /sys/devices/system/cpu/intel_pstate/no_turbo)
+        check_pass "Intel Turbo control is available (no_turbo=$no_turbo)"
+    else
+        check_warn 'Intel no_turbo control is unavailable; Denoise will report whether another control works'
+    fi
+
+    if [[ -r /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ]]; then
+        governor=$(< /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
+        check_pass "CPU frequency governor is readable ($governor)"
+    else
+        check_fail 'CPU frequency governor is not readable'
+    fi
+
+    if [[ -r /sys/fs/cgroup/cgroup.controllers ]]; then
+        check_warn 'Unified cgroup v2 detected; ReBench core shielding may fall back off'
+    else
+        check_pass 'cgroup v1 or hybrid mode permits ReBench core shielding checks'
+    fi
+}
+
 check_generated_files() {
     local jar_listing=''
     local missing_libraries=''
@@ -334,17 +385,15 @@ check_generated_files() {
 }
 
 main() {
-    if (( $# > 1 )); then
-        show_usage >&2
-        exit 2
-    fi
-    if (( $# == 1 )); then
+    while (( $# > 0 )); do
         case "$1" in
             --pipeline) PIPELINE_MODE=true ;;
+            --without-denoise) CHECK_DENOISE=false ;;
             -h|--help) show_usage; exit 0 ;;
             *) show_usage >&2; exit 2 ;;
         esac
-    fi
+        shift
+    done
 
     task 'Verify GT ecosystem dependencies'
     load_configuration || true
@@ -356,6 +405,7 @@ main() {
         check_repositories
         check_jdk_and_mx
         check_vtune
+        [[ "$CHECK_DENOISE" != true ]] || check_denoise
         check_generated_files
     fi
 
