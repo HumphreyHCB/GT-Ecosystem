@@ -66,6 +66,17 @@ parse_arguments() {
     CONFIG_FILE=$(realpath -m -- "$CONFIG_FILE")
 }
 
+validate_invocation_user() {
+    if (( EUID == 0 )); then
+        fail 'Do not run the GT ecosystem pipeline with sudo or as root.'
+        fail 'Run it as your normal user; Setup-Denoise.sh requests sudo only when CPU controls require it.'
+        if [[ -n "${SUDO_USER:-}" && "$SUDO_USER" != root ]]; then
+            fail "Re-run as $SUDO_USER: ./Tests/Compile-Build-Divine-Bubo.sh ${*:-}"
+        fi
+        return 1
+    fi
+}
+
 stage_exists() {
     local wanted=$1 stage
     for stage in "${PIPELINE_STAGES[@]}"; do
@@ -247,6 +258,7 @@ run_selected_stages() {
 
 main() {
     parse_arguments "$@"
+    validate_invocation_user "$@"
     select_stages
     validate_arguments
     initialise_run

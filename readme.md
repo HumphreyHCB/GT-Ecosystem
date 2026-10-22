@@ -42,6 +42,11 @@ Then run the complete pipeline:
 ./Tests/Compile-Build-Divine-Bubo.sh
 ```
 
+Run the pipeline as your normal login user, **not** with `sudo`. It invokes
+`sudo` itself only for the Denoise CPU controls. Running the complete pipeline
+as root creates root-owned build and result files, while Denoise intentionally
+runs the measured JVM as the login user.
+
 Each invocation creates one isolated directory under `Tests/Runs/`:
 
 ```text
