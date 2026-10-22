@@ -10,11 +10,16 @@ ECOSYSTEM_ROOT=$(cd -- "$TESTS_DIR/.." && pwd)
 # shellcheck source=lib/common.sh
 source "$TESTS_DIR/lib/common.sh"
 
+if (( ${GT_COMMON_VERSION:-0} < 4 )); then
+    die 'Tests/lib/common.sh is out of date; version 4 or later is required'
+fi
+
 readonly EXPECTED_MX_VERSION=7.68.9
 readonly EXPECTED_VTUNE_VERSION=2025.0
 readonly CONFIG_FILE=${GT_ECOSYSTEM_CONFIG:-"$TESTS_DIR/config.config"}
 
 PIPELINE_MODE=false
+CHECK_DENOISE=true
 CHECKS_PASSED=0
 CHECKS_FAILED=0
 CHECKS_WARNED=0
@@ -27,13 +32,16 @@ GRAAL_REPOSITORY=''
 AWFY_SOURCE=''
 BENCHMARKS_JAR=''
 ASYNC_PROFILER_LIBRARY=''
+RUN_ROOT=''
+BENCHMARKS=()
 
 show_usage() {
     cat <<EOF
-Usage: $(basename "$0") [--pipeline]
+Usage: $(basename "$0") [--pipeline] [--without-denoise]
 
 Check the host, repositories, tools, generated benchmark JAR, and VTune
 configuration without changing anything. --pipeline uses compact output.
+--without-denoise skips ReBench checks for an explicitly untuned run.
 EOF
 }
 
@@ -98,6 +106,22 @@ load_configuration() {
     require_config_value AWFY_SOURCE "$CONFIG_FILE" Dir AWFYSource
     require_config_value BENCHMARKS_JAR "$CONFIG_FILE" Dir AWFYBenchmarksJar
     require_config_value ASYNC_PROFILER_LIBRARY "$CONFIG_FILE" Dir AsyncProfilerLibrary
+    require_config_value RUN_ROOT "$CONFIG_FILE" Dir RunRoot
+    load_configured_benchmarks BENCHMARKS "$CONFIG_FILE"
+
+    local benchmark iterations extra slowdown tolerance
+    for benchmark in "${BENCHMARKS[@]}"; do
+        load_benchmark_configuration "$CONFIG_FILE" "$benchmark" \
+            iterations extra slowdown tolerance
+    done
+
+    local min_share max_difference
+    min_share=$(config_get "$CONFIG_FILE" Run BuboLMinRuntimeSharePercent)
+    max_difference=$(config_get "$CONFIG_FILE" Run BuboLMaxMedianDifferencePoints)
+    [[ "$min_share" =~ ^[0-9]+([.][0-9]+)?$ ]] || \
+        die '[Run] BuboLMinRuntimeSharePercent must be numeric'
+    [[ "$max_difference" =~ ^[0-9]+([.][0-9]+)?$ ]] || \
+        die '[Run] BuboLMaxMedianDifferencePoints must be numeric'
     check_pass 'Configuration loaded'
 }
 
@@ -162,6 +186,7 @@ check_capacity() {
     local cpu_count
     local minimum_disk_gib=${GT_MIN_DISK_GIB:-30}
     local minimum_memory_gib=${GT_MIN_MEMORY_GIB:-16}
+    local swap_used_kib=0
 
     available_memory_kib=$(awk '/^MemTotal:/ {print $2; exit}' /proc/meminfo)
     if [[ "$available_memory_kib" =~ ^[0-9]+$ ]] && \
@@ -185,14 +210,21 @@ check_capacity() {
     else
         check_warn "Only $cpu_count build CPU(s) detected; compilation will be slow"
     fi
+
+    swap_used_kib=$(awk '/^SwapTotal:/ {total=$2} /^SwapFree:/ {free=$2} END {print total-free}' /proc/meminfo)
+    if (( swap_used_kib > 0 )); then
+        check_warn "Swap is in use ($((swap_used_kib / 1024)) MiB); memory pressure can add benchmark noise"
+    else
+        check_pass 'Swap is not currently in use'
+    fi
 }
 
 check_commands() {
     local command_name
     local -a commands=(
-        autoconf awk bash cmake curl df diff file find gcc g++ git grep ldd make
+        autoconf awk bash cmake curl df diff file find gcc g++ getent git grep ldd make
         ninja nproc perf pkg-config python3 readelf realpath sed sha256sum sort
-        tar unzip wget which xargs zip
+        sudo tar unzip wget which xargs zip
     )
 
     for command_name in "${commands[@]}"; do
@@ -220,12 +252,12 @@ check_repository() {
 }
 
 check_repositories() {
-    check_repository "$LABS_OPENJDK" 'Labs OpenJDK submodule'
-    check_repository "$SCHEDULER_REPOSITORY" 'GTSlowdownSchedular submodule'
-    check_repository "$BUBO_EXPERIMENTS" 'BuboExperiments submodule'
-    check_repository "$GRAAL_REPOSITORY" 'graal-instrumentation submodule'
+    check_repository "$LABS_OPENJDK" 'Labs OpenJDK repository'
+    check_repository "$SCHEDULER_REPOSITORY" 'GTSlowdownSchedular repository'
+    check_repository "$BUBO_EXPERIMENTS" 'BuboExperiments repository'
+    check_repository "$GRAAL_REPOSITORY" 'graal-instrumentation repository'
     check_repository "$(dirname "$(dirname "$(dirname "$AWFY_SOURCE")")")" \
-        'are-we-fast-yet submodule'
+        'are-we-fast-yet repository'
 }
 
 check_jdk_and_mx() {
@@ -279,6 +311,78 @@ check_vtune() {
     fi
 }
 
+check_denoise() {
+    local cset_command="$TESTS_DIR/Tools/rebench/bin/cset"
+    local denoise_command="$TESTS_DIR/Tools/rebench/bin/rebench-denoise"
+    local rebench_python="$TESTS_DIR/Tools/rebench/bin/python"
+    local denoise_version=''
+    local denoise_help=''
+    local cset_help=''
+    local governor=''
+    local no_turbo=''
+
+    check_executable "$denoise_command" 'ReBench Denoise command'
+    check_executable "$cset_command" 'ReBench cpuset command'
+
+    if [[ -x "$rebench_python" ]]; then
+        denoise_version=$("$rebench_python" -c \
+            'from importlib.metadata import version; print(version("ReBench"))' \
+            2>/dev/null || true)
+        if [[ -n "$denoise_version" ]]; then
+            check_pass "ReBench package is installed (reported version: $denoise_version)"
+        else
+            check_fail 'The ReBench Python package metadata cannot be read'
+        fi
+    else
+        check_fail "ReBench Python environment is missing: $rebench_python"
+    fi
+
+    if [[ -x "$denoise_command" ]] && \
+        denoise_help=$("$denoise_command" --help 2>&1); then
+
+        if grep -Fq -- '--num-cores' <<< "$denoise_help" && \
+            grep -Fq -- '--cset-path' <<< "$denoise_help" && \
+            grep -Fq -- '--without-shielding' <<< "$denoise_help" && \
+            grep -Eq '(^|[|`[:space:]])exec([|`[:space:]]|$)' <<< "$denoise_help"; then
+
+            check_pass 'ReBench Denoise provides the required command interface'
+        else
+            check_fail 'ReBench Denoise is missing a required command or option'
+        fi
+    elif [[ -x "$denoise_command" ]]; then
+        check_fail 'ReBench Denoise command does not start successfully'
+    fi
+    if [[ -x "$cset_command" ]] && cset_help=$("$cset_command" --help 2>&1); then
+        if grep -Fq 'shield' <<< "$cset_help"; then
+            check_pass 'ReBench cpuset provides CPU shielding'
+        else
+            check_fail 'ReBench cpuset is missing its shield command'
+        fi
+    elif [[ -x "$cset_command" ]]; then
+        check_fail 'ReBench cpuset command does not start successfully'
+    fi
+
+    if [[ -r /sys/devices/system/cpu/intel_pstate/no_turbo ]]; then
+        no_turbo=$(< /sys/devices/system/cpu/intel_pstate/no_turbo)
+        check_pass "Intel Turbo control is available (no_turbo=$no_turbo)"
+    else
+        check_warn 'Intel no_turbo control is unavailable; Denoise will report whether another control works'
+    fi
+
+    if [[ -r /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ]]; then
+        governor=$(< /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
+        check_pass "CPU frequency governor is readable ($governor)"
+    else
+        check_fail 'CPU frequency governor is not readable'
+    fi
+
+    if [[ -r /sys/fs/cgroup/cgroup.controllers ]]; then
+        check_warn 'Unified cgroup v2 detected; ReBench core shielding may fall back off'
+    else
+        check_pass 'cgroup v1 or hybrid mode permits ReBench core shielding checks'
+    fi
+}
+
 check_generated_files() {
     local jar_listing=''
     local missing_libraries=''
@@ -312,17 +416,15 @@ check_generated_files() {
 }
 
 main() {
-    if (( $# > 1 )); then
-        show_usage >&2
-        exit 2
-    fi
-    if (( $# == 1 )); then
+    while (( $# > 0 )); do
         case "$1" in
             --pipeline) PIPELINE_MODE=true ;;
+            --without-denoise) CHECK_DENOISE=false ;;
             -h|--help) show_usage; exit 0 ;;
             *) show_usage >&2; exit 2 ;;
         esac
-    fi
+        shift
+    done
 
     task 'Verify GT ecosystem dependencies'
     load_configuration || true
@@ -334,6 +436,7 @@ main() {
         check_repositories
         check_jdk_and_mx
         check_vtune
+        [[ "$CHECK_DENOISE" != true ]] || check_denoise
         check_generated_files
     fi
 

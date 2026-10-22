@@ -2,7 +2,7 @@
 
 # Shared output, configuration, reporting, and validation helpers.
 
-GT_COMMON_VERSION=3
+GT_COMMON_VERSION=4
 export INDENT_LEVEL=${INDENT_LEVEL:-0}
 export GT_VERBOSE=${GT_VERBOSE:-false}
 
@@ -23,6 +23,7 @@ prepend_path_if_directory() {
 # Tools installed by Tests/Install-Dependencies.sh and Intel's stable
 # version-independent VTune path are available to every stage.
 prepend_path_if_directory "$GT_TESTS_DIRECTORY/Tools/mx"
+prepend_path_if_directory "$GT_TESTS_DIRECTORY/Tools/rebench/bin"
 prepend_path_if_directory '/opt/intel/oneapi/vtune/latest/bin64'
 export PATH
 
@@ -202,6 +203,76 @@ require_config_value() {
     fi
 
     printf -v "$destination_variable" '%s' "$value"
+}
+
+require_run_context() {
+    [[ -n ${GT_RUN_ROOT:-} ]] || \
+        die 'Run context is missing; start stages through Compile-Build-Divine-Bubo.sh'
+    [[ -n ${GT_PIPELINE_ROOT:-} ]] || die 'GT_PIPELINE_ROOT is not configured'
+    [[ -n ${GT_RESULTS_ROOT:-} ]] || die 'GT_RESULTS_ROOT is not configured'
+}
+
+load_configured_benchmarks() {
+    local destination_variable=$1
+    local config_file=$2
+    local raw_benchmarks
+    local benchmark
+    local -a parsed_benchmarks=()
+    local -A seen=()
+    local -n destination=$destination_variable
+
+    raw_benchmarks=$(config_get "$config_file" Run Benchmarks)
+    [[ -n "$raw_benchmarks" ]] || die "Missing [Run] Benchmarks in $config_file"
+
+    raw_benchmarks=${raw_benchmarks//,/ }
+    for benchmark in $raw_benchmarks; do
+        [[ "$benchmark" =~ ^[A-Za-z][A-Za-z0-9_.-]*$ ]] || \
+            die "Invalid benchmark name in [Run] Benchmarks: $benchmark"
+        [[ -z ${seen[$benchmark]:-} ]] || \
+            die "Duplicate benchmark in [Run] Benchmarks: $benchmark"
+        seen[$benchmark]=1
+        parsed_benchmarks+=("$benchmark")
+    done
+
+    (( ${#parsed_benchmarks[@]} > 0 )) || \
+        die "No benchmarks were configured in $config_file"
+    destination=("${parsed_benchmarks[@]}")
+}
+
+load_benchmark_configuration() {
+    local config_file=$1
+    local benchmark=$2
+    local section="Benchmark.$benchmark"
+    local iterations_variable=$3
+    local extra_argument_variable=$4
+    local slowdown_variable=$5
+    local tolerance_variable=$6
+    local configured_iterations
+    local configured_extra_argument
+    local configured_slowdown
+    local configured_tolerance
+
+    [[ "$benchmark" =~ ^[A-Za-z][A-Za-z0-9_.-]*$ ]] || \
+        die "Invalid benchmark name: $benchmark"
+
+    configured_iterations=$(config_get "$config_file" "$section" Iterations)
+    configured_extra_argument=$(config_get "$config_file" "$section" ExtraArgument)
+    configured_slowdown=$(config_get "$config_file" "$section" ExpectedSlowdownRatio)
+    configured_tolerance=$(config_get "$config_file" "$section" SlowdownTolerancePercent)
+
+    [[ "$configured_iterations" =~ ^[1-9][0-9]*$ ]] || \
+        die "[$section] Iterations must be a positive integer"
+    [[ "$configured_extra_argument" =~ ^-?[0-9]+$ ]] || \
+        die "[$section] ExtraArgument must be an integer"
+    [[ "$configured_slowdown" =~ ^[0-9]+([.][0-9]+)?$ ]] || \
+        die "[$section] ExpectedSlowdownRatio must be numeric"
+    [[ "$configured_tolerance" =~ ^[0-9]+([.][0-9]+)?$ ]] || \
+        die "[$section] SlowdownTolerancePercent must be numeric"
+
+    printf -v "$iterations_variable" '%s' "$configured_iterations"
+    printf -v "$extra_argument_variable" '%s' "$configured_extra_argument"
+    printf -v "$slowdown_variable" '%s' "$configured_slowdown"
+    printf -v "$tolerance_variable" '%s' "$configured_tolerance"
 }
 
 require_directory() {

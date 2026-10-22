@@ -1,46 +1,24 @@
 #!/usr/bin/env bash
 
-# Full four-stage ecosystem test:
-#   1. Compile OpenJDK with compiler markers.
-#   2. Build Graal with the GT modifications.
-#   3. Divine a normal program and verify the requested slowdown.
-#   4. Divine with BuboL and verify its loop measurements and slowdown.
+# Build and verify the GT ecosystem in one isolated, timestamped run.
 
 set -Eeuo pipefail
-
-# Resolve every internal path from this file.
-# This works whether the caller is inside or outside Tests/.
 TESTS_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-
 # shellcheck source=lib/common.sh
 source "$TESTS_DIR/lib/common.sh"
+(( ${GT_COMMON_VERSION:-0} >= 4 )) || die 'common.sh version 4 or later is required'
 
-if (( ${GT_COMMON_VERSION:-0} < 3 )); then
-    die "Tests/lib/common.sh is out of date; version 3 or later is required"
-fi
-
+CONFIG_FILE="$TESTS_DIR/config.config"
 FULL_REBUILD=false
 TEST_ONLY=false
-SKIP_DIVINING=false
-SKIP_BUBOL_DIVINING=false
-REFRESH_BUBOL_LOOP_INPUTS=false
 VERBOSE=false
-
+USE_DENOISE=''
+DENOISE_REQUIRED=false
 STAGE_LIST=''
 START_STAGE=''
-
-PIPELINE_STAGES=(
-    openjdk
-    graal
-    divine
-    bubol
-)
-
+PIPELINE_STAGES=(openjdk graal divine bubol)
 SELECTED_STAGES=()
-
-REPORT_DIRECTORY=''
-REPORT_RUN_ID=''
-REPORT_JSON=''
+BENCHMARKS=()
 REPORT_STARTED_AT=''
 REPORT_STARTED_EPOCH=0
 CURRENT_STAGE=''
@@ -51,482 +29,264 @@ show_usage() {
 Usage: $(basename "$0") [OPTIONS]
 
 Options:
-    -v, --verbose
-        Show the existing detailed output while the pipeline runs
+    -c, --config FILE       Use a different ecosystem configuration
+    -v, --verbose           Stream detailed command output
+    -f, --full-rebuild      Clean selected compiler builds first
+        --test-only         Test an existing GraalVM; requires --stages graal
+        --without-denoise   Do not tune the CPU around measurement stages
+    -s, --stages LIST       Run a comma-separated subset in pipeline order
+        --from STAGE        Run STAGE and every later stage
+    -h, --help              Show this help
 
-    -f, --full-rebuild
-        Clean every selected build before rebuilding it
+Stages: openjdk, graal, divine, bubol
 
-    --test-only
-        Test an existing GraalVM without rebuilding Graal
-
-    --skip-divining
-        Skip normal Divine generation and verify the newest Divine output
-
-    --skip-bubol-divining
-        Skip BuboL Divine generation and verify the newest BuboL output
-
-    --refresh-bubol-loop-inputs
-        Repeat the BuboL CFG run and SlowdownTest VTune runs
-
-    -s, --stages LIST
-        Run only a comma-separated list of stages
-
-    --from STAGE
-        Run STAGE and every later stage
-
-    -h, --help
-        Show this help
-
-Stages:
-    openjdk
-    graal
-    divine
-    bubol
-
-Examples:
-    $(basename "$0")
-
-    $(basename "$0") --stages openjdk
-    $(basename "$0") --stages graal
-    $(basename "$0") --stages divine
-    $(basename "$0") --stages bubol
-
-    $(basename "$0") --stages openjdk,graal
-    $(basename "$0") --from graal
-    $(basename "$0") --verbose --from graal
-
-    $(basename "$0") --full-rebuild --stages graal
-    $(basename "$0") --stages graal --test-only
-
-    $(basename "$0") --stages divine --skip-divining
-    $(basename "$0") --stages bubol --skip-bubol-divining
-    $(basename "$0") --stages bubol --skip-bubol-divining --refresh-bubol-loop-inputs
+The [Run] Benchmarks list controls every Divine and BuboL benchmark.
+Every invocation creates a new Runs/<timestamp>/ directory.
 EOF
 }
 
 parse_arguments() {
     while (( $# > 0 )); do
         case "$1" in
-            -v|--verbose)
-                VERBOSE=true
-                ;;
-
-            -f|--full-rebuild)
-                FULL_REBUILD=true
-                ;;
-
-            --test-only)
-                TEST_ONLY=true
-                ;;
-
-            --skip-divining)
-                SKIP_DIVINING=true
-                ;;
-
-            --skip-bubol-divining)
-                SKIP_BUBOL_DIVINING=true
-                ;;
-
-            --refresh-bubol-loop-inputs)
-                REFRESH_BUBOL_LOOP_INPUTS=true
-                ;;
-
-            -s|--stages)
-                (( $# >= 2 )) || \
-                    die "$1 requires a comma-separated stage list"
-
-                [[ -n "$2" ]] || \
-                    die "$1 requires a non-empty stage list"
-
-                STAGE_LIST=$2
-                shift
-                ;;
-
-            --stages=*)
-                STAGE_LIST=${1#*=}
-
-                [[ -n "$STAGE_LIST" ]] || \
-                    die '--stages requires a non-empty stage list'
-                ;;
-
-            --from)
-                (( $# >= 2 )) || \
-                    die "$1 requires a stage name"
-
-                [[ -n "$2" ]] || \
-                    die "$1 requires a stage name"
-
-                START_STAGE=$2
-                shift
-                ;;
-
-            --from=*)
-                START_STAGE=${1#*=}
-
-                [[ -n "$START_STAGE" ]] || \
-                    die '--from requires a stage name'
-                ;;
-
-            -h|--help)
-                show_usage
-                exit 0
-                ;;
-
-            *)
-                fail "Unknown argument: $1"
-                show_usage >&2
-                exit 2
-                ;;
+            -c|--config) (( $# >= 2 )) || die "$1 requires a file"; CONFIG_FILE=$2; shift ;;
+            --config=*) CONFIG_FILE=${1#*=} ;;
+            -v|--verbose) VERBOSE=true ;;
+            -f|--full-rebuild) FULL_REBUILD=true ;;
+            --test-only) TEST_ONLY=true ;;
+            --without-denoise) USE_DENOISE=false ;;
+            -s|--stages) (( $# >= 2 )) || die "$1 requires a stage list"; STAGE_LIST=$2; shift ;;
+            --stages=*) STAGE_LIST=${1#*=} ;;
+            --from) (( $# >= 2 )) || die "$1 requires a stage"; START_STAGE=$2; shift ;;
+            --from=*) START_STAGE=${1#*=} ;;
+            -h|--help) show_usage; exit 0 ;;
+            *) fail "Unknown argument: $1"; show_usage >&2; exit 2 ;;
         esac
-
         shift
     done
+    CONFIG_FILE=$(realpath -m -- "$CONFIG_FILE")
 }
 
-initialise_reporting() {
-    local timestamp
-
-    timestamp=$(date '+%Y_%m_%d_%H_%M_%S')
-    REPORT_RUN_ID="GT-Ecosystem_${timestamp}_$$"
-    REPORT_DIRECTORY=${GT_REPORT_DIRECTORY:-"$TESTS_DIR/Output/Reports"}
-    REPORT_JSON="$REPORT_DIRECTORY/$REPORT_RUN_ID.json"
-    GT_DETAILED_LOG="$REPORT_DIRECTORY/$REPORT_RUN_ID.log"
-    GT_REPORT_EVENTS="$REPORT_DIRECTORY/.$REPORT_RUN_ID.events"
-    REPORT_STARTED_AT=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
-    REPORT_STARTED_EPOCH=$(date +%s)
-
-    GT_VERBOSE=$VERBOSE
-
-    mkdir -p "$REPORT_DIRECTORY"
-    : > "$GT_DETAILED_LOG"
-    : > "$GT_REPORT_EVENTS"
-
-    export GT_VERBOSE GT_DETAILED_LOG GT_REPORT_EVENTS
-
-    printf 'GT Ecosystem pipeline started. Detailed output: %s\n' \
-        "$GT_DETAILED_LOG" \
-        >> "$GT_DETAILED_LOG"
-
-    if [[ "$VERBOSE" == false ]]; then
-        printf 'Running GT ecosystem stages: %s\n' "${SELECTED_STAGES[*]}"
-    fi
-}
-
-finalise_reporting() {
-    local exit_code=$1
-    local finished_at
-    local finished_epoch
-    local duration_seconds
-    local pipeline_status=passed
-    local -a report_arguments=()
-    local stage
-
-    trap - EXIT
-    set +e
-
-    finished_epoch=$(date +%s)
-    finished_at=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
-    duration_seconds=$((finished_epoch - REPORT_STARTED_EPOCH))
-
-    if (( exit_code != 0 )); then
-        pipeline_status=failed
-
-        if [[ -n "$CURRENT_STAGE" ]]; then
-            report_stage \
-                "$CURRENT_STAGE" \
-                failed \
-                "$((finished_epoch - CURRENT_STAGE_STARTED_EPOCH))" \
-                "Stage exited with code $exit_code"
+validate_invocation_user() {
+    if (( EUID == 0 )); then
+        fail 'Do not run the GT ecosystem pipeline with sudo or as root.'
+        fail 'Run it as your normal user; Setup-Denoise.sh requests sudo only when CPU controls require it.'
+        if [[ -n "${SUDO_USER:-}" && "$SUDO_USER" != root ]]; then
+            fail "Re-run as $SUDO_USER: ./Tests/Compile-Build-Divine-Bubo.sh ${*:-}"
         fi
+        return 1
     fi
+}
 
-    for stage in "${SELECTED_STAGES[@]}"; do
-        report_arguments+=(--stage "$stage")
-    done
-
-    if [[ "$VERBOSE" == true ]]; then
-        report_arguments+=(--verbose)
-    fi
-
-    if command -v python3 >/dev/null 2>&1; then
-        python3 "$TESTS_DIR/lib/render-report.py" \
-            --events "$GT_REPORT_EVENTS" \
-            --output "$REPORT_JSON" \
-            --started-at "$REPORT_STARTED_AT" \
-            --finished-at "$finished_at" \
-            --duration-seconds "$duration_seconds" \
-            --status "$pipeline_status" \
-            --detailed-log "$GT_DETAILED_LOG" \
-            "${report_arguments[@]}"
-    else
-        printf '\n%s GT ecosystem pipeline %s\n' \
-            "$([[ "$pipeline_status" == passed ]] && printf '✔' || printf '✘')" \
-            "$pipeline_status"
-        printf 'Detailed log: %s\n' "$GT_DETAILED_LOG"
-        printf 'JSON report was not written because python3 is unavailable.\n' >&2
-    fi
-
-    if (( exit_code != 0 )) && [[ "$VERBOSE" == false ]]; then
-        printf '\nLast 20 lines from the failed run:\n' >&2
-        tail -n 20 "$GT_DETAILED_LOG" | sed 's/^/  /' >&2
-    fi
-
-    rm -f -- "$GT_REPORT_EVENTS"
-    exit "$exit_code"
+authorize_unattended_pipeline() {
+    [[ "$DENOISE_REQUIRED" == true ]] || return 0
+    task 'Authorize unattended Denoise controls'
+    "$TESTS_DIR/Setup-Denoise.sh" authorize
 }
 
 stage_exists() {
-    local wanted_stage=$1
-    local stage
-
+    local wanted=$1 stage
     for stage in "${PIPELINE_STAGES[@]}"; do
-        if [[ "$stage" == "$wanted_stage" ]]; then
-            return 0
-        fi
+        [[ "$stage" == "$wanted" ]] && return 0
     done
-
     return 1
 }
 
 select_stages() {
+    local requested stage include=false
     local -a requested_stages=()
-    local requested_stage
-    local pipeline_stage
-    local include_stage=false
-
-    if [[ -n "$STAGE_LIST" && -n "$START_STAGE" ]]; then
-        die '--stages and --from cannot be used together'
-    fi
+    [[ -z "$STAGE_LIST" || -z "$START_STAGE" ]] || die '--stages and --from cannot be used together'
 
     if [[ -n "$STAGE_LIST" ]]; then
         IFS=',' read -r -a requested_stages <<< "$STAGE_LIST"
-
-        for requested_stage in "${requested_stages[@]}"; do
-            stage_exists "$requested_stage" || \
-                die "Unknown or unavailable stage: $requested_stage"
+        for requested in "${requested_stages[@]}"; do
+            stage_exists "$requested" || die "Unknown stage: $requested"
         done
-
-        # Always execute selected stages in pipeline order.
-        for pipeline_stage in "${PIPELINE_STAGES[@]}"; do
-            for requested_stage in "${requested_stages[@]}"; do
-                if [[ "$pipeline_stage" == "$requested_stage" ]]; then
-                    SELECTED_STAGES+=("$pipeline_stage")
-                    break
-                fi
+        for stage in "${PIPELINE_STAGES[@]}"; do
+            for requested in "${requested_stages[@]}"; do
+                [[ "$stage" == "$requested" ]] && SELECTED_STAGES+=("$stage")
             done
         done
-
-        return 0
-    fi
-
-    if [[ -n "$START_STAGE" ]]; then
-        stage_exists "$START_STAGE" || \
-            die "Unknown or unavailable stage: $START_STAGE"
-
-        for pipeline_stage in "${PIPELINE_STAGES[@]}"; do
-            if [[ "$pipeline_stage" == "$START_STAGE" ]]; then
-                include_stage=true
-            fi
-
-            if [[ "$include_stage" == true ]]; then
-                SELECTED_STAGES+=("$pipeline_stage")
-            fi
+    elif [[ -n "$START_STAGE" ]]; then
+        stage_exists "$START_STAGE" || die "Unknown stage: $START_STAGE"
+        for stage in "${PIPELINE_STAGES[@]}"; do
+            [[ "$stage" == "$START_STAGE" ]] && include=true
+            [[ "$include" == true ]] && SELECTED_STAGES+=("$stage")
         done
-
-        return 0
+    else
+        SELECTED_STAGES=("${PIPELINE_STAGES[@]}")
     fi
-
-    SELECTED_STAGES=("${PIPELINE_STAGES[@]}")
+    (( ${#SELECTED_STAGES[@]} > 0 )) || die 'No stages selected'
 }
 
 validate_arguments() {
-    local stage
-    local divine_selected=false
-    local bubol_selected=false
+    local configured_denoise stage
 
-    if [[ "$TEST_ONLY" == true && "$FULL_REBUILD" == true ]]; then
-        die '--test-only cannot be combined with --full-rebuild'
-    fi
-
+    [[ "$TEST_ONLY" != true || "$FULL_REBUILD" != true ]] || die '--test-only cannot be combined with --full-rebuild'
     if [[ "$TEST_ONLY" == true ]]; then
-        for stage in "${SELECTED_STAGES[@]}"; do
-            if [[ "$stage" != graal ]]; then
-                die '--test-only can only be used when the selected stage is graal'
-            fi
-        done
+        (( ${#SELECTED_STAGES[@]} == 1 )) && [[ "${SELECTED_STAGES[0]}" == graal ]] || \
+            die '--test-only requires --stages graal'
     fi
 
-    if [[ "$SKIP_DIVINING" == true ]]; then
-        for stage in "${SELECTED_STAGES[@]}"; do
-            if [[ "$stage" == divine ]]; then
-                divine_selected=true
-            fi
-        done
-
-        if [[ "$divine_selected" != true ]]; then
-            die '--skip-divining requires the divine stage to be selected'
-        fi
+    if [[ -z "$USE_DENOISE" ]]; then
+        configured_denoise=$(config_get "$CONFIG_FILE" Run Denoise)
+        case "${configured_denoise,,}" in
+            true|yes|1) USE_DENOISE=true ;;
+            false|no|0) USE_DENOISE=false ;;
+            *) die '[Run] Denoise must be true or false' ;;
+        esac
     fi
 
-    if [[ "$SKIP_BUBOL_DIVINING" == true ]]; then
+    DENOISE_REQUIRED=false
+    if [[ "$USE_DENOISE" == true ]]; then
         for stage in "${SELECTED_STAGES[@]}"; do
-            if [[ "$stage" == bubol ]]; then
-                bubol_selected=true
-            fi
+            case "$stage" in
+                graal|divine|bubol)
+                    DENOISE_REQUIRED=true
+                    break
+                    ;;
+            esac
         done
+    fi
+}
 
-        if [[ "$bubol_selected" != true ]]; then
-            die '--skip-bubol-divining requires the bubol stage to be selected'
-        fi
+initialise_run() {
+    local configured_run_root timestamp
+    require_file "$CONFIG_FILE" 'Ecosystem configuration'
+    require_config_value configured_run_root "$CONFIG_FILE" Dir RunRoot
+    load_configured_benchmarks BENCHMARKS "$CONFIG_FILE"
+
+    timestamp=$(date '+%Y_%m_%d_%H_%M_%S')
+    GT_RUN_ROOT="$configured_run_root/${timestamp}_$$"
+    GT_PIPELINE_ROOT="$GT_RUN_ROOT/pipeline"
+    GT_RESULTS_ROOT="$GT_RUN_ROOT/results"
+    GT_DETAILED_LOG="$GT_PIPELINE_ROOT/logs/pipeline.log"
+    GT_REPORT_EVENTS="$GT_PIPELINE_ROOT/report.events"
+    GT_ECOSYSTEM_CONFIG=$CONFIG_FILE
+    GT_VERBOSE=$VERBOSE
+    GT_USE_DENOISE=$USE_DENOISE
+
+    mkdir -p "$GT_PIPELINE_ROOT/logs" "$GT_PIPELINE_ROOT/stages" "$GT_PIPELINE_ROOT/build" "$GT_RESULTS_ROOT"
+    : > "$GT_DETAILED_LOG"
+    : > "$GT_REPORT_EVENTS"
+    REPORT_STARTED_AT=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
+    REPORT_STARTED_EPOCH=$(date +%s)
+    export GT_RUN_ROOT GT_PIPELINE_ROOT GT_RESULTS_ROOT GT_DETAILED_LOG
+    export GT_REPORT_EVENTS GT_ECOSYSTEM_CONFIG GT_VERBOSE GT_USE_DENOISE
+
+    printf 'GT Ecosystem run: %s\nConfiguration: %s\nBenchmarks: %s\nDenoise: %s\n' \
+        "$GT_RUN_ROOT" "$CONFIG_FILE" "${BENCHMARKS[*]}" "$USE_DENOISE" >> "$GT_DETAILED_LOG"
+    printf 'Run directory: %s\nBenchmarks: %s\nDenoise: %s\n' \
+        "$GT_RUN_ROOT" "${BENCHMARKS[*]}" "$USE_DENOISE"
+}
+
+finalise_run() {
+    local exit_code=$1 finished_at finished_epoch duration status=passed render_status stage
+    local -a args=()
+    trap - EXIT
+    set +e
+    finished_epoch=$(date +%s)
+    finished_at=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
+    duration=$((finished_epoch - REPORT_STARTED_EPOCH))
+    if (( exit_code != 0 )); then
+        status=failed
+        [[ -z "$CURRENT_STAGE" ]] || report_stage "$CURRENT_STAGE" failed \
+            "$((finished_epoch - CURRENT_STAGE_STARTED_EPOCH))" "Stage exited with code $exit_code"
+    fi
+    for stage in "${SELECTED_STAGES[@]}"; do args+=(--stage "$stage"); done
+    for stage in "${BENCHMARKS[@]}"; do args+=(--benchmark "$stage"); done
+    [[ "$VERBOSE" == true ]] && args+=(--verbose)
+
+    # All privileged measurement cleanup has completed by this point.  Do not
+    # leave the deliberately long unattended-run timestamp valid afterwards.
+    if [[ "$DENOISE_REQUIRED" == true ]]; then
+        sudo -k >/dev/null 2>&1 || true
     fi
 
-    if [[ "$REFRESH_BUBOL_LOOP_INPUTS" == true ]]; then
-        bubol_selected=false
-
-        for stage in "${SELECTED_STAGES[@]}"; do
-            if [[ "$stage" == bubol ]]; then
-                bubol_selected=true
-            fi
-        done
-
-        if [[ "$bubol_selected" != true ]]; then
-            die '--refresh-bubol-loop-inputs requires the bubol stage to be selected'
-        fi
+    python3 "$TESTS_DIR/lib/render-results.py" --run-root "$GT_RUN_ROOT" \
+        --events "$GT_REPORT_EVENTS" --started-at "$REPORT_STARTED_AT" \
+        --finished-at "$finished_at" --duration-seconds "$duration" \
+        --status "$status" "${args[@]}"
+    render_status=$?
+    (( render_status == 0 )) || printf 'Could not render results (exit %d); backend data: %s\n' \
+        "$render_status" "$GT_PIPELINE_ROOT" >&2
+    if (( exit_code != 0 )) && [[ "$VERBOSE" == false ]]; then
+        printf '\nLast 20 detailed log lines:\n' >&2
+        tail -n 20 "$GT_DETAILED_LOG" | sed 's/^/  /' >&2
     fi
+    exit "$exit_code"
 }
 
 compile_openjdk() {
-    if [[ "$FULL_REBUILD" == true ]]; then
-        run_step \
-            'Clean OpenJDK' \
-            "$TESTS_DIR/Stages/Clean-OpenJDK.sh"
-    fi
-
-    run_step \
-        'Compile OpenJDK with compiler markers' \
-        "$TESTS_DIR/Stages/Compile-OpenJDK.sh"
+    [[ "$FULL_REBUILD" != true ]] || run_step 'Clean OpenJDK' "$TESTS_DIR/Stages/Clean-OpenJDK.sh"
+    run_step 'Compile OpenJDK with compiler markers' "$TESTS_DIR/Stages/Compile-OpenJDK.sh"
 }
 
 compile_graal() {
-    local -a graal_arguments=()
-
-    if [[ "$FULL_REBUILD" == true ]]; then
-        run_step \
-            'Clean Graal' \
-            "$TESTS_DIR/Stages/Clean-Graal.sh"
-    fi
-
-    if [[ "$TEST_ONLY" == true ]]; then
-        graal_arguments+=(--test-only)
-    fi
-
-    run_step \
-        'Build and verify Graal' \
-        "$TESTS_DIR/Stages/Compile-Graal.sh" \
-        "${graal_arguments[@]}"
+    local -a args=()
+    [[ "$FULL_REBUILD" != true ]] || run_step 'Clean Graal' "$TESTS_DIR/Stages/Clean-Graal.sh"
+    [[ "$TEST_ONLY" != true ]] || args+=(--test-only)
+    run_step 'Build and verify Graal' "$TESTS_DIR/Stages/Compile-Graal.sh" "${args[@]}"
 }
 
 run_divine() {
-    if [[ "$SKIP_DIVINING" == true ]]; then
-        task \
-            'Skip Divine generation because --skip-divining was requested'
-    else
-        run_step \
-            'Divine a benchmark' \
-            "$TESTS_DIR/Stages/Divine.sh"
-    fi
-
-    run_step \
-        'Verify the divined slowdown' \
-        "$TESTS_DIR/Stages/Verify-Divine.sh"
+    local benchmark
+    local -a denoise_prefix=()
+    [[ "$USE_DENOISE" != true ]] || denoise_prefix=("$TESTS_DIR/Setup-Denoise.sh" run --)
+    for benchmark in "${BENCHMARKS[@]}"; do
+        run_step "Divine $benchmark" "${denoise_prefix[@]}" \
+            "$TESTS_DIR/Stages/Divine.sh" --benchmark "$benchmark"
+        run_step "Verify Divine slowdown for $benchmark" "$TESTS_DIR/Stages/Verify-Divine.sh" --benchmark "$benchmark"
+    done
 }
 
 run_bubol() {
-    local -a loop_verification_arguments=()
-
-    if [[ "$SKIP_BUBOL_DIVINING" == true ]]; then
-        task \
-            'Skip BuboL Divine generation because --skip-bubol-divining was requested'
-    else
-        run_step \
-            'Divine a benchmark with BuboL enabled' \
-            "$TESTS_DIR/Stages/Divine.sh" \
-            --bubol
-    fi
-
-    run_step \
-        'Verify the BuboL-divined slowdown' \
-        "$TESTS_DIR/Stages/Verify-BuboL.sh"
-
-    if [[ "$REFRESH_BUBOL_LOOP_INPUTS" == true ]]; then
-        loop_verification_arguments+=(--refresh-inputs)
-    fi
-
-    run_step \
-        'Verify BuboL per-loop measurements against VTune' \
-        "$TESTS_DIR/Stages/Verify-BuboL-Loops.sh" \
-        "${loop_verification_arguments[@]}"
+    local benchmark
+    local -a denoise_prefix=()
+    [[ "$USE_DENOISE" != true ]] || denoise_prefix=("$TESTS_DIR/Setup-Denoise.sh" run --)
+    for benchmark in "${BENCHMARKS[@]}"; do
+        run_step "Divine $benchmark with BuboL" "${denoise_prefix[@]}" \
+            "$TESTS_DIR/Stages/Divine.sh" --bubol --benchmark "$benchmark"
+        run_step "Verify BuboL slowdown for $benchmark" "$TESTS_DIR/Stages/Verify-BuboL.sh" --benchmark "$benchmark"
+        run_step "Verify every BuboL loop for $benchmark" "$TESTS_DIR/Stages/Verify-BuboL-Loops.sh" --benchmark "$benchmark"
+    done
 }
 
 run_selected_stages() {
-    local stage
-    local stage_finished_epoch
-
+    local stage finished
     for stage in "${SELECTED_STAGES[@]}"; do
         CURRENT_STAGE=$stage
         CURRENT_STAGE_STARTED_EPOCH=$(date +%s)
-
         case "$stage" in
-            openjdk)
-                compile_openjdk
-                ;;
-
-            graal)
-                compile_graal
-                ;;
-
-            divine)
-                run_divine
-                ;;
-
-            bubol)
-                run_bubol
-                ;;
+            openjdk) compile_openjdk ;;
+            graal) compile_graal ;;
+            divine) run_divine ;;
+            bubol) run_bubol ;;
         esac
-
-        stage_finished_epoch=$(date +%s)
-        report_stage \
-            "$stage" \
-            passed \
-            "$((stage_finished_epoch - CURRENT_STAGE_STARTED_EPOCH))"
+        finished=$(date +%s)
+        report_stage "$stage" passed "$((finished - CURRENT_STAGE_STARTED_EPOCH))"
         CURRENT_STAGE=''
     done
 }
 
 main() {
     parse_arguments "$@"
+    validate_invocation_user "$@"
     select_stages
     validate_arguments
-    initialise_reporting
-    trap 'finalise_reporting $?' EXIT
-
-    task "Start GT ecosystem stages: ${SELECTED_STAGES[*]}"
-
-    INDENT_LEVEL=$((INDENT_LEVEL + 1))
-    export INDENT_LEVEL
-
-    run_step \
-        'Verify machine dependencies' \
-        "$TESTS_DIR/Verify-Dependencies.sh" \
-        --pipeline
-
+    authorize_unattended_pipeline
+    initialise_run
+    trap 'finalise_run $?' EXIT
+    task "Run GT ecosystem stages: ${SELECTED_STAGES[*]}"
+    INDENT_LEVEL=$((INDENT_LEVEL + 1)); export INDENT_LEVEL
+    if [[ "$DENOISE_REQUIRED" == true ]]; then
+        run_step 'Verify machine dependencies' "$TESTS_DIR/Verify-Dependencies.sh" --pipeline
+    else
+        run_step 'Verify machine dependencies' \
+            "$TESTS_DIR/Verify-Dependencies.sh" --pipeline --without-denoise
+    fi
     run_selected_stages
-
-    INDENT_LEVEL=$((INDENT_LEVEL - 1))
-    export INDENT_LEVEL
-
-    pass "Selected ecosystem stages passed: ${SELECTED_STAGES[*]}"
+    INDENT_LEVEL=$((INDENT_LEVEL - 1)); export INDENT_LEVEL
+    pass "Selected stages passed: ${SELECTED_STAGES[*]}"
 }
 
 main "$@"

@@ -1,6 +1,9 @@
 Notes.tx
 __pycache__/
 Tests/Tools/
-Tests/Output/
 Tests/Build/
+Tests/Output/
+Tests/Runs/
 *.class
+*.log
+*.py[cod]

@@ -32,7 +32,9 @@ validate_inputs() {
 }
 
 configure_openjdk_if_needed() {
-    local existing_spec
+    local configure_status existing_spec
+    local generated_support="$LABS_OPENJDK/build/.configure-support"
+    local generated_configure="$generated_support/generated-configure.sh"
 
     existing_spec=$(find "$LABS_OPENJDK/build" -mindepth 2 -maxdepth 2 \
         -name spec.gmk -print -quit 2>/dev/null || true)
@@ -42,6 +44,32 @@ configure_openjdk_if_needed() {
         return 0
     fi
 
+    if [[ -f "$generated_configure" ]] && \
+        ! bash -n "$generated_configure" >/dev/null 2>&1; then
+        task 'Discarding an incomplete generated OpenJDK configure cache'
+        rm -rf -- "$generated_support"
+    fi
+
+    if run_openjdk_configure; then
+        return 0
+    else
+        configure_status=$?
+    fi
+
+    # An interrupted autoconf/configure run can leave this generated helper
+    # truncated.  Remove only generated build state and retry exactly once.
+    if [[ -f "$generated_configure" ]] && \
+        ! bash -n "$generated_configure" >/dev/null 2>&1; then
+        task 'Generated OpenJDK configure cache is malformed; regenerating it once'
+        rm -rf -- "$generated_support"
+        run_openjdk_configure
+        return
+    fi
+
+    return "$configure_status"
+}
+
+run_openjdk_configure() {
     (
         cd "$LABS_OPENJDK"
         bash configure \
