@@ -196,6 +196,12 @@ finalise_run() {
     for stage in "${BENCHMARKS[@]}"; do args+=(--benchmark "$stage"); done
     [[ "$VERBOSE" == true ]] && args+=(--verbose)
 
+    # All privileged measurement cleanup has completed by this point.  Do not
+    # leave the deliberately long unattended-run timestamp valid afterwards.
+    if [[ "$DENOISE_REQUIRED" == true ]]; then
+        sudo -k >/dev/null 2>&1 || true
+    fi
+
     python3 "$TESTS_DIR/lib/render-results.py" --run-root "$GT_RUN_ROOT" \
         --events "$GT_REPORT_EVENTS" --started-at "$REPORT_STARTED_AT" \
         --finished-at "$finished_at" --duration-seconds "$duration" \
