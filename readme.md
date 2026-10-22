@@ -129,11 +129,11 @@ Run any individual command under the same controls with:
 ./Tests/Setup-Denoise.sh run -- ./my-benchmark --arguments
 ```
 
-The setup asks for `sudo` before changing CPU controls. It does not run a
-periodic sudo refresher, because even a small background process is undesirable
-during performance measurements. Configure a suitably long sudo
-`timestamp_timeout` for the experiment account before a long run rather than
-installing a passwordless rule. On a cgroup v2 host, ReBench's current `cpuset`
+The setup creates a user-specific 12-hour sudo timestamp policy. The pipeline
+asks for the sudo password once at startup and can then run unattended. It does
+not run a periodic sudo refresher, because even a small background process is
+undesirable during performance measurements, and it does not install a
+passwordless rule. On a cgroup v2 host, ReBench's current `cpuset`
 integration may not
 support shielding; the script reports that and safely continues with Turbo,
 governor, and priority controls. Use `--without-denoise` on the main pipeline

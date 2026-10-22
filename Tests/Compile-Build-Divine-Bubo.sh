@@ -77,6 +77,12 @@ validate_invocation_user() {
     fi
 }
 
+authorize_unattended_pipeline() {
+    [[ "$DENOISE_REQUIRED" == true ]] || return 0
+    task 'Authorize unattended Denoise controls'
+    "$TESTS_DIR/Setup-Denoise.sh" authorize
+}
+
 stage_exists() {
     local wanted=$1 stage
     for stage in "${PIPELINE_STAGES[@]}"; do
@@ -261,6 +267,7 @@ main() {
     validate_invocation_user "$@"
     select_stages
     validate_arguments
+    authorize_unattended_pipeline
     initialise_run
     trap 'finalise_run $?' EXIT
     task "Run GT ecosystem stages: ${SELECTED_STAGES[*]}"

@@ -17,6 +17,7 @@ readonly REBENCH_ENVIRONMENT="$TOOLS_DIRECTORY/rebench"
 readonly DENOISE_COMMAND="$REBENCH_ENVIRONMENT/bin/rebench-denoise"
 readonly CSET_COMMAND="$REBENCH_ENVIRONMENT/bin/cset"
 readonly SYSTEM_PYTHON=/usr/bin/python3
+readonly SUDO_TIMESTAMP_TIMEOUT_MINUTES=720
 
 ACTION=install
 SKIP_SYSTEM_PACKAGES=false
@@ -43,11 +44,13 @@ show_usage() {
     cat <<EOF
 Usage: $(basename "$0") [install] [OPTIONS]
        $(basename "$0") verify
+       $(basename "$0") authorize
        $(basename "$0") run -- COMMAND [ARGUMENT ...]
 
 Commands:
     install                 Install ReBench development source and cpuset
     verify                  Test Denoise and restore the original CPU settings
+    authorize               Cache one sudo login for an unattended pipeline
     run -- COMMAND          Run COMMAND with reduced benchmark noise
 
 Install options:
@@ -64,7 +67,7 @@ EOF
 parse_arguments() {
     if (( $# > 0 )); then
         case "$1" in
-            install|verify|run)
+            install|verify|authorize|run)
                 ACTION=$1
                 shift
                 ;;
@@ -343,6 +346,46 @@ start_privileged_session() {
     fi
 }
 
+configure_unattended_sudo() {
+    local experiment_user sudoers_file temporary_file visudo_command
+
+    experiment_user=${SUDO_USER:-$(id -un)}
+    [[ "$experiment_user" != root ]] || \
+        die 'Run this setup as the experiment user, not directly as root'
+    [[ "$experiment_user" =~ ^[A-Za-z_][A-Za-z0-9_-]*\$?$ ]] || \
+        die "Cannot safely create a sudoers rule for user: $experiment_user"
+    getent passwd "$experiment_user" >/dev/null || \
+        die "Experiment user does not exist: $experiment_user"
+
+    visudo_command=$(command -v visudo || true)
+    [[ -n "$visudo_command" ]] || visudo_command=/usr/sbin/visudo
+    [[ -x "$visudo_command" ]] || die 'visudo is required to validate the sudo policy'
+
+    sudoers_file="/etc/sudoers.d/gt-ecosystem-$experiment_user"
+    temporary_file=$(mktemp)
+    trap 'rm -f -- "$temporary_file"' RETURN
+    printf 'Defaults:%s timestamp_timeout=%d\n' \
+        "$experiment_user" "$SUDO_TIMESTAMP_TIMEOUT_MINUTES" > "$temporary_file"
+
+    "$visudo_command" -cf "$temporary_file" >/dev/null
+    "${ROOT_COMMAND[@]}" install -o root -g root -m 0440 \
+        "$temporary_file" "$sudoers_file"
+    "${ROOT_COMMAND[@]}" "$visudo_command" -cf "$sudoers_file" >/dev/null
+
+    rm -f -- "$temporary_file"
+    trap - RETURN
+    pass "Sudo authorization will remain valid for $((SUDO_TIMESTAMP_TIMEOUT_MINUTES / 60)) hours"
+}
+
+authorize_unattended_pipeline() {
+    select_privilege_command
+    configure_unattended_sudo
+    if (( EUID != 0 )); then
+        sudo -v
+    fi
+    pass 'Sudo authorization is ready; no background refresher is running'
+}
+
 prepare_denoised_state() {
     local output
 
@@ -495,6 +538,8 @@ main() {
             if [[ "$SKIP_SYSTEM_PACKAGES" == false ]]; then
                 run_step 'Install Python packaging dependencies' install_system_packages
             fi
+            run_step 'Configure unattended pipeline authorization' \
+                configure_unattended_sudo
             run_step 'Install ReBench development source and cpuset' install_rebench
             if [[ "$SKIP_VERIFY" == false ]]; then
                 run_step 'Verify Denoise and CPU-state restoration' verify_denoise
@@ -504,6 +549,9 @@ main() {
             ;;
         verify)
             verify_denoise
+            ;;
+        authorize)
+            authorize_unattended_pipeline
             ;;
         run)
             run_denoised
