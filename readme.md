@@ -1,146 +1,109 @@
 # GT Ecosystem
 
-The component repositories are pinned as Git submodules under `repos/`.
+GT Ecosystem is the reproducibility and integration repository for two related
+approaches to understanding profiler accuracy on JIT-compiled Java programs:
 
-Clone the complete ecosystem with:
+- **Divining slowdown** inserts calibrated machine-code instructions into Graal
+  basic blocks. It creates a known performance change that a profiler should be
+  able to observe and attribute correctly.
+- **BuboL** instruments loops late in Graal's LIR pipeline and measures their CPU
+  cycles directly. The ecosystem compares the slowdown BuboL observes for each
+  significant loop with a VTune-derived baseline.
+
+The repository pins the compiler, scheduler, benchmarks, and experiments as Git
+submodules, installs the host dependencies, builds the modified OpenJDK and GraalVM,
+runs the experiments under controlled CPU settings, validates the measurements,
+and publishes a compact results directory with summaries, CSV data, and plots.
+
+> **Current automation scope**
+>
+> The default end-to-end pipeline demonstrates **Mandelbrot** and **Bounce**.
+> Graal's compiler smoke tests additionally use **Bounce** and **Sieve**, and use
+> Async-profiler to confirm that compiler markers are visible. The final BuboL
+> accuracy plot compares BuboL with the VTune baseline; it is not a reproduction
+> of the complete multi-profiler study.
+>
+> The underlying research was evaluated on broader benchmark and profiler sets.
+> See [Research scope](docs/RESEARCH-SCOPE.md) before drawing conclusions from
+> the smaller automated demonstration.
+
+## Quick start
+
+The supported automated setup targets a clean Rocky Linux or compatible RHEL-family
+x86-64 machine with an Intel CPU.
 
 ```bash
-git clone --recurse-submodules \
-    https://github.com/HumphreyHCB/GT-Ecosystem.git
-```
+git clone https://github.com/HumphreyHCB/GT-Ecosystem.git
+cd GT-Ecosystem
 
-For an existing clone, initialise the top-level component repositories with:
-
-```bash
-git submodule update --init
-```
-
-Do not add `--recursive`: BuboExperiments has an unused Capstone gitlink that
-is not part of this ecosystem build.
-
-Each submodule is pinned to a tested commit. The branch recorded in
-`.gitmodules` identifies the upstream branch used when deliberately updating
-that component; normal checkout continues to use the pinned commit.
-
-## Clean Rocky Linux machine
-
-Run the one-time bootstrap from any directory:
-
-```bash
 ./Tests/Install-Dependencies.sh
-```
-
-It installs the Rocky build packages and the known-working Intel VTune 2025.0,
-downloads the pinned boot JDK and `mx`, installs ReBench Denoise from its
-development source, initializes
-the top-level submodules, builds the AWFY benchmark JAR and its JNI library,
-and verifies hardware Hotspots collection and the rest of the setup.
-
-Then run the complete pipeline:
-
-```bash
 ./Tests/Compile-Build-Divine-Bubo.sh
 ```
 
-Run the pipeline as your normal login user, **not** with `sudo`. It invokes
-`sudo` itself only for the Denoise CPU controls. Running the complete pipeline
-as root creates root-owned build and result files, while Denoise intentionally
-runs the measured JVM as the login user.
+Run both scripts as your normal login user, **not** by placing `sudo` before the
+command. They request elevated privileges only for system installation and CPU
+controls. The pipeline asks for the sudo password once at startup and can then run
+unattended.
 
-Each invocation creates one isolated directory under `Tests/Runs/`:
+The final terminal report points to:
 
 ```text
-Runs/<start-time>_<pid>/
-├── pipeline/                 private inputs, build files and full logs
-└── results/                  stable, user-facing copies and reports
-    ├── summary.txt
-    ├── summary.json
-    ├── pipeline.log
-    ├── data/
-    │   ├── divine-slowdown.csv
-    │   └── bubol-loop-slowdown.csv
-    ├── plots/
-    │   ├── divine-slowdown.svg
-    │   └── bubol-loop-slowdown.svg
-    └── stages/               selected diagnostics by stage and benchmark
+Tests/Runs/<start-time>_<pid>/results/
 ```
 
-The scripts only consume files in `pipeline/`. Everything in `results/` is a
-copy or a derived report, so it is safe to move, inspect or delete.
+Start with `summary.txt`, then open the two SVG plots. See
+[Reading the results](docs/RESULTS.md) for the meaning of every generated file.
 
-## Configuration
+## Pipeline at a glance
 
-All paths in `Tests/config.config` are relative to that file. They may point
-to the checked-out submodules or to repositories and generated files anywhere
-else on the machine. For example:
+| Stage | Purpose | Principal output |
+| --- | --- | --- |
+| OpenJDK | Builds the modified JVM and a Graal builder JDK | OpenJDK images |
+| Graal | Builds the modified GraalVM and exercises clean, GT, BuboL, and marker configurations | Build and smoke-test logs |
+| Divine | Calibrates per-basic-block slowdown with VTune and checks whole-program slowdown | Expected versus achieved slowdown per benchmark |
+| BuboL | Repeats the slowdown experiment with loop instrumentation and compares significant loops with VTune | Per-loop slowdown comparison |
 
-```ini
-[Dir]
-Graal=/work/my-graal-instrumentation
-GTSlowdownSchedular=/work/my-scheduler
-RunRoot=/data/gt-runs
-```
+OpenJDK and Graal are built without Denoise. Measurement runs use ReBench Denoise
+to disable Turbo, select the performance governor, raise priority, and use CPU
+shielding where supported. Original CPU settings are restored after each run.
 
-The benchmark list and each benchmark's arguments are also configured there:
+## Documentation
 
-```ini
-[Run]
-Benchmarks=Mandelbrot,Bounce
+- [Documentation index](docs/README.md)
+- [Installation and system requirements](docs/INSTALLATION.md)
+- [Running and configuring the pipeline](docs/USAGE.md)
+- [Architecture and data flow](docs/ARCHITECTURE.md)
+- [Reading and interpreting results](docs/RESULTS.md)
+- [Research scope and evidence](docs/RESEARCH-SCOPE.md)
+- [Troubleshooting](docs/TROUBLESHOOTING.md)
+- [Future work](docs/FUTURE-WORK.md)
 
-[Benchmark.Mandelbrot]
-Iterations=300
-ExtraArgument=750
-ExpectedSlowdownRatio=2
-SlowdownTolerancePercent=15
-```
+## Repository boundaries
 
-Add another name to `Benchmarks` and add a matching `[Benchmark.NAME]`
-section to run it through both Divine modes and include it in the reports.
-Use a different configuration without changing the checkout with:
+This repository owns the orchestration, configuration, validation, and reporting
+scripts. Component implementations remain in the repositories pinned below
+`repos/`. Normal pipeline operation does not modify those submodules.
+
+Do not initialise submodules recursively. `BuboExperiments` contains an unused
+Capstone gitlink that is not part of this build:
 
 ```bash
-./Tests/Compile-Build-Divine-Bubo.sh --config /path/to/config.config
+git submodule sync
+git submodule update --init --checkout --jobs "$(nproc)"
 ```
 
-The pure-Divine chart compares requested and achieved slowdown for every
-benchmark. The BuboL chart shows every qualifying loop separately, comparing
-VTune's expected slowdown with BuboL's achieved measurement.
+Each gitlink pins a tested commit. The branch names in `.gitmodules` document the
+upstream development branches; they do not make normal checkout follow branch
+heads automatically.
 
-## Stable CPU measurements
+## Research references
 
-`Compile-Build-Divine-Bubo.sh` automatically wraps every benchmark with
-ReBench Denoise except the first clean-GraalVM smoke test. OpenJDK and Graal
-builds, validation steps, and report generation are not wrapped.
-During a measurement, Denoise disables Turbo Boost, selects the performance
-governor, raises process priority, and uses CPU shielding where the machine's
-cgroup mode supports it. The wrapper does not change perf sampling controls,
-because VTune needs them, and it restores the original Turbo and governor
-settings even when the measurement fails.
-
-The standalone setup and functional test is:
-
-```bash
-./Tests/Setup-Denoise.sh install
-```
-
-Run any individual command under the same controls with:
-
-```bash
-./Tests/Setup-Denoise.sh run -- ./my-benchmark --arguments
-```
-
-The setup creates a user-specific 12-hour sudo timestamp policy. The pipeline
-asks for the sudo password once at startup and can then run unattended. It does
-not run a periodic sudo refresher, because even a small background process is
-undesirable during performance measurements, and it does not install a
-passwordless rule. On a cgroup v2 host, ReBench's current `cpuset`
-integration may not
-support shielding; the script reports that and safely continues with Turbo,
-governor, and priority controls. Use `--without-denoise` on the main pipeline
-for an intentionally untuned run.
-
-To inspect a machine without changing it, run:
-
-```bash
-./Tests/Verify-Dependencies.sh
-```
+- Humphrey Burchell and Stefan Marr. *Divining Profiler Accuracy: An Approach to
+  Approximate Profiler Accuracy through Machine Code-Level Slowdown*. OOPSLA 2025.
+  [DOI: 10.1145/3763180](https://doi.org/10.1145/3763180)
+- Humphrey Burchell, Octave Larose, and Stefan Marr. *Towards Realistic Results
+  for Instrumentation-Based Profilers for JIT-Compiled Systems*. MPLR 2024.
+  [DOI: 10.1145/3679007.3685058](https://doi.org/10.1145/3679007.3685058)
+- Humphrey H. C. Burchell. *Reclaiming Profiler Ground Truth: Determining and
+  Improving the Accuracy of CPU Profilers in the Presence of Dynamic Compilation*.
+  PhD thesis, University of Kent, 2026.
